@@ -1,0 +1,116 @@
+---
+const steps = [
+  {
+    num: '1',
+    title: 'Map Your Current Intake',
+    desc: 'Understand how leads arrive today.',
+  },
+  {
+    num: '2',
+    title: 'Build The Response Flow',
+    desc: 'Create the steps for response, qualification, and booking handoff.',
+  },
+  {
+    num: '3',
+    title: 'Test With Real Scenarios',
+    desc: 'Review edge cases before launch.',
+  },
+  {
+    num: '4',
+    title: 'Launch And Measure',
+    desc: 'Track captured leads, booked opportunities, and follow-up outcomes.',
+  },
+];
+---
+
+<section id="process" class="process-section section-compact" aria-labelledby="process-heading">
+  <div class="content-wrap">
+    <h2 class="heading-2 process-heading" id="process-heading">
+      Simple Setup. Clear Handoff. Practical Launch.
+    </h2>
+
+    <ol class="process-list" role="list">
+      {steps.map(step => (
+        <li class="process-step card">
+          <div class="process-badge" aria-label={`Step ${step.num}`}>{step.num}</div>
+          <div class="process-content">
+            <h3 class="process-title">{step.title}</h3>
+            <p class="process-desc">{step.desc}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process-section {
+    /* transparent: inherits body valley-floor #EEECE1, lets the river show in gutters */
+    background: transparent;
+  }
+
+  .process-heading {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .process-list {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    max-width: 720px;
+  }
+
+  .process-step {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1.75rem;
+  }
+
+  .process-badge {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: #54a563;
+    color: #EEECE1;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .process-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .process-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1C1C1C;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .process-desc {
+    margin: 0;
+    font-size: 15px;
+    color: #4A4A4A;
+    line-height: 1.5;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  @media (max-width: 480px) {
+    .process-step {
+      padding: 1.25rem 1.25rem;
+    }
+  }
+</style>

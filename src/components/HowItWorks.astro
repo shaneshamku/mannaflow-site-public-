@@ -1,0 +1,134 @@
+---
+const steps = [
+  {
+    num: '1',
+    title: 'Inquiry Comes In',
+    desc: 'A call, form, or message arrives through your existing channels.',
+  },
+  {
+    num: '2',
+    title: 'Details Are Captured',
+    desc: 'Contact info, timing, and needs are organized before your team follows up.',
+  },
+  {
+    num: '3',
+    title: 'Appointment Is Prepared',
+    desc: 'Your team gets a clear summary and the lead moves toward booking.',
+  },
+];
+---
+
+<section id="how-it-works" class="hiw-section section-compact" aria-labelledby="hiw-heading">
+  <div class="content-wrap">
+    <h2 class="heading-2 hiw-heading" id="hiw-heading">Answered. Qualified. Booked.</h2>
+
+    <div class="hiw-steps" role="list">
+      {steps.map((step) => (
+        <div class="hiw-step" role="listitem">
+          <div class="hiw-badge" aria-label={`Step ${step.num}`}>{step.num}</div>
+          <div class="hiw-content">
+            <h3 class="heading-3 hiw-title">{step.title}</h3>
+            <p class="body-text hiw-desc">{step.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hiw-section {
+    background: #F4EBDD;
+  }
+
+  .hiw-heading {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .hiw-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+    max-width: 860px;
+    margin-inline: auto;
+  }
+
+  /* Connector line drawn at grid level — no overflow */
+  .hiw-steps::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: calc(100% / 6);
+    right: calc(100% / 6);
+    height: 2px;
+    background: #D8C3A5;
+    z-index: 0;
+  }
+
+  .hiw-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1.5rem;
+  }
+
+  .hiw-badge {
+    width: 48px;
+    height: 48px;
+    background: #54a563;
+    color: #EEECE1;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 800;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hiw-content {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hiw-title {
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .hiw-desc {
+    margin: 0;
+    font-size: 15px;
+  }
+
+  @media (max-width: 700px) {
+    .hiw-steps {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .hiw-step {
+      flex-direction: row;
+      align-items: flex-start;
+      text-align: left;
+      padding: 0;
+      gap: 1.25rem;
+    }
+
+    .hiw-connector {
+      display: none;
+    }
+
+    .hiw-content {
+      margin-top: 0;
+    }
+  }
+</style>

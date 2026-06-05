@@ -1,0 +1,163 @@
+---
+const faqs = [
+  {
+    q: 'Is this meant to replace our team?',
+    a: 'No. It helps handle the early intake and follow-up moments so your team can focus on higher-value conversations.',
+  },
+  {
+    q: 'Do we need to change how our business works?',
+    a: 'No. The goal is to fit around your current process and reduce friction — not replace the way you already operate.',
+  },
+  {
+    q: 'What kinds of leads does this help with?',
+    a: 'Calls, web forms, messages, missed inquiries, and follow-up opportunities — wherever leads arrive in your business.',
+  },
+  {
+    q: 'How do we know it is working?',
+    a: 'Track response speed, captured inquiries, booked opportunities, and follow-up outcomes over time.',
+  },
+  {
+    q: 'Can this be adapted for our market later?',
+    a: 'Yes. The general structure can become a market-specific page with its own demo and workflow tailored to your industry.',
+  },
+];
+---
+
+<section id="faq" class="faq-section section-compact" aria-labelledby="faq-heading">
+  <div class="content-wrap">
+    <h2 class="heading-2 faq-heading" id="faq-heading">Frequently Asked Questions</h2>
+
+    <dl class="faq-list">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <dt>
+            <button
+              class="faq-trigger"
+              aria-expanded="false"
+              aria-controls={`faq-answer-${i}`}
+              id={`faq-btn-${i}`}
+            >
+              <span class="faq-question">{faq.q}</span>
+              <span class="faq-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </span>
+            </button>
+          </dt>
+          <dd
+            id={`faq-answer-${i}`}
+            role="region"
+            aria-labelledby={`faq-btn-${i}`}
+            class="faq-answer"
+            hidden
+          >
+            <p class="faq-answer-text">{faq.a}</p>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .faq-section {
+    /* transparent: inherits body valley-floor #EEECE1, lets the river show in gutters */
+    background: transparent;
+  }
+
+  .faq-heading {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .faq-list {
+    max-width: 720px;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid #E2D5C4;
+  }
+
+  .faq-item:first-child {
+    border-top: 1px solid #E2D5C4;
+  }
+
+  .faq-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .faq-question {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1C1C1C;
+    line-height: 1.4;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: #4A4A4A;
+    transition: transform 200ms ease;
+  }
+
+  .faq-trigger[aria-expanded="true"] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    overflow: hidden;
+  }
+
+  .faq-answer[hidden] {
+    display: none;
+  }
+
+  .faq-answer-text {
+    margin: 0;
+    padding: 0 0 1.25rem;
+    font-size: 16px;
+    color: #4A4A4A;
+    line-height: 1.65;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+</style>
+
+<script>
+  const triggers = document.querySelectorAll<HTMLButtonElement>('.faq-trigger');
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      const answerId = trigger.getAttribute('aria-controls')!;
+      const answer = document.getElementById(answerId)!;
+
+      // Close all others
+      triggers.forEach(t => {
+        const tid = t.getAttribute('aria-controls')!;
+        const ta = document.getElementById(tid)!;
+        t.setAttribute('aria-expanded', 'false');
+        ta.hidden = true;
+      });
+
+      // Toggle current
+      if (!isOpen) {
+        trigger.setAttribute('aria-expanded', 'true');
+        answer.hidden = false;
+      }
+    });
+  });
+</script>

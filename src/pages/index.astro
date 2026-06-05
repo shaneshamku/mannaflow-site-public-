@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import River from '../components/River.astro';
+import Hero from '../components/Hero.astro';
+import ValueTabs from '../components/ValueTabs.astro';
+import ProofBand from '../components/ProofBand.astro';
+import DemoCard from '../components/DemoCard.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import DoneForYou from '../components/DoneForYou.astro';
+import Features from '../components/Features.astro';
+import ProcessTimeline from '../components/ProcessTimeline.astro';
+import FutureNote from '../components/FutureNote.astro';
+import Faq from '../components/Faq.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>MannaFlow — Never Miss Another Lead</title>
+    <meta name="description" content="MannaFlow helps service businesses respond faster, qualify new inquiries, and move prospects toward a booked appointment — without adding more front-office work." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="MannaFlow — Never Miss Another Lead" />
+    <meta property="og:description" content="Turn missed inquiries into booked appointments." />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <!-- River animation — decorative background element -->
+    <River />
+
+    <!-- Navigation -->
+    <Nav showCta={true} />
+
+    <main id="main-content">
+      <!-- 1. Hero -->
+      <Hero />
+
+      <!-- 2. Value Tabs (LARGE — centerpiece) -->
+      <ValueTabs />
+
+      <!-- 3. Proof Band (LARGE — dark anchor) -->
+      <ProofBand />
+
+      <!-- 4. Demo Card (only future-path element) -->
+      <DemoCard />
+
+      <!-- 5. How It Works (compact) -->
+      <HowItWorks />
+
+      <!-- 6. Done For You (compact) -->
+      <DoneForYou />
+
+      <!-- 7. Features (compact) -->
+      <Features />
+
+      <!-- 8. Process Timeline (compact) -->
+      <ProcessTimeline />
+
+      <!-- 9. Future Note (small) -->
+      <FutureNote />
+
+      <!-- 10. FAQ (compact) -->
+      <Faq />
+    </main>
+
+    <!-- Footer -->
+    <Footer />
+  </body>
+</html>

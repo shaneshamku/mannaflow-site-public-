@@ -1,0 +1,82 @@
+---
+import LeadFlowCard from './LeadFlowCard.astro';
+---
+
+<section class="hero section-large">
+  <div class="content-wrap hero-inner">
+    <!-- Left: Text -->
+    <div class="hero-text">
+      <p class="eyebrow fade-up" style="animation-delay: 0s">Never Miss Another Lead</p>
+      <h1 class="heading-1 fade-up" style="animation-delay: 0.1s">
+        Turn Missed Inquiries Into Booked Appointments
+      </h1>
+      <p class="subhead fade-up" style="animation-delay: 0.2s">
+        Respond faster, qualify leads, and book more appointments — without adding front-office work.
+      </p>
+    </div>
+
+    <!-- Right: Lead Flow Card -->
+    <div class="hero-card fade-up" style="animation-delay: 0.3s">
+      <LeadFlowCard />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    /* transparent: inherits body valley-floor #EEECE1, lets the river show in gutters */
+    background: transparent;
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hero-text .eyebrow {
+    display: block;
+  }
+
+  .hero-text .heading-1 {
+    margin: 0;
+  }
+
+  .hero-text .subhead {
+    margin: 0;
+    max-width: 480px;
+  }
+
+  .hero-card {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 900px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .hero-card {
+      justify-content: center;
+    }
+
+    .hero-text .subhead {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .hero-card :global(.lfc-card) {
+      max-width: 100%;
+    }
+  }
+</style>

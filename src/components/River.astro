@@ -1,0 +1,365 @@
+---
+/*
+  River.astro — "Carved Valley" environmental background.
+
+  One full-document SVG layer behind all content (z-index 0; content rides at
+  z-index 1 via global.css). The page body color (#EEECE1) is the valley floor;
+  the cream sections are transparent so the river shows through their side
+  gutters, while the opaque bands (ProofBand, paper sections, footer) act as
+  tunnels the channel ducks under to migrate left<->right down the page.
+
+  Geometry, widths and tunnel crossings are computed at runtime from measured
+  section offsets so the channel never sits behind body text/cards/buttons.
+  Motion lives *inside* the channel (a masked shimmer): scroll pushes the
+  current downstream via the --flow custom property; a slow keyframe keeps it
+  alive at rest. Mobile (<=768px) and prefers-reduced-motion fall back to a
+  faint static atmospheric wash. SVG + CSS + vanilla JS only — no dependencies.
+*/
+---
+
+<div class="river-layer" aria-hidden="true" role="presentation">
+  <svg id="river-svg" class="river-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="river-water" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0a6db8" />
+        <stop offset="50%" stop-color="#0c91ed" />
+        <stop offset="100%" stop-color="#0879c7" />
+      </linearGradient>
+      <linearGradient id="river-bank" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0c91ed" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#0c91ed" stop-opacity="0.2" />
+      </linearGradient>
+      <linearGradient id="river-shimmer" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
+        <stop offset="50%" stop-color="#f3f9ff" stop-opacity="1" />
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+      </linearGradient>
+      <filter id="river-soft" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2.5" />
+      </filter>
+      <filter id="river-softer" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="7" />
+      </filter>
+      <mask id="river-channel-mask" maskUnits="userSpaceOnUse">
+        <path id="river-mask-path" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" />
+      </mask>
+    </defs>
+
+    <g class="river-channel">
+      <!-- banks (primary terrain, carved depth) -->
+      <path id="river-bank-wide" class="river-el" fill="none" stroke="url(#river-bank)" stroke-opacity="0.16" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-softer)" />
+      <path id="river-bank-green" class="river-el" fill="none" stroke="#54a563" stroke-opacity="0.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-softer)" />
+
+      <!-- contour accents (secondary, whisper-faint, intermittent) -->
+      <path id="river-contour-l" class="river-contour" fill="none" stroke="#7A5538" stroke-opacity="0.05" stroke-linecap="round" />
+      <path id="river-contour-r" class="river-contour" fill="none" stroke="#7A5538" stroke-opacity="0.05" stroke-linecap="round" />
+
+      <!-- water body -->
+      <path id="river-water-path" class="river-el" fill="none" stroke="url(#river-water)" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-soft)" />
+
+      <!-- internal current/shimmer, clipped to the channel via mask -->
+      <g mask="url(#river-channel-mask)">
+        <path id="river-shimmer-ambient" class="river-shimmer river-shimmer-ambient" fill="none" stroke="url(#river-shimmer)" stroke-opacity="0.28" stroke-linecap="round" />
+        <path id="river-shimmer-scroll" class="river-shimmer river-shimmer-scroll" fill="none" stroke="url(#river-shimmer)" stroke-opacity="0.34" stroke-linecap="round" />
+      </g>
+    </g>
+  </svg>
+
+  <!-- mobile / reduced-motion atmospheric wash -->
+  <div class="river-ambient"></div>
+</div>
+
+<style>
+  .river-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .river-svg {
+    display: block;
+  }
+
+  .river-shimmer-scroll {
+    stroke-dashoffset: var(--flow, 0);
+  }
+
+  .river-shimmer-ambient {
+    animation: river-drift 16s linear infinite;
+  }
+
+  @keyframes river-drift {
+    to {
+      stroke-dashoffset: -480;
+    }
+  }
+
+  .river-ambient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(12, 145, 237, 0.05) 0%,
+      rgba(12, 145, 237, 0.04) 45%,
+      rgba(84, 165, 99, 0.05) 100%
+    );
+    display: none;
+  }
+
+  /* Mobile: drop the carved channel, show only the faint wash */
+  @media (max-width: 768px) {
+    .river-channel {
+      display: none;
+    }
+    .river-ambient {
+      display: block;
+    }
+  }
+
+  /* Reduced motion: static channel, no shimmer/scroll-driven current */
+  @media (prefers-reduced-motion: reduce) {
+    .river-shimmer {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  type Range = { top: number; bottom: number };
+
+  const CONTENT_MAX = 1240; // matches .content-wrap max-width
+  const MEANDER_AMP = 14;
+  const MEANDER_FREQ = 0.018;
+  const PHASE = 0.6;
+  const STEP = 22; // sampling interval (px) for the centerline
+  const MOBILE_BP = 768;
+
+  const ID_DS = [
+    'river-bank-wide',
+    'river-bank-green',
+    'river-water-path',
+    'river-mask-path',
+    'river-shimmer-ambient',
+    'river-shimmer-scroll',
+  ];
+
+  function clamp(v: number, lo: number, hi: number) {
+    return Math.max(lo, Math.min(hi, v));
+  }
+  function smoothstep(t: number) {
+    return t * t * (3 - 2 * t);
+  }
+  function lerp(a: number, b: number, t: number) {
+    return a + (b - a) * t;
+  }
+
+  // Sections whose computed background is opaque become tunnels the river
+  // ducks under. Returns merged, sorted document-space y-ranges.
+  function getTunnels(): Range[] {
+    const els: Element[] = [
+      ...Array.from(document.querySelectorAll('main > section')),
+    ];
+    const footer = document.querySelector('footer');
+    if (footer) els.push(footer);
+
+    const scrollY = window.scrollY;
+    const raw: Range[] = [];
+    for (const el of els) {
+      const bg = getComputedStyle(el).backgroundColor;
+      const m = bg.match(/rgba?\(([^)]+)\)/);
+      let alpha = 1;
+      if (m) {
+        const parts = m[1].split(',').map((s) => parseFloat(s));
+        alpha = parts.length >= 4 ? parts[3] : 1;
+      }
+      if (alpha < 0.05) continue; // transparent → river flows beside it
+      const r = el.getBoundingClientRect();
+      raw.push({ top: r.top + scrollY, bottom: r.bottom + scrollY });
+    }
+
+    raw.sort((a, b) => a.top - b.top);
+    const merged: Range[] = [];
+    for (const r of raw) {
+      const last = merged[merged.length - 1];
+      if (last && r.top - last.bottom < 28) {
+        last.bottom = Math.max(last.bottom, r.bottom);
+      } else {
+        merged.push({ ...r });
+      }
+    }
+    return merged;
+  }
+
+  // Catmull-Rom through the sampled points → smooth cubic-bezier path string.
+  function toSmoothPath(pts: { x: number; y: number }[]): string {
+    if (pts.length < 2) return '';
+    let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) / 6;
+      const c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6;
+      const c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
+  function build() {
+    const svg = document.getElementById('river-svg') as SVGSVGElement | null;
+    const layer = document.querySelector('.river-layer') as HTMLElement | null;
+    if (!svg || !layer) return;
+
+    const pageW = document.documentElement.clientWidth;
+    const pageH = document.documentElement.scrollHeight;
+
+    layer.style.height = `${pageH}px`;
+    svg.setAttribute('viewBox', `0 0 ${pageW} ${pageH}`);
+    svg.setAttribute('width', String(pageW));
+    svg.setAttribute('height', String(pageH));
+
+    // On mobile the channel is hidden by CSS (ambient wash only) — skip work.
+    if (pageW <= MOBILE_BP) {
+      for (const id of ID_DS) document.getElementById(id)?.removeAttribute('d');
+      return;
+    }
+
+    // Usable gutter = empty space from viewport edge to where text starts.
+    const gutterOuter = Math.max(0, (pageW - CONTENT_MAX) / 2);
+    const paddingInline = clamp(0.05 * pageW, 24, 80); // matches clamp(1.5rem,5vw,5rem)
+    const usableGutter = gutterOuter + paddingInline;
+
+    const channelWidth = clamp(usableGutter * 0.78, 26, 170);
+    const lo = channelWidth / 2 + 6;
+    const hi = Math.max(lo, usableGutter - channelWidth / 2 - 6);
+    const leftCenter = clamp(usableGutter * 0.48, lo, hi);
+    const rightCenter = pageW - leftCenter;
+
+    const tunnels = getTunnels();
+
+    const centerOf = (side: number) => (side === 0 ? leftCenter : rightCenter);
+
+    function xAt(y: number): number {
+      // crossings completed before y + active tunnel (if any)
+      let completed = 0;
+      let active = -1;
+      for (let i = 0; i < tunnels.length; i++) {
+        const t = tunnels[i];
+        if (t.bottom <= y) completed++;
+        else if (t.top <= y && y <= t.bottom) {
+          active = i;
+          break;
+        }
+      }
+
+      if (active >= 0) {
+        const t = tunnels[active];
+        const sideBefore = active % 2 === 0 ? 0 : 1;
+        const sideAfter = sideBefore === 0 ? 1 : 0;
+        const e = smoothstep(clamp((y - t.top) / (t.bottom - t.top), 0, 1));
+        return lerp(centerOf(sideBefore), centerOf(sideAfter), e);
+      }
+
+      const side = completed % 2 === 0 ? 0 : 1;
+      const m = MEANDER_AMP * Math.sin(y * MEANDER_FREQ + PHASE);
+      if (side === 0) return clamp(leftCenter + m, lo, hi);
+      return clamp(rightCenter + m, pageW - hi, pageW - lo);
+    }
+
+    const pts: { x: number; y: number }[] = [];
+    for (let y = 0; y <= pageH; y += STEP) pts.push({ x: xAt(y), y });
+    if (pts[pts.length - 1].y < pageH) pts.push({ x: xAt(pageH), y: pageH });
+
+    const d = toSmoothPath(pts);
+
+    for (const id of ID_DS) document.getElementById(id)?.setAttribute('d', d);
+
+    // Per-element stroke widths (depend on the responsive channel width).
+    const setW = (id: string, w: number) =>
+      document.getElementById(id)?.setAttribute('stroke-width', String(w));
+    setW('river-bank-wide', channelWidth * 1.7);
+    setW('river-bank-green', channelWidth * 1.2);
+    setW('river-water-path', channelWidth);
+    setW('river-mask-path', channelWidth);
+    setW('river-shimmer-ambient', channelWidth);
+    setW('river-shimmer-scroll', channelWidth);
+
+    // Contour accents: same centerline, nudged out to the banks, intermittent.
+    const offset = channelWidth * 0.7;
+    const cl = document.getElementById('river-contour-l');
+    const cr = document.getElementById('river-contour-r');
+    if (cl) {
+      cl.setAttribute('d', d);
+      cl.setAttribute('transform', `translate(${-offset} 0)`);
+      cl.setAttribute('stroke-width', '1.5');
+      cl.setAttribute('stroke-dasharray', '3 26');
+    }
+    if (cr) {
+      cr.setAttribute('d', d);
+      cr.setAttribute('transform', `translate(${offset} 0)`);
+      cr.setAttribute('stroke-width', '1.5');
+      cr.setAttribute('stroke-dasharray', '3 26');
+    }
+
+    // Shimmer streaks: dashed light bands that travel along the flow.
+    const sa = document.getElementById('river-shimmer-ambient');
+    const ss = document.getElementById('river-shimmer-scroll');
+    sa?.setAttribute('stroke-dasharray', '34 460');
+    ss?.setAttribute('stroke-dasharray', '50 320');
+  }
+
+  let buildQueued = false;
+  function queueBuild() {
+    if (buildQueued) return;
+    buildQueued = true;
+    requestAnimationFrame(() => {
+      buildQueued = false;
+      build();
+    });
+  }
+
+  function initScroll() {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    const layer = document.querySelector('.river-layer') as HTMLElement | null;
+    if (!layer) return;
+
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        // negative offset pushes the dashed current downstream as you scroll
+        layer!.style.setProperty('--flow', `${window.scrollY * -0.55}px`);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  function init() {
+    build();
+    initScroll();
+    window.addEventListener('resize', queueBuild, { passive: true });
+    // Document height changes when fonts load or FAQ accordions open.
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(queueBuild).observe(document.body);
+    }
+    window.addEventListener('load', queueBuild);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

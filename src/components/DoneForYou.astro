@@ -1,0 +1,98 @@
+---
+const items = [
+  'Works with your current intake process',
+  'Sends clean summaries to your team',
+  'Helps organize lead details',
+  'Supports follow-up after the first inquiry',
+  'Keeps uncertain cases ready for human review',
+  'Gives owners visibility into missed opportunities',
+];
+---
+
+<section class="dfy-section section-compact" aria-labelledby="dfy-heading">
+  <div class="content-wrap">
+    <div class="dfy-header">
+      <h2 class="heading-2" id="dfy-heading">No New System For Your Team To Manage</h2>
+      <p class="subhead dfy-subhead">
+        Fits around how you already work — nothing new to learn.
+      </p>
+    </div>
+
+    <ul class="dfy-grid" role="list">
+      {items.map(item => (
+        <li class="dfy-item card hover-lift" role="listitem">
+          <span class="dfy-check" aria-hidden="true">
+            <svg width="14" height="12" viewBox="0 0 14 12" fill="none" aria-hidden="true">
+              <path d="M1.5 6L5.5 10L12.5 1.5" stroke="#FAF7EF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="dfy-label">{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .dfy-section {
+    background: #F4EBDD;
+  }
+
+  .dfy-header {
+    text-align: center;
+    max-width: 640px;
+    margin-inline: auto;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dfy-subhead {
+    margin: 0;
+  }
+
+  .dfy-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.875rem;
+    max-width: 820px;
+    margin-inline: auto;
+  }
+
+  .dfy-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem 1.25rem;
+    cursor: default;
+  }
+
+  .dfy-check {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: #54a563;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dfy-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1C1C1C;
+    line-height: 1.4;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  @media (max-width: 640px) {
+    .dfy-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

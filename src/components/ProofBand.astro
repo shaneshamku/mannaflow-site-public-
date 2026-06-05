@@ -1,0 +1,236 @@
+---
+---
+
+<section class="proof-band section-large" aria-label="Response time proof">
+  <div class="content-wrap">
+    <h2 class="heading-2 proof-heading">Small Delays Can Turn Into Lost Revenue</h2>
+
+    <!-- Response time comparison -->
+    <div class="comparison" aria-label="Response time comparison">
+      <div class="comparison-row">
+        <span class="comparison-label">Industry average</span>
+        <!-- TODO: cite source -->
+        <div class="bar-track" role="presentation">
+          <div class="bar-fill bar-industry" style="--bar-width: 88%;" data-width="88%"></div>
+        </div>
+        <span class="comparison-value comparison-value--muted">Hours+</span>
+      </div>
+      <div class="comparison-row">
+        <span class="comparison-label comparison-label--bright">MannaFlow</span>
+        <div class="bar-track" role="presentation">
+          <div class="bar-fill bar-mf" style="--bar-width: 6%;" data-width="6%"></div>
+        </div>
+        <span class="comparison-value comparison-value--green">~60 sec</span>
+      </div>
+    </div>
+
+    <!-- Metric row -->
+    <div class="metrics" role="list" aria-label="Key service metrics">
+      <div class="metric" role="listitem">
+        <span class="metric-number" aria-label="60 seconds">60 sec</span>
+        <p class="metric-label">Response time, start to finish</p>
+      </div>
+      <div class="metric" role="listitem">
+        <span class="metric-number" aria-label="24/7">24/7</span>
+        <p class="metric-label">Coverage, even after hours</p>
+      </div>
+      <div class="metric" role="listitem">
+        <span class="metric-number">No</span>
+        <p class="metric-label">Missed calls to voicemail</p>
+      </div>
+      <div class="metric" role="listitem">
+        <span class="metric-number">More</span>
+        <p class="metric-label">Booked work from existing demand</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .proof-band {
+    background: #254A35;
+    color: #FAF7EF;
+  }
+
+  .proof-heading {
+    color: #FAF7EF;
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 660px;
+    margin-inline: auto;
+    margin-bottom: 3rem;
+  }
+
+  /* Comparison bars */
+  .comparison {
+    max-width: 680px;
+    margin-inline: auto;
+    margin-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 80px;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .comparison-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(238, 236, 225, 0.8);
+    text-align: right;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .comparison-label--bright {
+    color: #EEECE1;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 10px;
+    background: rgba(250, 247, 239, 0.1);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 9999px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bar-fill.animated {
+    width: var(--bar-width);
+  }
+
+  .bar-industry {
+    background: rgba(216, 195, 165, 0.45);
+  }
+
+  .bar-mf {
+    background: #54a563;
+  }
+
+  .comparison-value {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .comparison-value--muted {
+    color: rgba(238, 236, 225, 0.65);
+  }
+
+  .comparison-value--green {
+    color: #8FCA9A;
+  }
+
+  /* Metrics */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    border-top: 1px solid rgba(250, 247, 239, 0.15);
+    padding-top: 3rem;
+    margin-top: 0.5rem;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: box-shadow 150ms ease;
+  }
+
+  .metric:hover .metric-number {
+    text-shadow: 0 0 20px rgba(143, 202, 154, 0.2);
+  }
+
+  .metric .metric-number {
+    color: #8FCA9A;
+    white-space: nowrap;
+  }
+
+  .metric-label {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(238, 236, 225, 0.75);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .metrics {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .comparison-row {
+      grid-template-columns: 120px 1fr 70px;
+      gap: 0.75rem;
+    }
+
+    .comparison-label {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .comparison-row {
+      grid-template-columns: 100px 1fr 60px;
+    }
+
+    .metrics {
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Keep the nowrap metric numbers from forcing horizontal overflow in the
+       narrow 2-column grid (e.g. "60 sec" at 375px). */
+    .metric {
+      padding: 1.25rem 0.5rem;
+    }
+
+    .metric .metric-number {
+      font-size: 38px;
+    }
+  }
+</style>
+
+<script>
+  // Animate bars when proof band scrolls into view
+  const bars = document.querySelectorAll<HTMLElement>('.bar-fill');
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced) {
+    bars.forEach(bar => {
+      bar.style.width = bar.style.getPropertyValue('--bar-width') || bar.dataset.width || '0%';
+    });
+  } else {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            bars.forEach(bar => bar.classList.add('animated'));
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    const proofBand = document.querySelector('.proof-band');
+    if (proofBand) observer.observe(proofBand);
+  }
+</script>
