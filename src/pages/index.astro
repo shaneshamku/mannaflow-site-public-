@@ -1,10 +1,11 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
-import River from '../components/River.astro';
-import Hero from '../components/Hero.astro';
+import GlowyWavesHero from '../components/GlowyWavesHero.tsx';
 import ValueTabs from '../components/ValueTabs.astro';
-import ProofBand from '../components/ProofBand.astro';
+import Statistics from '../components/Statistics.astro';
+import WhoItsBuiltFor from '../components/WhoItsBuiltFor.astro';
+import Integrations from '../components/Integrations.astro';
 import DemoCard from '../components/DemoCard.astro';
 import HowItWorks from '../components/HowItWorks.astro';
 import DoneForYou from '../components/DoneForYou.astro';
@@ -29,23 +30,26 @@ import Footer from '../components/Footer.astro';
     <meta property="og:type" content="website" />
   </head>
   <body>
-    <!-- River animation — decorative background element -->
-    <River />
-
     <!-- Navigation -->
     <Nav showCta={true} />
 
     <main id="main-content">
       <!-- 1. Hero -->
-      <Hero />
+      <GlowyWavesHero client:load />
 
-      <!-- 2. Value Tabs (LARGE — centerpiece) -->
+      <!-- 2. Problem Worth Solving (card grid + lead-flow timeline) -->
       <ValueTabs />
 
-      <!-- 3. Proof Band (LARGE — dark anchor) -->
-      <ProofBand />
+      <!-- 3. Statistics (vs industry average) -->
+      <Statistics />
 
-      <!-- 4. Demo Card (only future-path element) -->
+      <!-- 4. Who It's Built For (HVAC) -->
+      <WhoItsBuiltFor />
+
+      <!-- 5. Integrations (logo marquee) -->
+      <Integrations />
+
+      <!-- 6. Demo Card (only future-path element) -->
       <DemoCard />
 
       <!-- 5. How It Works (compact) -->

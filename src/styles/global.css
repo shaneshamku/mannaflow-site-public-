@@ -2,6 +2,13 @@
 
 /* Design tokens — also exposed as CSS custom properties for use in component <style> blocks */
 :root {
+  /* Shadcn-compatible aliases (used by GlowyWavesHero) */
+  --background: #EEECE1;
+  --foreground: #1C1C1C;
+  --muted: #F4EBDD;
+  --border: #E2D5C4;
+  --primary: #54a563;
+  --accent: #0c91ed;
   --c-bg: #EEECE1;
   --c-paper: #F4EBDD;
   --c-card: #FFFFFF;
@@ -19,6 +26,14 @@
 }
 
 @theme {
+  /* Shadcn-compatible aliases (used by GlowyWavesHero) */
+  --color-background: #EEECE1;
+  --color-foreground: #1C1C1C;
+  --color-muted: #F4EBDD;
+  --color-border: #E2D5C4;
+  --color-primary: #54a563;
+  --color-accent: #0c91ed;
+
   /* Colors */
   --color-bg: #EEECE1;
   --color-paper: #F4EBDD;

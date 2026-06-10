@@ -1,0 +1,155 @@
+---
+// Content drawn from the HVAC industry brief (pain points + ICP).
+// Placeholder-refinable copy.
+const benefits = [
+  {
+    title: 'Missed-call recovery',
+    desc: 'HVAC demand is urgent — the first responsive shop usually wins. Recover the calls that go to voicemail.',
+    iconPath: 'M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.37 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.33 1.85.57 2.81.7A2 2 0 0122 16.92z',
+  },
+  {
+    title: 'After-hours coverage',
+    desc: 'Furnace down at 11pm? Leads get an instant response around the clock, not a callback next morning.',
+    iconPath: 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z',
+  },
+  {
+    title: 'Speed-to-lead',
+    desc: 'Website forms and inquiries get acknowledged in seconds, before the customer calls the next contractor.',
+    iconPath: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+  },
+  {
+    title: 'Estimate follow-up',
+    desc: 'Heat pump and AC installs need multiple touches. Open estimates get followed up until they book or say no.',
+    iconPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4',
+  },
+  {
+    title: 'Books into your scheduler',
+    desc: 'Qualified jobs land on the calendar you already use — no rip-and-replace of your dispatch or CRM.',
+    iconPath: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+  },
+  {
+    title: 'Less front-office load',
+    desc: 'Cut the manual phone and form chasing so your office staff can focus on the work that needs a human.',
+    iconPath: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75',
+  },
+];
+---
+
+<section id="who-its-built-for" class="who-section section-large" aria-labelledby="who-heading">
+  <div class="content-wrap who-inner">
+    <!-- Left: intro -->
+    <div class="who-intro">
+      <p class="eyebrow who-eyebrow">Built for HVAC</p>
+      <h2 class="heading-2" id="who-heading">Built for how HVAC shops actually run</h2>
+      <p class="subhead who-subhead">
+        For 5–30 tech contractors already getting leads — and losing jobs to slow replies, missed calls,
+        and manual follow-up. MannaFlow turns the demand you already have into booked revenue.
+      </p>
+    </div>
+
+    <!-- Right: benefit grid -->
+    <ul class="who-grid" role="list">
+      {benefits.map((b) => (
+        <li class="who-item" role="listitem">
+          <div class="who-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#54a563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d={b.iconPath} />
+            </svg>
+          </div>
+          <div class="who-item-text">
+            <h3 class="who-item-title">{b.title}</h3>
+            <p class="who-item-desc">{b.desc}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .who-section {
+    background: transparent;
+  }
+
+  .who-inner {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .who-intro .eyebrow {
+    background: transparent;
+    padding: 0;
+    color: #54a563;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .who-subhead {
+    margin: 1.25rem 0 0;
+    max-width: 420px;
+  }
+
+  /* Benefit grid */
+  .who-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 2.5rem;
+  }
+
+  .who-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .who-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #E2D5C4;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .who-item-title {
+    margin: 0 0 0.4rem;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1C1C1C;
+    line-height: 1.3;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .who-item-desc {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #4A4A4A;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  @media (max-width: 900px) {
+    .who-inner {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .who-subhead {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .who-grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,245 @@
+---
+// TODO: replace placeholder labels/values with real wording + sourced numbers.
+const comparisons = [
+  { label: 'First response time', industry: { value: 'Hours+', pct: 90 }, mannaflow: { value: '~60 sec', pct: 6 } },
+  { label: 'Leads answered after hours', industry: { value: '~20%', pct: 20 }, mannaflow: { value: '100%', pct: 100 } },
+  { label: 'Inquiries followed up', industry: { value: '~40%', pct: 40 }, mannaflow: { value: 'Every one', pct: 100 } },
+];
+
+const stats = [
+  { value: '60 sec', label: 'Average response, start to finish' },
+  { value: '24/7', label: 'Coverage, even after hours' },
+  { value: '0', label: 'Missed inquiries left waiting' },
+  { value: 'More', label: 'Booked work from existing demand' },
+];
+---
+
+<section id="statistics" class="stats-section section-large" aria-labelledby="stats-heading">
+  <div class="content-wrap">
+    <h2 class="heading-2 stats-heading" id="stats-heading">The Difference Speed Makes</h2>
+    <p class="subhead stats-subhead">
+      How MannaFlow compares to the typical industry response — placeholder figures for now.
+    </p>
+
+    <!-- Comparison bars -->
+    <div class="stats-compare" aria-label="MannaFlow vs industry average">
+      {comparisons.map((c) => (
+        <div class="stat-block">
+          <p class="stat-block-label">{c.label}</p>
+          <div class="cmp-row">
+            <span class="cmp-name">Industry average</span>
+            <div class="bar-track" role="presentation">
+              <div class="bar-fill bar-industry" style={`--bar-width: ${c.industry.pct}%;`} data-width={`${c.industry.pct}%`}></div>
+            </div>
+            <span class="cmp-value cmp-value--muted">{c.industry.value}</span>
+          </div>
+          <div class="cmp-row">
+            <span class="cmp-name cmp-name--bright">MannaFlow</span>
+            <div class="bar-track" role="presentation">
+              <div class="bar-fill bar-mf" style={`--bar-width: ${c.mannaflow.pct}%;`} data-width={`${c.mannaflow.pct}%`}></div>
+            </div>
+            <span class="cmp-value cmp-value--green">{c.mannaflow.value}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Stat numbers strip -->
+    <div class="stats-grid" role="list" aria-label="Key service metrics">
+      {stats.map((s) => (
+        <div class="stat-cell" role="listitem">
+          <span class="metric-number stat-number">{s.value}</span>
+          <p class="stat-label">{s.label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats-section {
+    background: transparent;
+  }
+
+  .stats-heading {
+    text-align: center;
+    margin-inline: auto;
+    max-width: 640px;
+  }
+
+  .stats-subhead {
+    text-align: center;
+    margin: 1rem auto 3.5rem;
+    max-width: 600px;
+  }
+
+  /* Comparison */
+  .stats-compare {
+    max-width: 760px;
+    margin-inline: auto;
+    margin-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .stat-block-label {
+    margin: 0 0 0.25rem;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1C1C1C;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 90px;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .cmp-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4A4A4A;
+    text-align: right;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .cmp-name--bright {
+    color: #1C1C1C;
+    font-weight: 700;
+  }
+
+  .bar-track {
+    height: 12px;
+    background: rgba(28, 28, 28, 0.06);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 9999px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bar-fill.animated {
+    width: var(--bar-width);
+  }
+
+  .bar-industry {
+    background: rgba(84, 75, 60, 0.3);
+  }
+
+  .bar-mf {
+    background: #54a563;
+  }
+
+  .cmp-value {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .cmp-value--muted {
+    color: #4A4A4A;
+  }
+
+  .cmp-value--green {
+    color: #54a563;
+  }
+
+  /* Stat numbers */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    border-top: 1px solid #E2D5C4;
+    padding-top: 3rem;
+  }
+
+  .stat-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: #FFFFFF;
+    border: 1px solid #E2D5C4;
+    border-radius: 12px;
+  }
+
+  .stat-number {
+    white-space: nowrap;
+  }
+
+  .stat-label {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #4A4A4A;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cmp-row {
+      grid-template-columns: 110px 1fr 72px;
+      gap: 0.75rem;
+    }
+    .cmp-name {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cmp-row {
+      grid-template-columns: 92px 1fr 60px;
+    }
+    .stats-grid {
+      gap: 1rem;
+    }
+    .stat-cell {
+      padding: 1.25rem 0.5rem;
+    }
+    .stat-number {
+      font-size: 38px;
+    }
+  }
+</style>
+
+<script>
+  // Animate bars when the section scrolls into view (ported from ProofBand)
+  const bars = document.querySelectorAll<HTMLElement>('#statistics .bar-fill');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced) {
+    bars.forEach((bar) => {
+      bar.style.width = bar.style.getPropertyValue('--bar-width') || bar.dataset.width || '0%';
+    });
+  } else {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            bars.forEach((bar) => bar.classList.add('animated'));
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    const section = document.querySelector('#statistics');
+    if (section) observer.observe(section);
+  }
+</script>
