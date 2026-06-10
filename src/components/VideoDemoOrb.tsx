@@ -160,7 +160,7 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
             #1b6119,
             #1b6119,
             #719294,
-            #52848A,
+            #0C91ED,
             #1b6119
           );
           filter: blur(2px);

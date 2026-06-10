@@ -55,7 +55,7 @@ export default function GlowyWavesHero() {
             }}
           >
             Turn Missed Inquiries Into{' '}
-            <span style={{ color: '#52848A' }}>Booked Appointments</span>
+            <span style={{ color: '#0C91ED' }}>Booked Appointments</span>
           </motion.h1>
 
           {/* Subhead */}

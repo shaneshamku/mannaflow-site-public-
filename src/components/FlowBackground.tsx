@@ -14,11 +14,11 @@ import { useEffect, useRef } from 'react';
 // 5 stacked lines form the ribbon. Teal glow (olive doesn't glow) per the
 // Leafworks palette — olive is reserved for UI accents.
 const WAVES = [
-  { offset: 0,             amplitude: 38, frequency: 0.0042, color: 'rgba(82,132,138,0.55)',  opacity: 0.30 },
-  { offset: Math.PI / 2,   amplitude: 52, frequency: 0.0034, color: 'rgba(82,132,138,0.42)',  opacity: 0.24 },
-  { offset: Math.PI,       amplitude: 30, frequency: 0.0050, color: 'rgba(82,132,138,0.34)', opacity: 0.20 },
-  { offset: Math.PI * 1.5, amplitude: 46, frequency: 0.0028, color: 'rgba(82,132,138,0.24)', opacity: 0.15 },
-  { offset: Math.PI * 2,   amplitude: 26, frequency: 0.0056, color: 'rgba(82,132,138,0.18)',  opacity: 0.11 },
+  { offset: 0,             amplitude: 38, frequency: 0.0042, color: 'rgba(12, 145, 237,0.55)',  opacity: 0.30 },
+  { offset: Math.PI / 2,   amplitude: 52, frequency: 0.0034, color: 'rgba(12, 145, 237,0.42)',  opacity: 0.24 },
+  { offset: Math.PI,       amplitude: 30, frequency: 0.0050, color: 'rgba(12, 145, 237,0.34)', opacity: 0.20 },
+  { offset: Math.PI * 1.5, amplitude: 46, frequency: 0.0028, color: 'rgba(12, 145, 237,0.24)', opacity: 0.15 },
+  { offset: Math.PI * 2,   amplitude: 26, frequency: 0.0056, color: 'rgba(12, 145, 237,0.18)',  opacity: 0.11 },
 ];
 
 export default function FlowBackground() {
@@ -52,7 +52,8 @@ export default function FlowBackground() {
       const h = canvas.offsetHeight;
 
       if (!reducedMotion.current) {
-        timeRef.current += 0.01;
+        // ⬇️ FLOW SPEED — increase this value for faster motion, decrease for slower.
+        timeRef.current += 0.014;
       }
 
       ctx.clearRect(0, 0, w, h);
@@ -76,7 +77,7 @@ export default function FlowBackground() {
 
         ctx.strokeStyle = wave.color;
         ctx.lineWidth = reducedMotion.current ? 1.5 : 2;
-        ctx.shadowColor = 'rgba(82,132,138,0.6)';
+        ctx.shadowColor = 'rgba(12, 145, 237,0.6)';
         ctx.shadowBlur = reducedMotion.current ? 4 : 14;
         ctx.globalAlpha = wave.opacity;
         ctx.stroke();
