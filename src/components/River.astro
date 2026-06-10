@@ -3,7 +3,7 @@
   River.astro — "Carved Valley" environmental background.
 
   One full-document SVG layer behind all content (z-index 0; content rides at
-  z-index 1 via global.css). The page body color (#EEECE1) is the valley floor;
+  z-index 1 via global.css). The page body color (#E9E9E9) is the valley floor;
   the cream sections are transparent so the river shows through their side
   gutters, while the opaque bands (ProofBand, paper sections, footer) act as
   tunnels the channel ducks under to migrate left<->right down the page.
@@ -21,17 +21,17 @@
   <svg id="river-svg" class="river-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
     <defs>
       <linearGradient id="river-water" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#0a6db8" />
-        <stop offset="50%" stop-color="#0c91ed" />
-        <stop offset="100%" stop-color="#0879c7" />
+        <stop offset="0%" stop-color="#52848A" />
+        <stop offset="50%" stop-color="#1b6119" />
+        <stop offset="100%" stop-color="#3a4034" />
       </linearGradient>
       <linearGradient id="river-bank" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#0c91ed" stop-opacity="0.9" />
-        <stop offset="100%" stop-color="#0c91ed" stop-opacity="0.2" />
+        <stop offset="0%" stop-color="#1b6119" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#1b6119" stop-opacity="0.2" />
       </linearGradient>
       <linearGradient id="river-shimmer" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#ffffff" stop-opacity="0" />
-        <stop offset="50%" stop-color="#f3f9ff" stop-opacity="1" />
+        <stop offset="50%" stop-color="#F2F2F0" stop-opacity="1" />
         <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
       </linearGradient>
       <filter id="river-soft" x="-20%" y="-20%" width="140%" height="140%">
@@ -48,11 +48,11 @@
     <g class="river-channel">
       <!-- banks (primary terrain, carved depth) -->
       <path id="river-bank-wide" class="river-el" fill="none" stroke="url(#river-bank)" stroke-opacity="0.16" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-softer)" />
-      <path id="river-bank-green" class="river-el" fill="none" stroke="#54a563" stroke-opacity="0.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-softer)" />
+      <path id="river-bank-green" class="river-el" fill="none" stroke="#1b6119" stroke-opacity="0.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-softer)" />
 
       <!-- contour accents (secondary, whisper-faint, intermittent) -->
-      <path id="river-contour-l" class="river-contour" fill="none" stroke="#7A5538" stroke-opacity="0.05" stroke-linecap="round" />
-      <path id="river-contour-r" class="river-contour" fill="none" stroke="#7A5538" stroke-opacity="0.05" stroke-linecap="round" />
+      <path id="river-contour-l" class="river-contour" fill="none" stroke="#5B5E57" stroke-opacity="0.05" stroke-linecap="round" />
+      <path id="river-contour-r" class="river-contour" fill="none" stroke="#5B5E57" stroke-opacity="0.05" stroke-linecap="round" />
 
       <!-- water body -->
       <path id="river-water-path" class="river-el" fill="none" stroke="url(#river-water)" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round" filter="url(#river-soft)" />
@@ -104,9 +104,9 @@
     pointer-events: none;
     background: linear-gradient(
       180deg,
-      rgba(12, 145, 237, 0.05) 0%,
-      rgba(12, 145, 237, 0.04) 45%,
-      rgba(84, 165, 99, 0.05) 100%
+      rgba(27, 97, 25, 0.05) 0%,
+      rgba(27, 97, 25, 0.04) 45%,
+      rgba(27, 97, 25, 0.05) 100%
     );
     display: none;
   }

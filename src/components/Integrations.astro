@@ -8,8 +8,12 @@ const logos = [
   { name: 'Calendly', iconPath: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
 ];
 
-// Duplicate the set so the track can loop seamlessly at translateX(-50%).
-const track = [...logos, ...logos];
+// Repeat the logo set enough times that a single "half" is always wider than
+// the viewport, then duplicate that half. translateX(-50%) then advances by
+// exactly one half-width, so a chip leaving the left re-enters on the right
+// with no blank gap (even on wide screens with only a few logos).
+const baseSet = [...logos, ...logos, ...logos];
+const track = [...baseSet, ...baseSet];
 ---
 
 <section id="integrations" class="integrations-section section-compact" aria-labelledby="integrations-heading">
@@ -21,8 +25,8 @@ const track = [...logos, ...logos];
   <div class="marquee" role="presentation">
     <ul class="marquee-track" role="list">
       {track.map((logo, i) => (
-        <li class="logo-chip" aria-hidden={i >= logos.length ? 'true' : undefined}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4A4A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <li class="logo-chip" aria-hidden={i >= baseSet.length ? 'true' : undefined}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1b6119" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d={logo.iconPath} />
           </svg>
           <span class="logo-name">{logo.name}</span>
@@ -82,15 +86,15 @@ const track = [...logos, ...logos];
     gap: 0.625rem;
     padding: 0.9rem 1.5rem;
     background: #FFFFFF;
-    border: 1px solid #E2D5C4;
+    border: 1px solid #D7D7D3;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(61, 43, 31, 0.06);
+    box-shadow: 0 8px 24px rgba(20, 22, 18, 0.06);
   }
 
   .logo-name {
     font-size: 16px;
     font-weight: 700;
-    color: #1C1C1C;
+    color: #0B0D09;
     letter-spacing: -0.01em;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }

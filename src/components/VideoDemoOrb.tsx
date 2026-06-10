@@ -39,7 +39,7 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
           fontWeight: 600,
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
-          color: '#4A4A4A',
+          color: '#5B5E57',
         }}
       >
         Talk to an Agent
@@ -71,19 +71,19 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
             width: 72,
             height: 72,
             background: '#FFFFFF',
-            boxShadow: '0 8px 28px rgba(12,145,237,0.35)',
+            boxShadow: '0 8px 28px rgba(27, 97, 25,0.35)',
           }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Play size={26} fill="#0c91ed" stroke="#0c91ed" style={{ marginLeft: 3 }} />
+          <Play size={26} fill="#1b6119" stroke="#1b6119" style={{ marginLeft: 3 }} />
         </motion.span>
       </button>
 
       {/* Caption */}
       <div className="flex flex-col items-center gap-0.5">
-        <span style={{ fontSize: '15px', fontWeight: 700, color: '#1C1C1C' }}>MannaFlow</span>
-        <span style={{ fontSize: '13px', color: '#4A4A4A' }}>See it in action</span>
+        <span style={{ fontSize: '15px', fontWeight: 700, color: '#0B0D09' }}>MannaFlow</span>
+        <span style={{ fontSize: '13px', color: '#5B5E57' }}>See it in action</span>
       </div>
 
       {/* Modal / lightbox */}
@@ -91,7 +91,7 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
         {open && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ background: 'rgba(28,28,28,0.6)', backdropFilter: 'blur(4px)' }}
+            style={{ background: 'rgba(11, 13, 9,0.6)', backdropFilter: 'blur(4px)' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -132,7 +132,7 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
                 <div
                   className="w-full h-full rounded-xl grid place-items-center text-center px-6"
                   style={{
-                    background: 'linear-gradient(135deg, #0c91ed 0%, #54a563 100%)',
+                    background: 'linear-gradient(135deg, #1b6119 0%, #1b6119 100%)',
                     color: '#FFFFFF',
                   }}
                 >
@@ -157,11 +157,11 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
           border-radius: 42% 58% 56% 44% / 48% 44% 56% 52%;
           background: conic-gradient(
             from 0deg,
-            #0c91ed,
-            #54a563,
-            #8FCA9A,
-            #0a6db8,
-            #0c91ed
+            #1b6119,
+            #1b6119,
+            #719294,
+            #52848A,
+            #1b6119
           );
           filter: blur(2px);
           animation: vdo-spin 14s linear infinite, vdo-morph 9s ease-in-out infinite;
@@ -170,7 +170,7 @@ export default function VideoDemoOrb({ videoSrc }: VideoDemoOrbProps) {
           position: absolute;
           inset: -8%;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(12,145,237,0.35) 0%, rgba(12,145,237,0) 65%);
+          background: radial-gradient(circle, rgba(27, 97, 25,0.35) 0%, rgba(27, 97, 25,0) 65%);
           filter: blur(12px);
           animation: vdo-pulse 5s ease-in-out infinite;
         }

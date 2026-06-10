@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
+import FlowBackground from '../components/FlowBackground.tsx';
 import GlowyWavesHero from '../components/GlowyWavesHero.tsx';
 import ValueTabs from '../components/ValueTabs.astro';
 import Statistics from '../components/Statistics.astro';
@@ -30,6 +31,9 @@ import Footer from '../components/Footer.astro';
     <meta property="og:type" content="website" />
   </head>
   <body>
+    <!-- Full-page vertical flow ribbon (fixed, behind all content) -->
+    <FlowBackground client:load />
+
     <!-- Navigation -->
     <Nav showCta={true} />
 

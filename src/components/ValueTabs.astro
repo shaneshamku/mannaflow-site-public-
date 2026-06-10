@@ -3,7 +3,7 @@ import { valueTabs } from '../data/value-tabs';
 import LeadFlowCard from './LeadFlowCard.astro';
 
 // Per-card accent colors (echoes the multi-accent inspiration)
-const accents = ['#0c91ed', '#54a563', '#0a6db8', '#8FCA9A'];
+const accents = ['#1b6119', '#52848A', '#3a4034', '#719294'];
 ---
 
 <section id="value" class="value-tabs-section section-large">
@@ -45,8 +45,10 @@ const accents = ['#0c91ed', '#54a563', '#0a6db8', '#8FCA9A'];
 
 <style>
   .value-tabs-section {
-    /* transparent: inherits body valley-floor #EEECE1 */
+    /* transparent: inherits body base #E9E9E9 */
     background: transparent;
+    /* Tighten the seam with the hero (which trims its own bottom padding) */
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   .vt-intro {
@@ -62,7 +64,7 @@ const accents = ['#0c91ed', '#54a563', '#0a6db8', '#8FCA9A'];
   .vt-intro .eyebrow {
     background: transparent;
     padding: 0;
-    color: #54a563;
+    color: #1b6119;
   }
 
   .vt-subhead {
@@ -132,7 +134,7 @@ const accents = ['#0c91ed', '#54a563', '#0a6db8', '#8FCA9A'];
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #1C1C1C;
+    color: #0B0D09;
     line-height: 1.3;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
