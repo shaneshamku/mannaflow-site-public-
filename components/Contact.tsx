@@ -54,7 +54,7 @@ export default function Contact() {
         </h2>
         <p
           className="type-subhead mb-8 md:mb-12"
-          style={{ color: "#627C85", maxWidth: "50ch" }}
+          style={{ color: "#35524A", maxWidth: "50ch" }}
         >
           30 minutes. We will show you exactly how mannaflow works in your
           business and confirm a price.
@@ -181,9 +181,9 @@ export default function Contact() {
             </div>
 
             {status === "error" && (
-              <p className="type-body" style={{ color: "#627C85" }}>
-                Something went wrong. Email us at hello@mannaflow.io and we will
-                get back to you.
+              <p className="type-body" style={{ color: "#35524A" }}>
+                Something went wrong. Email us at mannaflow.io@gmail.com and we
+                will get back to you.
               </p>
             )}
 

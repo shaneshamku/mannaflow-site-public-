@@ -41,7 +41,7 @@ export default function PainPoints() {
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#627C85", maxWidth: "52ch" }}
+          style={{ color: "#35524A", maxWidth: "52ch" }}
         >
           Every one of these used to require your attention. None of them do
           anymore.
@@ -61,7 +61,7 @@ export default function PainPoints() {
                 fontVariationSettings: "'opsz' 24, 'wght' 700",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "#779CAB",
+                color: "#627C85",
               }}
             >
               Before mannaflow

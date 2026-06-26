@@ -78,7 +78,7 @@ export default function Competitive() {
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#627C85", maxWidth: "58ch" }}
+          style={{ color: "#35524A", maxWidth: "58ch" }}
         >
           Most tools in this space were built for large operations or general
           businesses — then marketed to HVAC contractors. mannaflow was designed
@@ -116,7 +116,7 @@ export default function Competitive() {
                     fontVariationSettings: "'opsz' 24, 'wght' 700",
                     letterSpacing: "0.2em",
                     textTransform: "uppercase",
-                    color: "#779CAB",
+                    color: "#627C85",
                     width: "39%",
                   }}
                 >
@@ -166,7 +166,7 @@ export default function Competitive() {
                       fontSize: "0.875rem",
                       fontWeight: 400,
                       fontVariationSettings: "'opsz' 36, 'wght' 400",
-                      color: "#779CAB",
+                      color: "#35524A",
                       lineHeight: 1.55,
                       verticalAlign: "top",
                     }}
@@ -182,7 +182,7 @@ export default function Competitive() {
                       fontVariationSettings: row.usWins
                         ? "'opsz' 36, 'wght' 600"
                         : "'opsz' 36, 'wght' 400",
-                      color: row.usWins ? "#35524A" : "#627C85",
+                      color: "#35524A",
                       lineHeight: 1.55,
                       verticalAlign: "top",
                     }}
@@ -216,7 +216,7 @@ export default function Competitive() {
               >
                 {alt.name}
               </h3>
-              <p className="type-body" style={{ color: "#627C85" }}>
+              <p className="type-body" style={{ color: "#35524A" }}>
                 {alt.note}
               </p>
             </div>

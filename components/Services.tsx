@@ -56,7 +56,7 @@ export default function Services() {
               >
                 {s.tagline}
               </p>
-              <p className="type-body" style={{ color: "#627C85" }}>
+              <p className="type-body" style={{ color: "#35524A" }}>
                 {s.description}
               </p>
             </div>

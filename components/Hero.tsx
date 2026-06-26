@@ -13,17 +13,21 @@ export default function Hero() {
     >
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(53, 82, 74, 0.72)" }}
+        style={{ backgroundColor: "rgba(53, 82, 74, 0.70)" }}
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-32">
         <p className="type-eyebrow mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
-          Automation for HVAC contractors
+          Helping Contractors Capture Every Opportunity
         </p>
 
         <h1
           className="type-display mb-5 md:mb-8"
-          style={{ fontSize: "clamp(1.75rem, 5.5vw, 4.75rem)" }}
+          style={{
+            fontSize: "clamp(1.75rem, 5.5vw, 4.75rem)",
+            fontWeight: 500,
+            fontVariationSettings: "'opsz' 120, 'wght' 500",
+          }}
         >
           <span style={{ color: "#F5F2EC" }}>Your business runs 24/7.</span>
           <br />
@@ -32,7 +36,12 @@ export default function Hero() {
 
         <p
           className="type-subhead mb-7 md:mb-10"
-          style={{ color: "#A2E8DD", maxWidth: "52ch" }}
+          style={{
+            color: "#A2E8DD",
+            maxWidth: "52ch",
+            fontWeight: 600,
+            fontVariationSettings: "'opsz' 36, 'wght' 600",
+          }}
         >
           mannaflow gives HVAC contractors their time back &mdash;{" "}
           <strong style={{ fontWeight: 700, color: "#32DE8A" }}>

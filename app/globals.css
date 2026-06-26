@@ -2,8 +2,8 @@
 
 @font-face {
   font-family: 'MontaguSlab';
-  src: url('/fonts/MontaguSlab-Variable.ttf') format('truetype');
-  font-weight: 100 700;
+  src: url('/fonts/MontaguSlab-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -11,15 +11,24 @@
 @theme {
   --font-brand: 'MontaguSlab', Georgia, serif;
   --color-brand-dark: #35524A;
+  --color-brand-darker-dark: #304A43;
   --color-brand-mid: #627C85;
   --color-brand-steel: #779CAB;
   --color-brand-aqua: #A2E8DD;
   --color-brand-emerald: #32DE8A;
+  --color-brand-emerald-depths: #0E5834;
+  --color-brand-soft-sage: #E2E7E2;
   --color-brand-cream: #F5F2EC;
 }
 
 html {
-  scroll-behavior: smooth;
+  background-color: #F5F2EC;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 *,
