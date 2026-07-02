@@ -22,9 +22,9 @@ export default function Hero() {
         </p>
 
         <h1
-          className="type-display mb-5 md:mb-8"
+          className="type-display mb-5 md:mb-7"
           style={{
-            fontSize: "clamp(1.75rem, 5.5vw, 4.75rem)",
+            fontSize: "clamp(1.6rem, 3.8vw, 3.25rem)",
             fontWeight: 500,
             fontVariationSettings: "'opsz' 120, 'wght' 500",
           }}
@@ -35,10 +35,11 @@ export default function Hero() {
         </h1>
 
         <p
-          className="type-subhead mb-7 md:mb-10"
+          className="type-subhead mb-7 md:mb-9"
           style={{
             color: "#A2E8DD",
             maxWidth: "52ch",
+            fontSize: "clamp(0.95rem, 1.6vw, 1.1rem)",
             fontWeight: 600,
             fontVariationSettings: "'opsz' 36, 'wght' 600",
           }}
