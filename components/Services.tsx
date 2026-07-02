@@ -15,7 +15,7 @@ const services = [
     name: "Text & Chat Booking",
     tagline: "Replies in seconds. Books the job.",
     description:
-      "One assistant, two channels: it answers new leads by text and chats on your website — qualifies them, answers questions, and books the appointment while you work.",
+      "One assistant on two channels — text and website chat. It qualifies new leads, answers questions, and books the job while you work.",
     Demo: TextChatDemo,
   },
   {
@@ -64,7 +64,11 @@ export default function Services() {
             <div
               key={s.name}
               className="p-6 md:p-10"
-              style={{ backgroundColor: "#F5F2EC" }}
+              style={{
+                backgroundColor: "#F5F2EC",
+                display: "flex",
+                flexDirection: "column",
+              }}
             >
               <h3
                 className="type-card-title mb-2"
@@ -81,7 +85,11 @@ export default function Services() {
               <p className="type-body mb-5 md:mb-6" style={{ color: "#35524A" }}>
                 {s.description}
               </p>
-              <s.Demo />
+              {/* marginTop auto pins demos to the cell bottom so panels in the
+                  same row align even if description line counts differ */}
+              <div style={{ marginTop: "auto" }}>
+                <s.Demo />
+              </div>
             </div>
           ))}
         </div>
