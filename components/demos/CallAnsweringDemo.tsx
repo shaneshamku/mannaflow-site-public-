@@ -21,15 +21,15 @@ const LINES = [
   },
 ]
 
-//        banner  live  ...6 transcript lines...                confirm
-const DELAYS = [400, 900, 1000, 1500, 1200, 1600, 1100, 1500, 900]
+//        banner  live  ...6 transcript lines...                 confirm
+const DELAYS = [600, 1100, 1400, 1900, 1600, 2000, 1500, 1900, 1200]
 
 export default function CallAnsweringDemo() {
   const { ref, step } = useScrollDemo(DELAYS)
 
   return (
     <div ref={ref}>
-      <DemoPanel minHeight={430} ariaLabel="Demo: a missed after-hours call is answered by AI and booked as an appointment">
+      <DemoPanel height={620} ariaLabel="Demo: an after-hours call is answered by AI and booked as an appointment">
         {/* Header */}
         <div
           style={{
@@ -49,15 +49,15 @@ export default function CallAnsweringDemo() {
           </span>
         </div>
 
-        {/* Missed call banner */}
+        {/* Incoming call banner */}
         <Reveal on={step >= 1} style={{ paddingTop: "0.7rem" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: "0.55rem",
-              backgroundColor: "rgba(255, 93, 93, 0.1)",
-              border: "1px solid rgba(255, 93, 93, 0.3)",
+              backgroundColor: panel.surface,
+              border: `1px solid ${panel.border}`,
               borderRadius: "9px",
               padding: "0.5rem 0.75rem",
             }}
@@ -65,11 +65,11 @@ export default function CallAnsweringDemo() {
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
                 d="M2 3.5C2 9.3 6.7 14 12.5 14l1.5-2.5-3-2-1.5 1.5A9.5 9.5 0 015 6.5L6.5 5l-2-3L2 3.5z"
-                fill={panel.red}
+                fill={panel.green}
               />
             </svg>
-            <span style={{ color: panel.red, fontSize: "0.78rem", fontWeight: 600 }}>
-              Missed call — 9:42 PM
+            <span style={{ color: panel.text, fontSize: "0.78rem", fontWeight: 600 }}>
+              Incoming call — 9:42 PM
             </span>
             <span style={{ color: panel.textDim, fontSize: "0.72rem", marginLeft: "auto" }}>
               After hours

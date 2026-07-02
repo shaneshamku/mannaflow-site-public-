@@ -5,7 +5,7 @@ import { useScrollDemo } from "./useScrollDemo"
 import { ConfirmBar, DemoPanel, Reveal, panel } from "./ui"
 
 //              header day1  day3  day7  reply booked confirm day14
-const DELAYS = [500, 1300, 1500, 1500, 1400, 1300, 900, 1000]
+const DELAYS = [700, 1700, 1900, 1900, 1800, 1700, 1200, 1300]
 
 function DayRow({
   day,
@@ -71,7 +71,7 @@ export default function FollowUpDemo() {
 
   return (
     <div ref={ref}>
-      <DemoPanel minHeight={430} ariaLabel="Demo: automatic follow-up texts on day 1, 3 and 7 turn a quiet lead into a booked job">
+      <DemoPanel height={620} ariaLabel="Demo: automatic follow-up texts on day 1, 3 and 7 turn a quiet lead into a booked job">
         {/* Lead header */}
         <Reveal on={step >= 1}>
           <div

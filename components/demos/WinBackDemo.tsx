@@ -25,7 +25,7 @@ const SEASONS = [
 ]
 
 //              month customer  msg  reply confirm counter
-const DELAYS = [500, 1100, 1600, 1600, 1100, 900]
+const DELAYS = [700, 1400, 2000, 2000, 1400, 1200]
 
 export default function WinBackDemo() {
   const { ref, step, cycle } = useScrollDemo(DELAYS)
@@ -33,7 +33,7 @@ export default function WinBackDemo() {
 
   return (
     <div ref={ref}>
-      <DemoPanel minHeight={430} ariaLabel="Demo: a past customer gets a seasonal check-in text and books another job">
+      <DemoPanel height={620} ariaLabel="Demo: a past customer gets a seasonal check-in text and books another job">
         {/* Calendar header */}
         <Reveal on={step >= 1}>
           <div

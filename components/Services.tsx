@@ -8,7 +8,7 @@ const services = [
     name: "24/7 Call Answering",
     tagline: "Picks up when you can't.",
     description:
-      "Missed calls get answered in seconds — nights, weekends, mid-job. Callers get real answers and a booked appointment, not voicemail.",
+      "Every call gets picked up in seconds — nights, weekends, mid-job. Callers get real answers and a booked appointment, not voicemail.",
     Demo: CallAnsweringDemo,
   },
   {

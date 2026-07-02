@@ -25,23 +25,28 @@ export const panel = {
 
 export function DemoPanel({
   children,
-  minHeight,
+  height,
   ariaLabel,
+  padding = "1rem",
+  background = panel.bg,
 }: {
   children: ReactNode
-  minHeight?: number
+  /* Fixed height so the panel never grows/shrinks as messages animate in */
+  height: number
   ariaLabel?: string
+  padding?: string
+  background?: string
 }) {
   return (
     <div
       role="img"
       aria-label={ariaLabel}
       style={{
-        backgroundColor: panel.bg,
+        backgroundColor: background,
         border: `1px solid ${panel.border}`,
         borderRadius: "14px",
-        padding: "1rem",
-        minHeight,
+        padding,
+        height,
         fontFamily: UI_FONT,
         display: "flex",
         flexDirection: "column",

@@ -98,7 +98,8 @@ export default function Competitive() {
           <p className="type-body mb-6" style={{ color: "#627C85", maxWidth: "58ch" }}>
             No hold music, no &ldquo;press 1 for service.&rdquo; Your customer
             gets a real answer and a booked time before a call center would
-            have picked up.
+            have picked up. Use the <strong>Text / Voice</strong> toggle to see
+            both ways MannaFlow answers.
           </p>
           <RaceDemo />
         </div>

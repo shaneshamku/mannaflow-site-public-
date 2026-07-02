@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react"
  *
  * prefers-reduced-motion: jumps straight to the final frame, no loop.
  */
-export function useScrollDemo(delays: number[], loopPauseMs = 3200) {
+export function useScrollDemo(delays: number[], loopPauseMs = 6000) {
   const ref = useRef<HTMLDivElement>(null)
   const [started, setStarted] = useState(false)
   const [reduced, setReduced] = useState(false)
