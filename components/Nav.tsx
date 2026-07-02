@@ -4,7 +4,7 @@ export default function Nav() {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50"
-      style={{ backgroundColor: "#35524A" }}
+      style={{ backgroundColor: "#304A43" }}
     >
       <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
         <a href="/" className="flex items-center gap-3 shrink-0">

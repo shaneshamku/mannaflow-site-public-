@@ -11,8 +11,16 @@ const tiers = [
       "Up to 500 conversations per month",
       "Email support",
     ],
-    highlight: false,
+    badge: null,
     cta: "Book a Free Demo",
+    cardBg: "#E2E7E2",
+    nameColor: "#35524A",
+    priceColor: "#0E5834",
+    periodColor: "#35524A",
+    descColor: "#35524A",
+    featColor: "#35524A",
+    accentColor: "#0E5834",
+    btnClass: "btn-outline-dark",
   },
   {
     name: "Growth",
@@ -27,8 +35,16 @@ const tiers = [
       "All HVAC lead types covered",
       "Priority support",
     ],
-    highlight: true,
+    badge: "Most popular",
     cta: "Book a Free Demo",
+    cardBg: "#F5F2EC",
+    nameColor: "#35524A",
+    priceColor: "#35524A",
+    periodColor: "#627C85",
+    descColor: "#35524A",
+    featColor: "#35524A",
+    accentColor: "#32DE8A",
+    btnClass: "btn-primary",
   },
 ];
 
@@ -61,13 +77,11 @@ export default function Pricing() {
             <div
               key={tier.name}
               className="p-6 md:p-12 flex flex-col"
-              style={{
-                backgroundColor: tier.highlight ? "#F5F2EC" : "#35524A",
-              }}
+              style={{ backgroundColor: tier.cardBg }}
             >
-              {/* Badge row */}
+              {/* Badge row — reserves space even when empty */}
               <div style={{ minHeight: "1.5rem", marginBottom: "0.75rem" }}>
-                {tier.highlight && (
+                {tier.badge && (
                   <span
                     className="type-label"
                     style={{
@@ -77,14 +91,14 @@ export default function Pricing() {
                       letterSpacing: "0.15em",
                     }}
                   >
-                    Most popular
+                    {tier.badge}
                   </span>
                 )}
               </div>
 
               <h3
                 className="type-card-title mb-2"
-                style={{ color: tier.highlight ? "#35524A" : "#F5F2EC" }}
+                style={{ color: tier.nameColor }}
               >
                 {tier.name}
               </h3>
@@ -97,7 +111,7 @@ export default function Pricing() {
                     fontWeight: 300,
                     fontVariationSettings: "'opsz' 96, 'wght' 300",
                     lineHeight: 1,
-                    color: tier.highlight ? "#35524A" : "#32DE8A",
+                    color: tier.priceColor,
                     letterSpacing: "-0.03em",
                   }}
                 >
@@ -105,10 +119,7 @@ export default function Pricing() {
                 </span>
                 <span
                   className="type-label"
-                  style={{
-                    color: tier.highlight ? "#627C85" : "#779CAB",
-                    letterSpacing: "0.1em",
-                  }}
+                  style={{ color: tier.periodColor, letterSpacing: "0.1em" }}
                 >
                   / month
                 </span>
@@ -116,7 +127,7 @@ export default function Pricing() {
 
               <p
                 className="type-body mb-6 md:mb-8"
-                style={{ color: tier.highlight ? "#627C85" : "#A2E8DD" }}
+                style={{ color: tier.descColor }}
               >
                 {tier.description}
               </p>
@@ -126,7 +137,7 @@ export default function Pricing() {
                   <li key={feat} className="flex items-start gap-3">
                     <span
                       style={{
-                        color: "#32DE8A",
+                        color: tier.accentColor,
                         flexShrink: 0,
                         marginTop: "2px",
                         fontWeight: 700,
@@ -136,9 +147,7 @@ export default function Pricing() {
                     </span>
                     <span
                       className="type-body"
-                      style={{
-                        color: tier.highlight ? "#35524A" : "#F5F2EC",
-                      }}
+                      style={{ color: tier.featColor }}
                     >
                       {feat}
                     </span>
@@ -147,10 +156,7 @@ export default function Pricing() {
               </ul>
 
               <div>
-                <a
-                  href="#contact"
-                  className={tier.highlight ? "btn-primary" : "btn-outline-light"}
-                >
+                <a href="#contact" className={tier.btnClass}>
                   {tier.cta}
                 </a>
               </div>
@@ -160,9 +166,9 @@ export default function Pricing() {
 
         <p
           className="type-label mt-8 md:mt-10 text-center"
-          style={{ color: "#779CAB", letterSpacing: "0.12em" }}
+          style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
         >
-          Not sure which plan fits? The demo will answer that. It's free.
+          Not sure which plan fits? The demo will answer that. It&apos;s free.
         </p>
       </div>
     </section>

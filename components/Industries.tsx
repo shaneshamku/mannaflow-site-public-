@@ -56,7 +56,7 @@ export default function Industries() {
               <p
                 className="type-body mb-2 md:mb-3"
                 style={{
-                  color: "#627C85",
+                  color: "#A2E8DD",
                   fontStyle: "italic",
                   fontSize: "clamp(0.8rem, 2.2vw, 1rem)",
                 }}

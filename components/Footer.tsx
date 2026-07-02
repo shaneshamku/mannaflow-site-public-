@@ -48,7 +48,7 @@ export default function Footer() {
             <div>
               <p
                 className="type-label mb-4 md:mb-5"
-                style={{ color: "#779CAB", letterSpacing: "0.15em" }}
+                style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
               >
                 Platform
               </p>
@@ -70,7 +70,7 @@ export default function Footer() {
             <div>
               <p
                 className="type-label mb-4 md:mb-5"
-                style={{ color: "#779CAB", letterSpacing: "0.15em" }}
+                style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
               >
                 Company
               </p>
@@ -96,13 +96,13 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
           <p
             className="type-label"
-            style={{ color: "#627C85", letterSpacing: "0.12em" }}
+            style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
           >
             &copy; 2026 mannaflow. All rights reserved.
           </p>
           <p
             className="type-label"
-            style={{ color: "#627C85", letterSpacing: "0.12em" }}
+            style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
           >
             automation for local businesses
           </p>
