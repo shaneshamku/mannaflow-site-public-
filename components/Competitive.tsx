@@ -1,3 +1,5 @@
+import RaceDemo from "./demos/RaceDemo"
+
 const rows = [
   {
     feature: "Setup time",
@@ -84,6 +86,22 @@ export default function Competitive() {
           businesses — then marketed to HVAC contractors. mannaflow was designed
           from the ground up for the way a local HVAC business actually runs.
         </p>
+
+        {/* Speed race: call center vs MannaFlow */}
+        <div className="mb-10 md:mb-20">
+          <h3
+            className="type-card-title mb-2"
+            style={{ color: "#35524A" }}
+          >
+            Same customer. Two ways it can go.
+          </h3>
+          <p className="type-body mb-6" style={{ color: "#627C85", maxWidth: "58ch" }}>
+            No hold music, no &ldquo;press 1 for service.&rdquo; Your customer
+            gets a real answer and a booked time before a call center would
+            have picked up.
+          </p>
+          <RaceDemo />
+        </div>
 
         {/* Comparison table — scrollable on mobile */}
         <div className="overflow-x-auto mb-10 md:mb-20">
