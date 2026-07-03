@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "mannaflow — Helping Contractors Capture Every Opportunity",
+  title: "MannaFlow | Saving Time and Money on Every Lead",
   description:
-    "Chat agents, voice agents, and agentic dashboards that automate follow-up, booking, and lead capture for HVAC contractors.",
+    "MannaFlow helps contractors respond faster, follow up consistently, and save time on every lead.",
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },

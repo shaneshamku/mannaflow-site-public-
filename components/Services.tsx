@@ -5,31 +5,31 @@ import WinBackDemo from "./demos/WinBackDemo"
 
 const services = [
   {
-    name: "24/7 Call Answering",
-    tagline: "Picks up when you can't.",
+    name: "Call Coverage",
+    tagline: "Picks up when your team cannot.",
     description:
-      "Every call gets picked up in seconds — nights, weekends, mid-job. Callers get real answers and a booked appointment, not voicemail.",
+      "New callers get a professional response when your team is busy, after hours, or away from the phone. Urgent jobs can be flagged, routine calls can be organized, and every lead gets captured.",
     Demo: CallAnsweringDemo,
   },
   {
-    name: "Text & Chat Booking",
-    tagline: "Replies in seconds. Books the job.",
+    name: "Text & Website Booking",
+    tagline: "Turns inquiries into booked conversations.",
     description:
-      "One assistant on two channels — text and website chat. It qualifies new leads, answers questions, and books the job while you work.",
+      "Website visitors and text leads can ask questions, share job details, and move toward booking without waiting for your office to reply manually.",
     Demo: TextChatDemo,
   },
   {
-    name: "Automatic Follow-Up",
-    tagline: "No lead goes cold.",
+    name: "Quote Follow-Up",
+    tagline: "Keeps open opportunities from going cold.",
     description:
-      "When a lead doesn't book right away, timed check-ins go out on day 1, 3, 7, and 14 — until they book or say no. The follow-up your office never has time to do.",
+      "When someone gets a quote but does not book right away, MannaFlow sends timed follow-ups so your team does not have to remember every check-in.",
     Demo: FollowUpDemo,
   },
   {
-    name: "Past Customer Win-Back",
-    tagline: "Your past customers. Your next jobs.",
+    name: "Past Customer Re-Engagement",
+    tagline: "Brings previous customers back at the right time.",
     description:
-      "Reaches the customers you've already served right as their season hits — spring AC, fall heating — so you're in their inbox before they even think to call around.",
+      "Reach past customers before seasonal demand hits, including spring cooling, fall heating, maintenance reminders, and service check-ins.",
     Demo: WinBackDemo,
   },
 ]
@@ -43,17 +43,17 @@ export default function Services() {
     >
       <div className="max-w-6xl mx-auto px-6">
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
-          What you get
+          What You Get
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#35524A" }}>
-          Four tools. One monthly fee.
+          Four ways to stop losing time on leads.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
           style={{ color: "#627C85", maxWidth: "58ch" }}
         >
-          Watch each one work a real job below — every demo is the actual
-          conversation flow your customers will have.
+          See how MannaFlow helps contractors respond, book, follow up, and
+          re-engage customers without adding more manual work.
         </p>
 
         <div

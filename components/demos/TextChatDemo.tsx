@@ -9,12 +9,12 @@ type Event =
   | { type: "typing" }
 
 const EVENTS: Event[] = [
-  { type: "msg", from: "lead", text: "Hey — do you guys do AC repair in Waterloo?" },
+  { type: "msg", from: "lead", text: "Hey, do you guys do AC repair in Waterloo?" },
   { type: "typing" },
   { type: "msg", from: "bot", text: "We do! Is your AC not cooling, or is this for a tune-up?" },
   { type: "msg", from: "lead", text: "Not cooling since yesterday." },
   { type: "typing" },
-  { type: "msg", from: "bot", text: "Got it — I can have a tech out tomorrow. 1:00 or 4:30?" },
+  { type: "msg", from: "bot", text: "Got it, I can have a tech out tomorrow. 1:00 or 4:30?" },
   { type: "msg", from: "lead", text: "4:30 works." },
   { type: "typing" },
   { type: "msg", from: "bot", text: "You're booked for tomorrow at 4:30 PM ✓ Confirmation coming now." },
@@ -86,7 +86,7 @@ export default function TextChatDemo() {
     <div ref={ref}>
       <DemoPanel
         height={620}
-        ariaLabel="Demo: the same AI assistant books a job over text message and over website chat"
+        ariaLabel="Demo: the same assistant books a job over text message and over website chat"
       >
         {/* Channel toggle */}
         <div
@@ -135,7 +135,7 @@ export default function TextChatDemo() {
           }}
         >
           Click <span style={{ color: panel.green, fontWeight: 600 }}>Text message</span> or{" "}
-          <span style={{ color: panel.green, fontWeight: 600 }}>Website chat</span> — same
+          <span style={{ color: panel.green, fontWeight: 600 }}>Website chat</span>: same
           assistant, both channels.
         </p>
 
@@ -188,7 +188,7 @@ export default function TextChatDemo() {
                 </span>
               </div>
               <span aria-hidden="true" style={{ color: "#A2E8DD", fontSize: "0.85rem", letterSpacing: "0.3em" }}>
-                — ✕
+                &minus; ✕
               </span>
             </div>
 

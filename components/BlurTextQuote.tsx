@@ -64,9 +64,9 @@ export default function BlurTextQuote() {
           }}
         >
           <span className="block" style={{ marginBottom: "0.05em" }}>
-            This year
+            Stop letting good leads
           </span>
-          <span className="block">choose growth over comfort.</span>
+          <span className="block">turn into extra admin.</span>
         </p>
       </div>
     </section>

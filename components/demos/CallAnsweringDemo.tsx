@@ -7,17 +7,17 @@ const LINES = [
   { from: "Caller", text: "My furnace just died and it's freezing tonight." },
   {
     from: "MannaFlow",
-    text: "Sorry to hear that — let's get you help. Is anyone in the home without heat right now?",
+    text: "Sorry to hear that, let's get you help. Is anyone in the home without heat right now?",
   },
-  { from: "Caller", text: "Yeah — us and the kids." },
+  { from: "Caller", text: "Yeah, us and the kids." },
   {
     from: "MannaFlow",
-    text: "That's priority. I have 7:30 or 10:00 tomorrow morning — which works?",
+    text: "That's priority. I have 7:30 or 10:00 tomorrow morning, which works?",
   },
   { from: "Caller", text: "7:30, please." },
   {
     from: "MannaFlow",
-    text: "Done — you're booked for 7:30 AM. Confirmation text on its way.",
+    text: "Done, you're booked for 7:30 AM. Confirmation text on its way.",
   },
 ]
 
@@ -29,7 +29,7 @@ export default function CallAnsweringDemo() {
 
   return (
     <div ref={ref}>
-      <DemoPanel height={620} ariaLabel="Demo: an after-hours call is answered by AI and booked as an appointment">
+      <DemoPanel height={620} ariaLabel="Demo: an after-hours call is answered and booked as an appointment">
         {/* Header */}
         <div
           style={{
@@ -69,7 +69,7 @@ export default function CallAnsweringDemo() {
               />
             </svg>
             <span style={{ color: panel.text, fontSize: "0.78rem", fontWeight: 600 }}>
-              Incoming call — 9:42 PM
+              Incoming call · 9:42 PM
             </span>
             <span style={{ color: panel.textDim, fontSize: "0.72rem", marginLeft: "auto" }}>
               After hours
