@@ -53,7 +53,7 @@ export default function BlurTextQuote() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1.6rem, 6.5vw, 5.5rem)",
+            fontSize: "clamp(1.5rem, 4vw, 3.4rem)",
             fontWeight: 200,
             fontVariationSettings: "'opsz' 120, 'wght' 200",
             color: "#F5F2EC",

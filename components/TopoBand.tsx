@@ -19,7 +19,7 @@ export default function TopoBand() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1.125rem, 2.5vw, 1.75rem)",
+            fontSize: "clamp(1rem, 1.8vw, 1.4rem)",
             fontWeight: 300,
             fontVariationSettings: "'opsz' 48, 'wght' 300",
             lineHeight: 1.4,
@@ -33,7 +33,7 @@ export default function TopoBand() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(2.2rem, 8vw, 5.5rem)",
+            fontSize: "clamp(1.8rem, 4.2vw, 3.4rem)",
             fontWeight: 100,
             fontVariationSettings: "'opsz' 120, 'wght' 100",
             lineHeight: 0.9,

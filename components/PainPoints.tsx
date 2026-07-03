@@ -127,7 +127,7 @@ export default function PainPoints() {
             <p
               style={{
                 fontFamily: "'MontaguSlab', Georgia, serif",
-                fontSize: "clamp(1.1rem, 3vw, 1.75rem)",
+                fontSize: "clamp(1rem, 2vw, 1.35rem)",
                 fontWeight: 600,
                 fontVariationSettings: "'opsz' 48, 'wght' 600",
                 color: "#35524A",

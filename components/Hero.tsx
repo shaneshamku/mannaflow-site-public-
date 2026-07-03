@@ -24,7 +24,7 @@ export default function Hero() {
         <h1
           className="type-display mb-5 md:mb-7"
           style={{
-            fontSize: "clamp(1.6rem, 3.8vw, 3.25rem)",
+            fontSize: "clamp(1.5rem, 3.2vw, 2.85rem)",
             fontWeight: 500,
             fontVariationSettings: "'opsz' 120, 'wght' 500",
           }}
@@ -39,7 +39,7 @@ export default function Hero() {
           style={{
             color: "#A2E8DD",
             maxWidth: "52ch",
-            fontSize: "clamp(0.95rem, 1.6vw, 1.1rem)",
+            fontSize: "clamp(0.9rem, 1.3vw, 1.02rem)",
             fontWeight: 600,
             fontVariationSettings: "'opsz' 36, 'wght' 600",
           }}
