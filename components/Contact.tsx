@@ -8,11 +8,18 @@ const initialForm = {
   name: "",
   email: "",
   phone: "",
+  company: "",
   businessType: "",
   message: "",
 };
 
-export default function Contact() {
+export default function Contact({
+  subtext = "In 30 minutes, we will show you how MannaFlow can help your business respond faster, follow up cleaner, and reduce the manual work around every lead.",
+  supportText,
+}: {
+  subtext?: string;
+  supportText?: string;
+}) {
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState(initialForm);
 
@@ -47,17 +54,16 @@ export default function Contact() {
     >
       <div className="max-w-2xl mx-auto px-6">
         <p className="type-eyebrow mb-4" style={{ color: "#627C85" }}>
-          Get started
+          Get Started
         </p>
         <h2 className="type-headline mb-4" style={{ color: "#35524A" }}>
-          Book your free demo.
+          Book your free MannaFlow demo.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-12"
           style={{ color: "#35524A", maxWidth: "50ch" }}
         >
-          30 minutes. We will show you exactly how mannaflow works in your
-          business and confirm a price.
+          {subtext}
         </p>
 
         {status === "sent" ? (
@@ -135,29 +141,41 @@ export default function Contact() {
               </div>
               <div>
                 <label
-                  htmlFor="businessType"
+                  htmlFor="company"
                   className="type-label block mb-2"
                   style={{ color: "#35524A" }}
                 >
-                  Business Type
+                  Company
                 </label>
-                <select
-                  id="businessType"
-                  name="businessType"
-                  value={form.businessType}
+                <input
+                  id="company"
+                  name="company"
+                  value={form.company}
                   onChange={handleChange}
-                  required
-                  className="form-input form-select"
-                  style={{ cursor: "pointer" }}
-                >
-                  <option value="" disabled>
-                    Select one
-                  </option>
-                  <option value="hvac">HVAC / Home Services</option>
-                  <option value="residential">Residential HVAC</option>
-                  <option value="commercial">Commercial HVAC</option>
-                </select>
+                  className="form-input"
+                  placeholder="Your company name"
+                  autoComplete="organization"
+                />
               </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="businessType"
+                className="type-label block mb-2"
+                style={{ color: "#35524A" }}
+              >
+                Trade / Business Type
+              </label>
+              <input
+                id="businessType"
+                name="businessType"
+                value={form.businessType}
+                onChange={handleChange}
+                required
+                className="form-input"
+                placeholder="Contractor, home services, trades, or other"
+              />
             </div>
 
             <div>
@@ -166,7 +184,7 @@ export default function Contact() {
                 className="type-label block mb-2"
                 style={{ color: "#35524A" }}
               >
-                Message (optional)
+                Message
               </label>
               <textarea
                 id="message"
@@ -176,7 +194,7 @@ export default function Contact() {
                 rows={4}
                 className="form-input"
                 style={{ resize: "vertical" }}
-                placeholder="Tell us about your business or what you want to automate"
+                placeholder="Tell us about your business and how leads come in today"
               />
             </div>
 
@@ -192,8 +210,14 @@ export default function Contact() {
               disabled={status === "sending"}
               className="btn-primary"
             >
-              {status === "sending" ? "Sending..." : "Send Request"}
+              {status === "sending" ? "Sending..." : "Request Demo"}
             </button>
+
+            {supportText && (
+              <p className="type-body" style={{ color: "#627C85" }}>
+                {supportText}
+              </p>
+            )}
           </form>
         )}
       </div>

@@ -53,7 +53,7 @@ export default function BlurTextQuote() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1.6rem, 6.5vw, 5.5rem)",
+            fontSize: "clamp(1.5rem, 4vw, 3.4rem)",
             fontWeight: 200,
             fontVariationSettings: "'opsz' 120, 'wght' 200",
             color: "#F5F2EC",
@@ -64,9 +64,9 @@ export default function BlurTextQuote() {
           }}
         >
           <span className="block" style={{ marginBottom: "0.05em" }}>
-            This year
+            Stop letting good leads
           </span>
-          <span className="block">choose growth over comfort.</span>
+          <span className="block">turn into extra admin.</span>
         </p>
       </div>
     </section>

@@ -1,27 +1,27 @@
 const tasks = [
   {
-    before: "Missed calls with no follow-up",
-    after: "Instant auto-text to every missed caller",
+    before: "Missed calls wait until someone is free",
+    after: "Every missed caller gets a fast response",
   },
   {
-    before: "Scheduling back-and-forth over text",
-    after: "Chat agent books the appointment directly",
+    before: "Techs get interrupted during jobs",
+    after: "Leads are handled without pulling techs off the work",
   },
   {
-    before: "Leads going quiet overnight and on weekends",
-    after: "24/7 response — including 2am on a Sunday",
+    before: "Office staff chase cold quotes manually",
+    after: "Follow-ups go out on a clear schedule",
   },
   {
-    before: "Answering the same questions fifteen times a day",
-    after: "AI handles FAQs so you don't have to",
+    before: "Website forms sit in an inbox",
+    after: "New inquiries are captured and routed quickly",
   },
   {
-    before: "Copying lead info from texts into your records",
-    after: "Dashboard captures and organizes automatically",
+    before: "Call centers take messages",
+    after: "MannaFlow helps qualify, organize, and move the lead forward",
   },
   {
-    before: "Following up with leads who went cold",
-    after: "Automated re-engagement sequences do it for you",
+    before: "Owners guess what is slipping",
+    after: "You can see which leads came in, what happened, and what needs attention",
   },
 ];
 
@@ -34,17 +34,17 @@ export default function PainPoints() {
     >
       <div className="max-w-5xl mx-auto px-6">
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
-          What we automate
+          How We Help
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#35524A" }}>
-          The work that kills your week.
+          The lead work your team should not have to chase.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
           style={{ color: "#35524A", maxWidth: "52ch" }}
         >
-          Every one of these used to require your attention. None of them do
-          anymore.
+          MannaFlow helps handle the repetitive lead-response work that costs
+          time, money, and focus every week.
         </p>
 
         <div>
@@ -64,7 +64,7 @@ export default function PainPoints() {
                 color: "#627C85",
               }}
             >
-              Before mannaflow
+              Before MannaFlow
             </p>
             <p
               style={{
@@ -77,7 +77,7 @@ export default function PainPoints() {
                 color: "#35524A",
               }}
             >
-              After mannaflow
+              With MannaFlow
             </p>
           </div>
 
@@ -127,14 +127,14 @@ export default function PainPoints() {
             <p
               style={{
                 fontFamily: "'MontaguSlab', Georgia, serif",
-                fontSize: "clamp(1.1rem, 3vw, 1.75rem)",
+                fontSize: "clamp(1rem, 2vw, 1.35rem)",
                 fontWeight: 600,
                 fontVariationSettings: "'opsz' 48, 'wght' 600",
                 color: "#35524A",
                 lineHeight: 1.25,
               }}
             >
-              mannaflow handles all of it.
+              MannaFlow keeps leads moving while your team keeps working.
             </p>
           </div>
         </div>

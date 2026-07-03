@@ -1,15 +1,10 @@
 import Image from "next/image";
 
-const platformLinks = [
-  { label: "Chat Agent", href: "#services" },
-  { label: "Voice Agent", href: "#services" },
-  { label: "Dashboard", href: "#services" },
-];
-
-const companyLinks = [
-  { label: "Industries", href: "#industries" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Book a Demo", href: "#contact" },
+const footerLinks = [
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "Who It Helps", href: "/contractors" },
+  { label: "See Demo", href: "/demo" },
+  { label: "Book a Demo", href: "/book-demo" },
 ];
 
 export default function Footer() {
@@ -36,58 +31,35 @@ export default function Footer() {
                   letterSpacing: "-0.01em",
                 }}
               >
-                mannaflow
+                MannaFlow
               </span>
             </div>
             <p className="type-body" style={{ color: "#A2E8DD" }}>
-              Automation for HVAC contractors. More leads captured, fewer calls missed.
+              MannaFlow helps contractors respond faster, follow up
+              consistently, and save time on every lead.
             </p>
           </div>
 
-          <div className="flex gap-10 md:gap-16">
-            <div>
-              <p
-                className="type-label mb-4 md:mb-5"
-                style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
-              >
-                Platform
-              </p>
-              <ul className="space-y-3">
-                {platformLinks.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="type-body nav-link"
-                      style={{ color: "#A2E8DD" }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p
-                className="type-label mb-4 md:mb-5"
-                style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
-              >
-                Company
-              </p>
-              <ul className="space-y-3">
-                {companyLinks.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="type-body nav-link"
-                      style={{ color: "#A2E8DD" }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div>
+            <p
+              className="type-label mb-4 md:mb-5"
+              style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
+            >
+              Company
+            </p>
+            <ul className="space-y-3">
+              {footerLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="type-body nav-link"
+                    style={{ color: "#A2E8DD" }}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -98,13 +70,13 @@ export default function Footer() {
             className="type-label"
             style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
           >
-            &copy; 2026 mannaflow. All rights reserved.
+            &copy; 2026 MannaFlow. All rights reserved.
           </p>
           <p
             className="type-label"
             style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
           >
-            automation for local businesses
+            Saving time and money on every lead
           </p>
         </div>
       </div>

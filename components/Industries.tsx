@@ -1,22 +1,23 @@
 const features = [
   {
-    problem: "Missed calls from the job site",
+    problem: "Missed calls while your team is on site",
     solution:
-      "Instant text-back to every missed caller — while you're under a crawlspace or on a rooftop.",
+      "When your techs are working, driving, or handling emergencies, new leads can sit too long before someone responds.",
   },
   {
-    problem: "Scheduling handled over back-and-forth texts",
+    problem: "Expensive coverage after hours",
     solution:
-      "Chat agent books the appointment directly, no phone tag required.",
+      "Call centers and overtime can help, but they add cost and still do not always qualify, book, and follow up the way your business needs.",
   },
   {
-    problem: "Leads cooling off overnight and on weekends",
-    solution: "24/7 response that keeps leads warm even at 11pm on a Sunday.",
+    problem: "Follow-up falls on whoever has time",
+    solution:
+      "Quotes, missed calls, and half-finished conversations often depend on manual reminders that are easy to forget.",
   },
   {
-    problem: "New leads falling through the cracks",
+    problem: "Leads spread across too many places",
     solution:
-      "Every inquiry captured and logged — website, phone, or SMS — in one dashboard.",
+      "Phone calls, texts, website forms, and chat messages create extra admin when they are not captured in one clear system.",
   },
 ];
 
@@ -29,18 +30,18 @@ export default function Industries() {
     >
       <div className="max-w-6xl mx-auto px-6">
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#32DE8A" }}>
-          Built for HVAC contractors
+          Built for busy contractors
         </p>
         <h2 className="type-headline mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
-          You can't answer calls from under a crawlspace.
+          Your team is busy doing the work. Leads still need a response.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
           style={{ color: "#A2E8DD", maxWidth: "58ch" }}
         >
-          While you're on the job, leads are calling. Without a response,{" "}
-          <span style={{ color: "#32DE8A" }}>they call your competitor</span>.
-          mannaflow closes that gap before it costs you a customer.
+          Most contractors already have a way to handle calls. The problem is
+          the cost, the delays, and the follow-up that still slips through when
+          the day gets busy.
         </p>
 
         <div
@@ -54,23 +55,24 @@ export default function Industries() {
               style={{ backgroundColor: "#35524A" }}
             >
               <p
-                className="type-body mb-2 md:mb-3"
+                className="mb-2 md:mb-3"
                 style={{
-                  color: "#A2E8DD",
-                  fontStyle: "italic",
-                  fontSize: "clamp(0.8rem, 2.2vw, 1rem)",
+                  fontFamily: "'MontaguSlab', Georgia, serif",
+                  fontSize: "clamp(0.85rem, 2.2vw, 1.05rem)",
+                  fontWeight: 600,
+                  fontVariationSettings: "'opsz' 36, 'wght' 600",
+                  lineHeight: 1.4,
+                  color: "#F5F2EC",
                 }}
               >
                 {f.problem}
               </p>
               <p
+                className="type-body"
                 style={{
-                  fontFamily: "'MontaguSlab', Georgia, serif",
-                  fontSize: "clamp(0.8rem, 2.2vw, 1rem)",
-                  fontWeight: 600,
-                  fontVariationSettings: "'opsz' 36, 'wght' 600",
-                  lineHeight: 1.5,
-                  color: "#F5F2EC",
+                  color: "#A2E8DD",
+                  fontSize: "clamp(0.8rem, 2.2vw, 0.95rem)",
+                  lineHeight: 1.55,
                 }}
               >
                 {f.solution}

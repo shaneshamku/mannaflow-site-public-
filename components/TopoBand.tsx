@@ -19,7 +19,7 @@ export default function TopoBand() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1.125rem, 2.5vw, 1.75rem)",
+            fontSize: "clamp(1rem, 1.8vw, 1.4rem)",
             fontWeight: 300,
             fontVariationSettings: "'opsz' 48, 'wght' 300",
             lineHeight: 1.4,
@@ -28,12 +28,12 @@ export default function TopoBand() {
             marginBottom: "0.25em",
           }}
         >
-          While you work,
+          Your team handles the job.
         </p>
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(3.5rem, 13vw, 9rem)",
+            fontSize: "clamp(1.8rem, 4.2vw, 3.4rem)",
             fontWeight: 100,
             fontVariationSettings: "'opsz' 120, 'wght' 100",
             lineHeight: 0.9,
@@ -41,13 +41,13 @@ export default function TopoBand() {
             color: "#32DE8A",
           }}
         >
-          we work.
+          MannaFlow handles the follow-up.
         </p>
         <p
           className="type-label mt-10"
           style={{ color: "#A2E8DD", letterSpacing: "0.18em" }}
         >
-          24/7 automation &mdash; no breaks, no missed leads
+          Fast responses, cleaner handoffs, fewer leads slipping through
         </p>
       </div>
     </section>

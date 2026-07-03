@@ -26,24 +26,24 @@ export default function Nav() {
               letterSpacing: "-0.01em",
             }}
           >
-            mannaflow
+            MannaFlow
           </span>
         </a>
 
         <div className="hidden md:flex items-center gap-10">
-          <a href="#how-it-works" className="nav-link type-label">
+          <a href="/how-it-works" className="nav-link type-label">
             How It Works
           </a>
-          <a href="#industries" className="nav-link type-label">
-            Industries
+          <a href="/contractors" className="nav-link type-label">
+            Who It Helps
           </a>
-          <a href="#pricing" className="nav-link type-label">
-            Pricing
+          <a href="/demo" className="nav-link type-label">
+            See Demo
           </a>
         </div>
 
         <a
-          href="#contact"
+          href="/book-demo"
           className="btn-primary"
           style={{ padding: "0.5rem 1rem", fontSize: "0.75rem" }}
         >

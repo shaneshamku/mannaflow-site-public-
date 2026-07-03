@@ -141,7 +141,7 @@ export default function RaceDemo() {
       {/* Typical call center */}
       <DemoPanel
         height={PANEL_HEIGHT}
-        ariaLabel="Demo: calling a typical call center — hold music, press-1 menus, and the caller gives up after six minutes"
+        ariaLabel="Demo: calling a typical call center with hold music and press-1 menus, and the caller gives up after six minutes"
       >
         <PanelHeader
           label="Typical call center"
@@ -226,10 +226,10 @@ export default function RaceDemo() {
           {mode === "text" ? (
             <>
               <Bubble on={step >= 1} from="lead">
-                My AC quit — can someone come out?
+                My AC quit, can someone come out?
               </Bubble>
               <Bubble on={step >= 2} from="bot">
-                Sorry about the heat — we can help. Is tomorrow 1:00 or 4:30 better?
+                Sorry about the heat, we can help. Is tomorrow 1:00 or 4:30 better?
               </Bubble>
               <Bubble on={step >= 3} from="lead">
                 4:30.
@@ -250,11 +250,11 @@ export default function RaceDemo() {
                   Answered on the first ring · Live transcript
                 </span>
               </Reveal>
-              <TranscriptLine on={step >= 1} from="Caller" text="My AC quit — can someone come out?" />
+              <TranscriptLine on={step >= 1} from="Caller" text="My AC quit, can someone come out?" />
               <TranscriptLine
                 on={step >= 2}
                 from="MannaFlow"
-                text="Sorry about the heat — we can help. Is tomorrow 1:00 or 4:30 better?"
+                text="Sorry about the heat, we can help. Is tomorrow 1:00 or 4:30 better?"
               />
               <TranscriptLine on={step >= 3} from="Caller" text="4:30 works." />
             </>

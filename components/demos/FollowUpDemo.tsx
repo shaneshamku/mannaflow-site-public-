@@ -71,7 +71,7 @@ export default function FollowUpDemo() {
 
   return (
     <div ref={ref}>
-      <DemoPanel height={620} ariaLabel="Demo: automatic follow-up texts on day 1, 3 and 7 turn a quiet lead into a booked job">
+      <DemoPanel height={620} ariaLabel="Demo: timed follow-up texts on day 1, 3 and 7 turn a quiet lead into a booked job">
         {/* Lead header */}
         <Reveal on={step >= 1}>
           <div
@@ -87,7 +87,7 @@ export default function FollowUpDemo() {
             }}
           >
             <span style={{ color: panel.text, fontSize: "0.76rem", fontWeight: 600 }}>
-              Mike D. — AC replacement quote sent
+              Mike D. · AC replacement quote sent
             </span>
             <span
               style={{
@@ -107,7 +107,7 @@ export default function FollowUpDemo() {
         <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem", paddingTop: "0.7rem" }}>
           <DayRow day="DAY 1" on={step >= 2}>
             <OutMsg
-              text="Hi Mike, following up on your AC quote — happy to answer any questions."
+              text="Hi Mike, following up on your AC quote. Happy to answer any questions."
               status="Delivered · No reply"
             />
           </DayRow>
@@ -122,7 +122,7 @@ export default function FollowUpDemo() {
           <DayRow day="DAY 7" on={step >= 4}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.45rem" }}>
               <OutMsg
-                text="Quick check-in — want me to hold a spot before the weekend heat wave?"
+                text="Quick check-in: want me to hold a spot before the weekend heat wave?"
                 status="Delivered"
               />
               <Reveal on={step >= 5}>
@@ -138,19 +138,19 @@ export default function FollowUpDemo() {
                       lineHeight: 1.45,
                     }}
                   >
-                    Actually yes — can you do Friday?
+                    Actually yes, can you do Friday?
                   </div>
                 </div>
               </Reveal>
               <Reveal on={step >= 6}>
-                <OutMsg text="Friday 9:00 AM is open — you're in." status="Delivered" />
+                <OutMsg text="Friday 9:00 AM is open, you're in." status="Delivered" />
               </Reveal>
             </div>
           </DayRow>
 
           <DayRow day="DAY 14" on={step >= 8} dim>
             <span style={{ color: panel.textDim, fontSize: "0.72rem", lineHeight: 1.5 }}>
-              Not needed — booked on Day 7. Follow-up stops the moment they book or say no.
+              Not needed, booked on Day 7. Follow-up stops the moment they book or say no.
             </span>
           </DayRow>
         </div>
