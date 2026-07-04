@@ -13,18 +13,18 @@ export default function Hero() {
     >
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(53, 82, 74, 0.70)" }}
+        style={{ backgroundColor: "rgba(20, 24, 26, 0.68)" }}
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-32">
-        <p className="type-eyebrow mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
+        <p className="type-eyebrow mb-4 md:mb-6" style={{ color: "#C9CFCC" }}>
           Saving time and money on every lead
         </p>
 
         <h1
           className="type-display mb-5 md:mb-7"
           style={{
-            fontSize: "clamp(1.5rem, 3.2vw, 2.85rem)",
+            fontSize: "clamp(1.75rem, 5.5vw, 4.75rem)",
             fontWeight: 500,
             fontVariationSettings: "'opsz' 120, 'wght' 500",
           }}
@@ -37,19 +37,18 @@ export default function Hero() {
         <p
           className="type-subhead mb-7 md:mb-9"
           style={{
-            color: "#A2E8DD",
+            color: "#C9CFCC",
             maxWidth: "52ch",
-            fontSize: "clamp(0.9rem, 1.3vw, 1.02rem)",
             fontWeight: 600,
             fontVariationSettings: "'opsz' 36, 'wght' 600",
           }}
         >
           MannaFlow helps contractors{" "}
-          <strong style={{ fontWeight: 700, color: "#32DE8A" }}>
+          <strong style={{ fontWeight: 700, color: "#F5F2EC" }}>
             respond faster
           </strong>
           ,{" "}
-          <strong style={{ fontWeight: 700, color: "#32DE8A" }}>
+          <strong style={{ fontWeight: 700, color: "#F5F2EC" }}>
             follow up consistently
           </strong>
           , and keep every lead moving without adding more office work or
@@ -67,7 +66,7 @@ export default function Hero() {
 
         <p
           className="type-label mt-7 md:mt-10"
-          style={{ color: "rgba(162, 232, 221, 0.65)" }}
+          style={{ color: "rgba(201, 207, 204, 0.6)" }}
         >
           Built for contractors who want fewer missed opportunities and less
           manual follow-up

@@ -10,15 +10,22 @@
 
 @theme {
   --font-brand: 'MontaguSlab', Georgia, serif;
-  --color-brand-dark: #35524A;
-  --color-brand-darker-dark: #304A43;
-  --color-brand-mid: #627C85;
-  --color-brand-steel: #779CAB;
-  --color-brand-aqua: #A2E8DD;
-  --color-brand-emerald: #32DE8A;
-  --color-brand-emerald-depths: #0E5834;
-  --color-brand-soft-sage: #E2E7E2;
+  /* Dark surfaces — charcoal, not green */
+  --color-brand-charcoal: #14181A;
+  --color-brand-charcoal-2: #1C2224;
+  --color-hairline-dark: #2A3134;
+  /* Light surfaces */
   --color-brand-cream: #F5F2EC;
+  --color-brand-sand: #EAE5D9;
+  --color-hairline-light: #DDD5C6;
+  /* Text */
+  --color-brand-ink: #212926;
+  --color-brand-slate: #8A9BA3;
+  --color-brand-mid: #627C85;
+  /* Accents — green for CTAs only, amber for everything warm */
+  --color-brand-emerald: #32DE8A;
+  --color-brand-amber: #D98E4A;
+  --color-brand-amber-deep: #A65F28;
 }
 
 html {
@@ -40,7 +47,7 @@ html {
 body {
   font-family: 'MontaguSlab', Georgia, serif;
   background-color: #F5F2EC;
-  color: #35524A;
+  color: #212926;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -51,7 +58,7 @@ body {
 
 .type-display {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(2.75rem, 8vw, 6rem);
   font-weight: 200;
   font-variation-settings: 'opsz' 120, 'wght' 200;
   line-height: 1.05;
@@ -60,7 +67,7 @@ body {
 
 .type-headline {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 600;
   font-variation-settings: 'opsz' 48, 'wght' 600;
   line-height: 1.2;
@@ -68,7 +75,7 @@ body {
 
 .type-subhead {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  font-size: clamp(1rem, 2vw, 1.2rem);
   font-weight: 400;
   font-variation-settings: 'opsz' 36, 'wght' 400;
   line-height: 1.65;
@@ -76,7 +83,7 @@ body {
 
 .type-body {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 400;
   font-variation-settings: 'opsz' 36, 'wght' 400;
   line-height: 1.7;
@@ -94,7 +101,7 @@ body {
 /* Section eyebrow labels — bigger and bolder than utility labels */
 .type-eyebrow {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   font-variation-settings: 'opsz' 24, 'wght' 700;
   letter-spacing: 0.22em;
@@ -103,7 +110,7 @@ body {
 
 .type-card-title {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 600;
   font-variation-settings: 'opsz' 36, 'wght' 600;
   line-height: 1.3;
@@ -111,7 +118,7 @@ body {
 
 .type-stat {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(2.5rem, 8vw, 6rem);
+  font-size: clamp(3.5rem, 14vw, 10rem);
   font-weight: 100;
   font-variation-settings: 'opsz' 120, 'wght' 100;
   line-height: 0.95;
@@ -123,7 +130,7 @@ body {
 .btn-primary {
   display: inline-block;
   background-color: #32DE8A;
-  color: #35524A;
+  color: #14181A;
   padding: 0.875rem 2rem;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 0.875rem;
@@ -135,7 +142,7 @@ body {
   transition: background-color 0.15s ease;
   border: none;
   text-decoration: none;
-  border-radius: 9999px;
+  border-radius: 0;
 }
 
 .btn-primary:hover {
@@ -162,7 +169,7 @@ body {
   transition: background-color 0.15s ease;
   border: 1.5px solid rgba(245, 242, 236, 0.35);
   text-decoration: none;
-  border-radius: 9999px;
+  border-radius: 0;
 }
 
 .btn-ghost:hover {
@@ -173,7 +180,7 @@ body {
 .btn-outline-dark {
   display: inline-block;
   background-color: transparent;
-  color: #35524A;
+  color: #212926;
   padding: 0.875rem 2rem;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 0.875rem;
@@ -183,20 +190,20 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.15s ease;
-  border: 1.5px solid #35524A;
+  border: 1.5px solid #212926;
   text-decoration: none;
-  border-radius: 9999px;
+  border-radius: 0;
 }
 
 .btn-outline-dark:hover {
-  background-color: #35524A;
+  background-color: #212926;
   color: #F5F2EC;
 }
 
 .btn-outline-light {
   display: inline-block;
   background-color: transparent;
-  color: #A2E8DD;
+  color: #C9CFCC;
   padding: 0.875rem 2rem;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 0.875rem;
@@ -208,7 +215,7 @@ body {
   transition: background-color 0.15s ease, color 0.15s ease;
   border: 1.5px solid #627C85;
   text-decoration: none;
-  border-radius: 9999px;
+  border-radius: 0;
 }
 
 .btn-outline-light:hover {
@@ -220,9 +227,9 @@ body {
 
 .form-input {
   width: 100%;
-  background-color: #FFFFFF;
-  border: 1.5px solid #A2E8DD;
-  color: #35524A;
+  background-color: #FFFDF8;
+  border: 1.5px solid #DDD5C6;
+  color: #212926;
   padding: 0.875rem 1rem;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 1rem;
@@ -236,15 +243,16 @@ body {
 }
 
 .form-input:focus {
-  border-color: #35524A;
+  border-color: #D98E4A;
+  box-shadow: 0 0 0 3px rgba(217, 142, 74, 0.18);
 }
 
 .form-input::placeholder {
-  color: #779CAB;
+  color: #A39B8B;
 }
 
 .form-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2335524A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23212926' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   padding-right: 2.5rem;
@@ -261,13 +269,13 @@ body {
 /* ---- Nav link hover ---- */
 
 .nav-link {
-  color: #A2E8DD;
+  color: #B8BFC2;
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
 .nav-link:hover {
-  color: #32DE8A;
+  color: #D98E4A;
 }
 
 /* ---- Product demo animations ---- */
@@ -327,10 +335,16 @@ body {
 
 .rule-aqua {
   border: none;
-  border-top: 1px solid #A2E8DD;
+  border-top: 1px solid #DDD5C6;
 }
 
 .rule-mid {
   border: none;
-  border-top: 1px solid #627C85;
+  border-top: 1px solid #2A3134;
+}
+
+/* Work-order ticket rules — carbon-copy dashed separators */
+.rule-dashed {
+  border: none;
+  border-top: 1.5px dashed #C9C0AE;
 }

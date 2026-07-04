@@ -25,7 +25,7 @@ export default function DemoPage() {
       <Nav />
       <main>
         <section
-          style={{ backgroundColor: "#35524A", paddingTop: "64px" }}
+          style={{ backgroundColor: "#14181A", paddingTop: "64px" }}
           className="py-16 md:py-24"
         >
           <div className="max-w-5xl mx-auto px-6 pt-10 md:pt-16">
@@ -34,7 +34,7 @@ export default function DemoPage() {
             </h1>
             <p
               className="type-subhead"
-              style={{ color: "#A2E8DD", maxWidth: "58ch" }}
+              style={{ color: "#C9CFCC", maxWidth: "58ch" }}
             >
               Watch how MannaFlow handles common lead situations contractors
               deal with every week.
@@ -46,7 +46,7 @@ export default function DemoPage() {
           <div className="max-w-6xl mx-auto px-6">
             <p
               className="type-body mb-8 md:mb-14"
-              style={{ color: "#35524A", maxWidth: "58ch" }}
+              style={{ color: "#212926", maxWidth: "58ch" }}
             >
               These demos show the types of conversations MannaFlow can help
               manage, from the first inquiry to the follow-up that brings a
@@ -58,7 +58,7 @@ export default function DemoPage() {
                 <div key={name}>
                   <h2
                     className="type-card-title mb-4"
-                    style={{ color: "#35524A" }}
+                    style={{ color: "#212926" }}
                   >
                     {name}
                   </h2>

@@ -36,12 +36,12 @@ export default function PainPoints() {
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
           How We Help
         </p>
-        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#35524A" }}>
+        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
           The lead work your team should not have to chase.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#35524A", maxWidth: "52ch" }}
+          style={{ color: "#212926", maxWidth: "52ch" }}
         >
           MannaFlow helps handle the repetitive lead-response work that costs
           time, money, and focus every week.
@@ -51,7 +51,7 @@ export default function PainPoints() {
           {/* Column headers */}
           <div
             className="grid grid-cols-2 pb-3 md:pb-4"
-            style={{ borderBottom: "2px solid #35524A" }}
+            style={{ borderBottom: "2px solid #212926" }}
           >
             <p
               style={{
@@ -74,7 +74,7 @@ export default function PainPoints() {
                 fontVariationSettings: "'opsz' 24, 'wght' 700",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "#35524A",
+                color: "#212926",
               }}
             >
               With MannaFlow
@@ -85,19 +85,19 @@ export default function PainPoints() {
             <div
               key={i}
               className="grid grid-cols-2"
-              style={{ borderBottom: "1px solid #A2E8DD" }}
+              style={{ borderBottom: "1px solid #DDD5C6" }}
             >
               {/* Before — deliberately muted */}
               <div
                 className="py-3 md:py-5 pr-2 sm:pr-4 md:pr-8"
-                style={{ borderRight: "1px solid #A2E8DD" }}
+                style={{ borderRight: "1px solid #DDD5C6" }}
               >
                 <p
                   className="type-body"
                   style={{
-                    color: "#35524A",
+                    color: "#212926",
                     textDecoration: "line-through",
-                    textDecorationColor: "#779CAB",
+                    textDecorationColor: "#B0A99A",
                     fontSize: "clamp(0.8rem, 2.2vw, 1rem)",
                   }}
                 >
@@ -114,7 +114,7 @@ export default function PainPoints() {
                     fontWeight: 600,
                     fontVariationSettings: "'opsz' 36, 'wght' 600",
                     lineHeight: 1.55,
-                    color: "#35524A",
+                    color: "#212926",
                   }}
                 >
                   {task.after}
@@ -130,7 +130,7 @@ export default function PainPoints() {
                 fontSize: "clamp(1rem, 2vw, 1.35rem)",
                 fontWeight: 600,
                 fontVariationSettings: "'opsz' 48, 'wght' 600",
-                color: "#35524A",
+                color: "#212926",
                 lineHeight: 1.25,
               }}
             >

@@ -12,18 +12,18 @@ export default function TopoBand() {
       {/* Solid overlay — not a gradient */}
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: "rgba(53, 82, 74, 0.7)" }}
+        style={{ backgroundColor: "rgba(16, 20, 22, 0.74)" }}
       />
 
       <div className="relative z-10 px-6 py-20">
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1rem, 1.8vw, 1.4rem)",
+            fontSize: "clamp(1.125rem, 2.5vw, 1.75rem)",
             fontWeight: 300,
             fontVariationSettings: "'opsz' 48, 'wght' 300",
             lineHeight: 1.4,
-            color: "#A2E8DD",
+            color: "#C9CFCC",
             letterSpacing: "0.01em",
             marginBottom: "0.25em",
           }}
@@ -33,7 +33,7 @@ export default function TopoBand() {
         <p
           style={{
             fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "clamp(1.8rem, 4.2vw, 3.4rem)",
+            fontSize: "clamp(2.5rem, 7vw, 5.5rem)",
             fontWeight: 100,
             fontVariationSettings: "'opsz' 120, 'wght' 100",
             lineHeight: 0.9,
@@ -45,7 +45,7 @@ export default function TopoBand() {
         </p>
         <p
           className="type-label mt-10"
-          style={{ color: "#A2E8DD", letterSpacing: "0.18em" }}
+          style={{ color: "#8A9BA3", letterSpacing: "0.18em" }}
         >
           Fast responses, cleaner handoffs, fewer leads slipping through
         </p>

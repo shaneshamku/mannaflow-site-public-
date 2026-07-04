@@ -45,7 +45,7 @@ export default function Services() {
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
           What You Get
         </p>
-        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#35524A" }}>
+        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
           Four ways to stop losing time on leads.
         </h2>
         <p
@@ -58,7 +58,7 @@ export default function Services() {
 
         <div
           className="grid grid-cols-1 md:grid-cols-2 gap-px"
-          style={{ backgroundColor: "#A2E8DD" }}
+          style={{ backgroundColor: "#DDD5C6" }}
         >
           {services.map((s) => (
             <div
@@ -72,17 +72,17 @@ export default function Services() {
             >
               <h3
                 className="type-card-title mb-2"
-                style={{ color: "#35524A" }}
+                style={{ color: "#212926" }}
               >
                 {s.name}
               </h3>
               <p
                 className="type-label mb-3 md:mb-4"
-                style={{ color: "#32DE8A", letterSpacing: "0.12em" }}
+                style={{ color: "#A65F28", letterSpacing: "0.12em" }}
               >
                 {s.tagline}
               </p>
-              <p className="type-body mb-5 md:mb-6" style={{ color: "#35524A" }}>
+              <p className="type-body mb-5 md:mb-6" style={{ color: "#3D4744" }}>
                 {s.description}
               </p>
               {/* marginTop auto pins demos to the cell bottom so panels in the

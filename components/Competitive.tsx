@@ -46,12 +46,12 @@ export default function Competitive() {
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
           Why Contractors Use MannaFlow
         </p>
-        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#35524A" }}>
+        <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
           A lighter way to handle lead response.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#35524A", maxWidth: "58ch" }}
+          style={{ color: "#212926", maxWidth: "58ch" }}
         >
           Many contractors already rely on office staff, technicians, or call
           centers to keep up with new inquiries. MannaFlow is designed to
@@ -63,7 +63,7 @@ export default function Competitive() {
         <div className="mb-10 md:mb-20">
           <h3
             className="type-card-title mb-2"
-            style={{ color: "#35524A" }}
+            style={{ color: "#212926" }}
           >
             Same customer. Two ways it can go.
           </h3>
@@ -80,7 +80,7 @@ export default function Competitive() {
         <div className="overflow-x-auto mb-6 md:mb-8">
           <table style={{ width: "100%", minWidth: "520px", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ borderBottom: "2px solid #35524A" }}>
+              <tr style={{ borderBottom: "2px solid #212926" }}>
                 <th
                   style={{
                     textAlign: "left",
@@ -135,7 +135,10 @@ export default function Competitive() {
               {rows.map((row) => (
                 <tr
                   key={row.option}
-                  style={{ borderBottom: "1px solid #A2E8DD" }}
+                  style={{
+                    borderBottom: "1px solid #DDD5C6",
+                    backgroundColor: row.isUs ? "#EBE6DB" : "transparent",
+                  }}
                 >
                   <td
                     style={{
@@ -146,7 +149,7 @@ export default function Competitive() {
                       fontVariationSettings: row.isUs
                         ? "'opsz' 36, 'wght' 700"
                         : "'opsz' 36, 'wght' 600",
-                      color: "#35524A",
+                      color: "#212926",
                       verticalAlign: "top",
                     }}
                   >
@@ -161,7 +164,7 @@ export default function Competitive() {
                       fontVariationSettings: row.isUs
                         ? "'opsz' 36, 'wght' 600"
                         : "'opsz' 36, 'wght' 400",
-                      color: "#35524A",
+                      color: "#212926",
                       lineHeight: 1.55,
                       verticalAlign: "top",
                     }}
@@ -177,7 +180,7 @@ export default function Competitive() {
                       fontVariationSettings: row.isUs
                         ? "'opsz' 36, 'wght' 600"
                         : "'opsz' 36, 'wght' 400",
-                      color: "#35524A",
+                      color: "#212926",
                       lineHeight: 1.55,
                       verticalAlign: "top",
                     }}
@@ -192,7 +195,7 @@ export default function Competitive() {
 
         <p
           className="type-body"
-          style={{ color: "#35524A", maxWidth: "58ch" }}
+          style={{ color: "#212926", maxWidth: "58ch" }}
         >
           MannaFlow does not replace your team. It helps your team stop wasting
           time on repetitive lead work.

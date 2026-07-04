@@ -29,7 +29,7 @@ export default function ContractorsPage() {
       <Nav />
       <main>
         <section
-          style={{ backgroundColor: "#35524A", paddingTop: "64px" }}
+          style={{ backgroundColor: "#14181A", paddingTop: "64px" }}
           className="py-16 md:py-24"
         >
           <div className="max-w-5xl mx-auto px-6 pt-10 md:pt-16">
@@ -38,7 +38,7 @@ export default function ContractorsPage() {
             </h1>
             <p
               className="type-subhead"
-              style={{ color: "#A2E8DD", maxWidth: "58ch" }}
+              style={{ color: "#C9CFCC", maxWidth: "58ch" }}
             >
               MannaFlow is for trade and service businesses that already get
               inquiries but lose time handling calls, texts, booking requests,
@@ -53,7 +53,7 @@ export default function ContractorsPage() {
               <div>
                 <h2
                   className="type-card-title mb-5 md:mb-6"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   MannaFlow is a good fit if:
                 </h2>
@@ -62,7 +62,7 @@ export default function ContractorsPage() {
                     <li
                       key={item}
                       className="type-body flex gap-3"
-                      style={{ color: "#35524A" }}
+                      style={{ color: "#212926" }}
                     >
                       <span style={{ color: "#32DE8A", fontWeight: 700 }}>✓</span>
                       <span>{item}</span>
@@ -74,7 +74,7 @@ export default function ContractorsPage() {
               <div>
                 <h2
                   className="type-card-title mb-5 md:mb-6"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   MannaFlow may not be the right fit if:
                 </h2>
@@ -85,7 +85,7 @@ export default function ContractorsPage() {
                       className="type-body flex gap-3"
                       style={{ color: "#627C85" }}
                     >
-                      <span style={{ color: "#779CAB", fontWeight: 700 }}>✕</span>
+                      <span style={{ color: "#A65F28", fontWeight: 700 }}>✕</span>
                       <span>{item}</span>
                     </li>
                   ))}

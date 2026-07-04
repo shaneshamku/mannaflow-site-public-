@@ -56,19 +56,19 @@ export default function Contact({
         <p className="type-eyebrow mb-4" style={{ color: "#627C85" }}>
           Get Started
         </p>
-        <h2 className="type-headline mb-4" style={{ color: "#35524A" }}>
+        <h2 className="type-headline mb-4" style={{ color: "#212926" }}>
           Book your free MannaFlow demo.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-12"
-          style={{ color: "#35524A", maxWidth: "50ch" }}
+          style={{ color: "#212926", maxWidth: "50ch" }}
         >
           {subtext}
         </p>
 
         {status === "sent" ? (
           <div className="py-12">
-            <p className="type-headline mb-4" style={{ color: "#35524A" }}>
+            <p className="type-headline mb-4" style={{ color: "#212926" }}>
               Request received.
             </p>
             <p className="type-body" style={{ color: "#627C85" }}>
@@ -82,7 +82,7 @@ export default function Contact({
                 <label
                   htmlFor="name"
                   className="type-label block mb-2"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   Name
                 </label>
@@ -101,7 +101,7 @@ export default function Contact({
                 <label
                   htmlFor="email"
                   className="type-label block mb-2"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   Email
                 </label>
@@ -124,7 +124,7 @@ export default function Contact({
                 <label
                   htmlFor="phone"
                   className="type-label block mb-2"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   Phone
                 </label>
@@ -143,7 +143,7 @@ export default function Contact({
                 <label
                   htmlFor="company"
                   className="type-label block mb-2"
-                  style={{ color: "#35524A" }}
+                  style={{ color: "#212926" }}
                 >
                   Company
                 </label>
@@ -163,7 +163,7 @@ export default function Contact({
               <label
                 htmlFor="businessType"
                 className="type-label block mb-2"
-                style={{ color: "#35524A" }}
+                style={{ color: "#212926" }}
               >
                 Trade / Business Type
               </label>
@@ -182,7 +182,7 @@ export default function Contact({
               <label
                 htmlFor="message"
                 className="type-label block mb-2"
-                style={{ color: "#35524A" }}
+                style={{ color: "#212926" }}
               >
                 Message
               </label>
@@ -199,7 +199,7 @@ export default function Contact({
             </div>
 
             {status === "error" && (
-              <p className="type-body" style={{ color: "#35524A" }}>
+              <p className="type-body" style={{ color: "#A65F28" }}>
                 Something went wrong. Email us at mannaflow.io@gmail.com and we
                 will get back to you.
               </p>

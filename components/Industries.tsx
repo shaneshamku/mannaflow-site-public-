@@ -25,19 +25,19 @@ export default function Industries() {
   return (
     <section
       id="industries"
-      style={{ backgroundColor: "#35524A" }}
+      style={{ backgroundColor: "#EBE6DB" }}
       className="py-12 md:py-20"
     >
       <div className="max-w-6xl mx-auto px-6">
-        <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#32DE8A" }}>
+        <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
           Built for busy contractors
         </p>
-        <h2 className="type-headline mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
+        <h2 className="type-headline mb-4 md:mb-6" style={{ color: "#212926" }}>
           Your team is busy doing the work. Leads still need a response.
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#A2E8DD", maxWidth: "58ch" }}
+          style={{ color: "#3D4744", maxWidth: "58ch" }}
         >
           Most contractors already have a way to handle calls. The problem is
           the cost, the delays, and the follow-up that still slips through when
@@ -46,13 +46,13 @@ export default function Industries() {
 
         <div
           className="grid grid-cols-2 gap-px"
-          style={{ backgroundColor: "#627C85" }}
+          style={{ backgroundColor: "#C9C0AE" }}
         >
           {features.map((f) => (
             <div
               key={f.problem}
               className="p-4 sm:p-6 md:p-10"
-              style={{ backgroundColor: "#35524A" }}
+              style={{ backgroundColor: "#EBE6DB" }}
             >
               <p
                 className="mb-2 md:mb-3"
@@ -62,7 +62,7 @@ export default function Industries() {
                   fontWeight: 600,
                   fontVariationSettings: "'opsz' 36, 'wght' 600",
                   lineHeight: 1.4,
-                  color: "#F5F2EC",
+                  color: "#212926",
                 }}
               >
                 {f.problem}
@@ -70,7 +70,7 @@ export default function Industries() {
               <p
                 className="type-body"
                 style={{
-                  color: "#A2E8DD",
+                  color: "#3D4744",
                   fontSize: "clamp(0.8rem, 2.2vw, 0.95rem)",
                   lineHeight: 1.55,
                 }}

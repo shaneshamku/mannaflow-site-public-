@@ -58,7 +58,7 @@ function Messages({ step, web }: { step: number; web: boolean }) {
                   lineHeight: 1.45,
                   backgroundColor: fromLead
                     ? web
-                      ? "#35524A"
+                      ? "#14181A"
                       : panel.blue
                     : web
                       ? "#FFFFFF"
@@ -155,7 +155,7 @@ export default function TextChatDemo() {
           >
             <div
               style={{
-                backgroundColor: "#35524A",
+                backgroundColor: "#14181A",
                 padding: "0.6rem 0.85rem",
                 display: "flex",
                 alignItems: "center",
@@ -168,7 +168,7 @@ export default function TextChatDemo() {
                   height: 26,
                   borderRadius: "50%",
                   backgroundColor: "#32DE8A",
-                  color: "#35524A",
+                  color: "#14181A",
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -183,11 +183,11 @@ export default function TextChatDemo() {
                 <span style={{ color: "#FFFFFF", fontSize: "0.76rem", fontWeight: 600 }}>
                   ABC Heating &amp; Air
                 </span>
-                <span style={{ color: "#A2E8DD", fontSize: "0.64rem" }}>
+                <span style={{ color: "#8A9BA3", fontSize: "0.64rem" }}>
                   Online · replies in seconds
                 </span>
               </div>
-              <span aria-hidden="true" style={{ color: "#A2E8DD", fontSize: "0.85rem", letterSpacing: "0.3em" }}>
+              <span aria-hidden="true" style={{ color: "#8A9BA3", fontSize: "0.85rem", letterSpacing: "0.3em" }}>
                 &minus; ✕
               </span>
             </div>
@@ -223,7 +223,7 @@ export default function TextChatDemo() {
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 8l12-6-4 12-2.5-4.5L2 8z" fill="#35524A" />
+                  <path d="M2 8l12-6-4 12-2.5-4.5L2 8z" fill="#14181A" />
                 </svg>
               </span>
             </div>

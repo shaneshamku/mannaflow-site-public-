@@ -9,7 +9,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: "#35524A" }} className="py-10 md:py-16">
+    <footer style={{ backgroundColor: "#14181A" }} className="py-10 md:py-16">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-12 mb-10 md:mb-16">
           <div style={{ maxWidth: "28ch" }}>
@@ -34,7 +34,7 @@ export default function Footer() {
                 MannaFlow
               </span>
             </div>
-            <p className="type-body" style={{ color: "#A2E8DD" }}>
+            <p className="type-body" style={{ color: "#8A9BA3" }}>
               MannaFlow helps contractors respond faster, follow up
               consistently, and save time on every lead.
             </p>
@@ -43,7 +43,7 @@ export default function Footer() {
           <div>
             <p
               className="type-label mb-4 md:mb-5"
-              style={{ color: "#A2E8DD", letterSpacing: "0.15em" }}
+              style={{ color: "#8A9BA3", letterSpacing: "0.15em" }}
             >
               Company
             </p>
@@ -53,7 +53,7 @@ export default function Footer() {
                   <a
                     href={link.href}
                     className="type-body nav-link"
-                    style={{ color: "#A2E8DD" }}
+                    style={{ color: "#8A9BA3" }}
                   >
                     {link.label}
                   </a>
@@ -68,13 +68,13 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 md:gap-4">
           <p
             className="type-label"
-            style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
+            style={{ color: "#8A9BA3", letterSpacing: "0.12em" }}
           >
             &copy; 2026 MannaFlow. All rights reserved.
           </p>
           <p
             className="type-label"
-            style={{ color: "#A2E8DD", letterSpacing: "0.12em" }}
+            style={{ color: "#8A9BA3", letterSpacing: "0.12em" }}
           >
             Saving time and money on every lead
           </p>

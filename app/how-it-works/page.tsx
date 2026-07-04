@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
       <Nav />
       <main>
         <section
-          style={{ backgroundColor: "#35524A", paddingTop: "64px" }}
+          style={{ backgroundColor: "#14181A", paddingTop: "64px" }}
           className="py-16 md:py-24"
         >
           <div className="max-w-5xl mx-auto px-6 pt-10 md:pt-16">
@@ -50,7 +50,7 @@ export default function HowItWorksPage() {
             </h1>
             <p
               className="type-subhead"
-              style={{ color: "#A2E8DD", maxWidth: "58ch" }}
+              style={{ color: "#C9CFCC", maxWidth: "58ch" }}
             >
               From missed calls to website inquiries, MannaFlow helps
               contractors respond faster, capture job details, and keep
@@ -66,7 +66,7 @@ export default function HowItWorksPage() {
                 <div
                   key={step.title}
                   className="grid grid-cols-[3rem_1fr] md:grid-cols-[5rem_1fr] gap-4 md:gap-8 py-6 md:py-8"
-                  style={{ borderBottom: "1px solid #A2E8DD" }}
+                  style={{ borderBottom: "1px solid #DDD5C6" }}
                 >
                   <p
                     style={{
@@ -74,7 +74,7 @@ export default function HowItWorksPage() {
                       fontSize: "clamp(1.4rem, 3vw, 2rem)",
                       fontWeight: 300,
                       fontVariationSettings: "'opsz' 48, 'wght' 300",
-                      color: "#32DE8A",
+                      color: "#A65F28",
                       lineHeight: 1,
                     }}
                   >
@@ -83,13 +83,13 @@ export default function HowItWorksPage() {
                   <div>
                     <h2
                       className="type-card-title mb-2"
-                      style={{ color: "#35524A" }}
+                      style={{ color: "#212926" }}
                     >
                       {step.title}
                     </h2>
                     <p
                       className="type-body"
-                      style={{ color: "#35524A", maxWidth: "58ch" }}
+                      style={{ color: "#212926", maxWidth: "58ch" }}
                     >
                       {step.body}
                     </p>
