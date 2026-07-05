@@ -13,10 +13,18 @@ export const metadata: Metadata = {
 };
 
 const demos = [
-  { name: "Call Coverage", Demo: CallAnsweringDemo },
-  { name: "Text & Website Booking", Demo: TextChatDemo },
-  { name: "Quote Follow-Up", Demo: FollowUpDemo },
-  { name: "Past Customer Re-Engagement", Demo: WinBackDemo },
+  { id: "voice-agent", name: "Voice Agent", Demo: CallAnsweringDemo },
+  { id: "chatbot", name: "Chatbot", Demo: TextChatDemo },
+  {
+    id: "nurture-campaign",
+    name: "Nurture Campaign — Quote Follow-Up",
+    Demo: FollowUpDemo,
+  },
+  {
+    id: "nurture-winback",
+    name: "Nurture Campaign — Customer Win-Back",
+    Demo: WinBackDemo,
+  },
 ];
 
 export default function DemoPage() {
@@ -54,8 +62,8 @@ export default function DemoPage() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-              {demos.map(({ name, Demo }) => (
-                <div key={name}>
+              {demos.map(({ id, name, Demo }) => (
+                <div key={name} id={id} style={{ scrollMarginTop: "80px" }}>
                   <h2
                     className="type-card-title mb-4"
                     style={{ color: "#212926" }}

@@ -331,6 +331,37 @@ body {
   }
 }
 
+/* ---- FAQ accordion ---- */
+
+.faq-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-summary::after {
+  content: "+";
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  font-variation-settings: 'opsz' 36, 'wght' 300;
+  line-height: 1;
+  color: #A65F28;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+details[open] > .faq-summary::after {
+  content: "\2212";
+}
+
 /* ---- Separator line utility ---- */
 
 .rule-aqua {

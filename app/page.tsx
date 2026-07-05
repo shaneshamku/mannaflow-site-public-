@@ -1,12 +1,10 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import AgencyIntro from "@/components/AgencyIntro";
+import Stats from "@/components/Stats";
 import Industries from "@/components/Industries";
-import PainPoints from "@/components/PainPoints";
-import TopoBand from "@/components/TopoBand";
-import Services from "@/components/Services";
-import BlurTextQuote from "@/components/BlurTextQuote";
-import Competitive from "@/components/Competitive";
-import NextSteps from "@/components/NextSteps";
+import HowWeHelp from "@/components/HowWeHelp";
+import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -16,13 +14,11 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <AgencyIntro />
+        <Stats />
         <Industries />
-        <PainPoints />
-        <TopoBand />
-        <Services />
-        <Competitive />
-        <NextSteps />
-        <BlurTextQuote />
+        <HowWeHelp />
+        <FAQ />
         <Contact />
       </main>
       <Footer />

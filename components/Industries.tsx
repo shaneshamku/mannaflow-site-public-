@@ -1,23 +1,19 @@
-const features = [
+const problems = [
   {
-    problem: "Missed calls while your team is on site",
-    solution:
-      "When your techs are working, driving, or handling emergencies, new leads can sit too long before someone responds.",
+    title: "On-Site Delays",
+    body: "Leads drop while techs are driving, wrenching, or on a job.",
   },
   {
-    problem: "Expensive coverage after hours",
-    solution:
-      "Call centers and overtime can help, but they add cost and still do not always qualify, book, and follow up the way your business needs.",
+    title: "Costly Coverage",
+    body: "Answering services add huge overhead without actually booking or nurturing the lead.",
   },
   {
-    problem: "Follow-up falls on whoever has time",
-    solution:
-      "Quotes, missed calls, and half-finished conversations often depend on manual reminders that are easy to forget.",
+    title: "Broken Follow-Up",
+    body: "Sent quotes and half-finished chats depend on manual, easily forgotten reminders.",
   },
   {
-    problem: "Leads spread across too many places",
-    solution:
-      "Phone calls, texts, website forms, and chat messages create extra admin when they are not captured in one clear system.",
+    title: "Scattered Channels",
+    body: "Calls, texts, and website forms are spread everywhere instead of in one clear system.",
   },
 ];
 
@@ -30,27 +26,22 @@ export default function Industries() {
     >
       <div className="max-w-6xl mx-auto px-6">
         <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
-          Built for busy contractors
+          What you&apos;re facing right now
         </p>
-        <h2 className="type-headline mb-4 md:mb-6" style={{ color: "#212926" }}>
+        <h2
+          className="type-headline mb-8 md:mb-16"
+          style={{ color: "#212926" }}
+        >
           Your team is busy doing the work. Leads still need a response.
         </h2>
-        <p
-          className="type-subhead mb-8 md:mb-16"
-          style={{ color: "#3D4744", maxWidth: "58ch" }}
-        >
-          Most contractors already have a way to handle calls. The problem is
-          the cost, the delays, and the follow-up that still slips through when
-          the day gets busy.
-        </p>
 
         <div
           className="grid grid-cols-2 gap-px"
           style={{ backgroundColor: "#C9C0AE" }}
         >
-          {features.map((f) => (
+          {problems.map((p) => (
             <div
-              key={f.problem}
+              key={p.title}
               className="p-4 sm:p-6 md:p-10"
               style={{ backgroundColor: "#EBE6DB" }}
             >
@@ -58,14 +49,14 @@ export default function Industries() {
                 className="mb-2 md:mb-3"
                 style={{
                   fontFamily: "'MontaguSlab', Georgia, serif",
-                  fontSize: "clamp(0.85rem, 2.2vw, 1.05rem)",
-                  fontWeight: 600,
-                  fontVariationSettings: "'opsz' 36, 'wght' 600",
-                  lineHeight: 1.4,
+                  fontSize: "clamp(0.95rem, 2.4vw, 1.2rem)",
+                  fontWeight: 700,
+                  fontVariationSettings: "'opsz' 36, 'wght' 700",
+                  lineHeight: 1.35,
                   color: "#212926",
                 }}
               >
-                {f.problem}
+                {p.title}
               </p>
               <p
                 className="type-body"
@@ -75,7 +66,7 @@ export default function Industries() {
                   lineHeight: 1.55,
                 }}
               >
-                {f.solution}
+                {p.body}
               </p>
             </div>
           ))}

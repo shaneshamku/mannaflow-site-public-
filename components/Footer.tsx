@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const footerLinks = [
   { label: "How It Works", href: "/how-it-works" },
-  { label: "Who It Helps", href: "/contractors" },
+  { label: "Who We Help", href: "/contractors" },
   { label: "See Demo", href: "/demo" },
   { label: "Book a Demo", href: "/book-demo" },
 ];

@@ -17,21 +17,18 @@ export default function Hero() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-12 md:py-32">
-        <p className="type-eyebrow mb-4 md:mb-6" style={{ color: "#C9CFCC" }}>
-          Saving time and money on every lead
-        </p>
-
         <h1
           className="type-display mb-5 md:mb-7"
           style={{
-            fontSize: "clamp(1.75rem, 5.5vw, 4.75rem)",
+            fontSize: "clamp(2rem, 6vw, 5rem)",
             fontWeight: 500,
             fontVariationSettings: "'opsz' 120, 'wght' 500",
+            color: "#FFFFFF",
           }}
         >
-          <span style={{ color: "#F5F2EC" }}>Less time chasing leads.</span>
+          Stop chasing leads,
           <br />
-          <span style={{ color: "#32DE8A" }}>More time closing jobs.</span>
+          start scaling your business
         </h1>
 
         <p
@@ -39,20 +36,12 @@ export default function Hero() {
           style={{
             color: "#C9CFCC",
             maxWidth: "52ch",
+            fontSize: "clamp(1.125rem, 2.4vw, 1.45rem)",
             fontWeight: 600,
             fontVariationSettings: "'opsz' 36, 'wght' 600",
           }}
         >
-          MannaFlow helps contractors{" "}
-          <strong style={{ fontWeight: 700, color: "#F5F2EC" }}>
-            respond faster
-          </strong>
-          ,{" "}
-          <strong style={{ fontWeight: 700, color: "#F5F2EC" }}>
-            follow up consistently
-          </strong>
-          , and keep every lead moving without adding more office work or
-          pulling techs away from the job.
+          Capture, track, and close every customer automatically
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 items-start">
@@ -64,13 +53,6 @@ export default function Hero() {
           </a>
         </div>
 
-        <p
-          className="type-label mt-7 md:mt-10"
-          style={{ color: "rgba(201, 207, 204, 0.6)" }}
-        >
-          Built for contractors who want fewer missed opportunities and less
-          manual follow-up
-        </p>
       </div>
     </section>
   );
