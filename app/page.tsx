@@ -1,7 +1,9 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import SectionNotch from "@/components/SectionNotch";
 import AgencyIntro from "@/components/AgencyIntro";
 import Stats from "@/components/Stats";
+import ProblemStatement from "@/components/ProblemStatement";
 import Industries from "@/components/Industries";
 import HowWeHelp from "@/components/HowWeHelp";
 import FAQ from "@/components/FAQ";
@@ -14,8 +16,13 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <SectionNotch from="#14181A" />
         <AgencyIntro />
+        <SectionNotch from="#F5F2EC" />
         <Stats />
+        <SectionNotch from="#14181A" />
+        <ProblemStatement />
+        <SectionNotch from="#EAE5D9" />
         <Industries />
         <HowWeHelp />
         <FAQ />

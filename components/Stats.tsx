@@ -29,36 +29,57 @@ export default function Stats() {
       className="py-12 md:py-20"
     >
       <div className="max-w-6xl mx-auto px-6">
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px"
-          style={{ backgroundColor: "#2A3134" }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="p-6 md:p-8"
-              style={{ backgroundColor: "#1C2224" }}
+              className="grid items-center gap-5 md:gap-6 p-6 md:p-8"
+              style={{
+                gridTemplateColumns: "minmax(7.5rem, 2fr) 1px 3fr",
+                backgroundColor: "#1C2224",
+                border: "1px solid #2A3134",
+                borderRadius: "14px",
+              }}
             >
-              <p
-                className="type-eyebrow mb-4 md:mb-6"
-                style={{ color: "#D98E4A" }}
-              >
-                {stat.label}
-              </p>
-              <p
-                className="mb-3 md:mb-4"
+              <div>
+                <p
+                  className="mb-2 md:mb-3"
+                  style={{
+                    fontFamily: "'MontaguSlab', Georgia, serif",
+                    fontSize: "clamp(0.65rem, 1.7vw, 0.9rem)",
+                    fontWeight: 700,
+                    fontVariationSettings: "'opsz' 24, 'wght' 700",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase",
+                    color: "#D98E4A",
+                  }}
+                >
+                  {stat.label}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "'MontaguSlab', Georgia, serif",
+                    fontSize: "clamp(3.25rem, 5.5vw, 4.5rem)",
+                    fontWeight: 100,
+                    fontVariationSettings: "'opsz' 120, 'wght' 100",
+                    lineHeight: 0.95,
+                    letterSpacing: "-0.04em",
+                    color: "#F5F2EC",
+                  }}
+                >
+                  {stat.value}
+                </p>
+              </div>
+
+              <div
+                aria-hidden
                 style={{
-                  fontFamily: "'MontaguSlab', Georgia, serif",
-                  fontSize: "clamp(2.75rem, 5.5vw, 4.5rem)",
-                  fontWeight: 100,
-                  fontVariationSettings: "'opsz' 120, 'wght' 100",
-                  lineHeight: 0.95,
-                  letterSpacing: "-0.04em",
-                  color: "#F5F2EC",
+                  backgroundColor: "#2A3134",
+                  width: "1px",
+                  alignSelf: "stretch",
                 }}
-              >
-                {stat.value}
-              </p>
+              />
+
               <p className="type-body" style={{ color: "#8A9BA3" }}>
                 {stat.body}
               </p>

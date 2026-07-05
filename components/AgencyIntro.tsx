@@ -3,15 +3,24 @@ export default function AgencyIntro() {
     <section
       id="about"
       style={{ backgroundColor: "#F5F2EC" }}
-      className="py-10 md:py-14"
+      className="py-14 md:py-20"
     >
       <div className="max-w-3xl mx-auto px-6 text-center">
-        <p className="type-subhead" style={{ color: "#3D4744" }}>
+        <p
+          style={{
+            fontFamily: "'MontaguSlab', Georgia, serif",
+            fontSize: "clamp(1.15rem, 2.6vw, 1.5rem)",
+            fontWeight: 400,
+            fontVariationSettings: "'opsz' 48, 'wght' 400",
+            lineHeight: 1.7,
+            color: "#3D4744",
+          }}
+        >
           MannaFlow is a lead-response agency for contractors. We build the{" "}
           <strong
             style={{
               fontWeight: 700,
-              fontVariationSettings: "'opsz' 36, 'wght' 700",
+              fontVariationSettings: "'opsz' 48, 'wght' 700",
               color: "#212926",
             }}
           >
