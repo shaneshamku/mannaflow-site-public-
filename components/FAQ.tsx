@@ -29,11 +29,14 @@ export default function FAQ() {
       className="py-12 md:py-20"
     >
       <div className="max-w-3xl mx-auto px-6">
-        <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
+        <p
+          className="type-eyebrow mb-3 md:mb-4 text-center md:text-left"
+          style={{ color: "#627C85" }}
+        >
           FAQ
         </p>
         <h2
-          className="type-headline mb-8 md:mb-12"
+          className="type-headline mb-8 md:mb-12 text-center md:text-left"
           style={{ color: "#212926" }}
         >
           Common questions, straight answers.

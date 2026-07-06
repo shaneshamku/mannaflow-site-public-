@@ -13,21 +13,14 @@ export default function AgencyIntro() {
             fontWeight: 400,
             fontVariationSettings: "'opsz' 48, 'wght' 400",
             lineHeight: 1.7,
-            color: "#3D4744",
+            color: "#031D2A",
           }}
         >
-          MannaFlow is a lead-response agency for contractors. We build the{" "}
-          <strong
-            style={{
-              fontWeight: 700,
-              fontVariationSettings: "'opsz' 48, 'wght' 700",
-              color: "#212926",
-            }}
-          >
-            voice agents, chatbots, dashboards, and nurture campaigns
-          </strong>{" "}
-          that answer every inquiry, book the job, and keep your pipeline
-          moving — while your team stays on the tools.
+          MannaFlow helps contractors respond faster,{" "}
+          <br className="mf-br" />
+          book more jobs, and stop letting{" "}
+          <br className="mf-br" />
+          good leads slip through the cracks.
         </p>
       </div>
     </section>

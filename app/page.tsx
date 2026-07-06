@@ -20,9 +20,7 @@ export default function Home() {
         <AgencyIntro />
         <SectionNotch from="#F5F2EC" />
         <Stats />
-        <SectionNotch from="#14181A" />
         <ProblemStatement />
-        <SectionNotch from="#EAE5D9" />
         <Industries />
         <HowWeHelp />
         <FAQ />

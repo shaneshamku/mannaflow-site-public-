@@ -53,14 +53,20 @@ export default function Contact({
       className="py-12 md:py-20"
     >
       <div className="max-w-2xl mx-auto px-6">
-        <p className="type-eyebrow mb-4" style={{ color: "#627C85" }}>
+        <p
+          className="type-eyebrow mb-4 text-center md:text-left"
+          style={{ color: "#627C85" }}
+        >
           Get Started
         </p>
-        <h2 className="type-headline mb-4" style={{ color: "#212926" }}>
+        <h2
+          className="type-headline mb-4 text-center md:text-left"
+          style={{ color: "#212926" }}
+        >
           Book your free MannaFlow demo.
         </h2>
         <p
-          className="type-subhead mb-8 md:mb-12"
+          className="type-subhead mb-8 md:mb-12 text-center md:text-left mx-auto md:mx-0"
           style={{ color: "#212926", maxWidth: "50ch" }}
         >
           {subtext}

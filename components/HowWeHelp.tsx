@@ -37,11 +37,14 @@ export default function HowWeHelp() {
       className="py-12 md:py-20"
     >
       <div className="max-w-6xl mx-auto px-6">
-        <p className="type-eyebrow mb-3 md:mb-4" style={{ color: "#627C85" }}>
+        <p
+          className="type-eyebrow mb-3 md:mb-4 text-center md:text-left"
+          style={{ color: "#627C85" }}
+        >
           How We Help
         </p>
         <h2
-          className="type-headline mb-8 md:mb-16"
+          className="type-headline mb-8 md:mb-16 text-center md:text-left"
           style={{ color: "#212926" }}
         >
           The lead work your team should not have to chase.

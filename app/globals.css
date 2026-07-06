@@ -317,7 +317,7 @@ body {
   position: relative;
   height: 770px;
   background-color: #101b1b;
-  background-image: url("/pictures/new/wave-proper.png?v=2");
+  background-image: url("/pictures/new/hero-ocean-mobile-v2.png");
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
@@ -422,6 +422,7 @@ body {
     min-height: calc(100vh - 64px);
     display: flex;
     align-items: center;
+    background-image: url("/pictures/new/wave-proper.png?v=2");
     background-size: cover;
     background-position: 20% 30%;
   }
@@ -478,7 +479,6 @@ body {
 .section-notch {
   position: relative;
   height: 0;
-  border-top: 2px solid #2E7D5B;
   z-index: 10;
 }
 
@@ -502,7 +502,396 @@ body {
   height: 26px;
   transform: translate(-50%, -50%) rotate(45deg);
   background: var(--notch-from, #14181A);
-  border: 2px solid #2E7D5B;
+}
+
+/* ---- The Gap (stats) — cards floating over the hero wave ----
+   The wave photo is the section background; cards are translucent tiles so the
+   gutters between them reveal the water underneath. A dark overlay keeps text
+   legible without hiding the waves. */
+
+.mf-gap {
+  position: relative;
+  background-color: #081924;
+  background-image: url("/pictures/new/gap-bg.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+}
+
+.mf-gap-eyebrow {
+  margin: 0 0 0.9rem;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 24, 'wght' 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #528562;
+}
+
+.mf-gap-headline {
+  margin: 0 auto 0.9rem;
+  max-width: 20ch;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 48, 'wght' 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #F3EFE6;
+}
+
+.mf-gap-sub {
+  margin: 0 auto 2.5rem;
+  max-width: 46ch;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+  font-weight: 400;
+  font-variation-settings: 'opsz' 36, 'wght' 400;
+  line-height: 1.45;
+  color: #A6BBB3;
+}
+
+.mf-gap-br {
+  display: none;
+}
+
+.mf-gap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.mf-gap-card {
+  padding: 1.1rem 1rem 1.2rem;
+  border-radius: 14px;
+  background-color: rgba(10, 20, 30, 0.66);
+  border: 1px solid rgba(127, 181, 152, 0.16);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.mf-gap-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(127, 181, 152, 0.42);
+  background-color: rgba(12, 25, 36, 0.82);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
+}
+
+.mf-gap-card:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.08s;
+}
+
+.mf-gap-card:hover .mf-gap-value {
+  color: #FFFFFF;
+}
+
+.mf-gap-card:hover .mf-gap-dash {
+  width: 52px;
+}
+
+.mf-gap-card:hover .mf-gap-icon {
+  transform: translateY(-1px) scale(1.06);
+}
+
+.mf-gap-icon {
+  margin-bottom: 0.7rem;
+  line-height: 0;
+  transform-origin: left center;
+  transition: transform 0.25s ease;
+}
+
+.mf-gap-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.mf-gap-label {
+  margin: 0 0 0.4rem;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 24, 'wght' 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #528562;
+}
+
+.mf-gap-value {
+  margin: 0;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1.3rem, 5.6vw, 1.6rem);
+  font-weight: 400;
+  font-variation-settings: 'opsz' 48, 'wght' 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #F5F2EC;
+  transition: color 0.25s ease;
+}
+
+.mf-gap-dash {
+  display: block;
+  width: 34px;
+  height: 2px;
+  margin: 0.75rem 0 0.85rem;
+  background-color: #528562;
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+
+.mf-gap-body {
+  margin: 0;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 24, 'wght' 400;
+  line-height: 1.42;
+  color: #93A6A0;
+}
+
+.mf-gap-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(127, 181, 152, 0.14);
+}
+
+.mf-gap-note-mark {
+  flex: none;
+  line-height: 0;
+}
+
+.mf-gap-note p {
+  margin: 0;
+  max-width: 52ch;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 24, 'wght' 400;
+  line-height: 1.45;
+  color: #8DA09A;
+}
+
+@media (min-width: 768px) {
+  .mf-gap-grid {
+    gap: 16px;
+  }
+
+  .mf-gap-card {
+    padding: 1.5rem 1.4rem 1.6rem;
+  }
+
+  .mf-gap-icon {
+    margin-bottom: 1.15rem;
+  }
+
+  .mf-gap-icon svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mf-gap-label {
+    margin-bottom: 0.55rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+  }
+
+  .mf-gap-value {
+    font-size: clamp(1.85rem, 2.6vw, 2.15rem);
+    font-variation-settings: 'opsz' 60, 'wght' 400;
+  }
+
+  .mf-gap-dash {
+    margin: 1rem 0 1.1rem;
+  }
+
+  .mf-gap-body {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mf-gap-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .mf-gap-br {
+    display: inline;
+  }
+}
+
+/* ---- Bridge card — overlaps the seam between the dark Gap and cream sections ----
+   Card color matches the brand green accent. */
+
+.mf-bridge {
+  position: relative;
+  z-index: 5;
+  height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.mf-bridge-card {
+  position: relative;
+  z-index: 5;
+  transform: translateY(-50%);
+  width: 90%;
+  max-width: 38rem;
+  padding: 1.5rem 1.6rem;
+  border-radius: 16px;
+  background-color: #528562;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 44px rgba(3, 29, 42, 0.28);
+  text-align: center;
+}
+
+.mf-bridge-text {
+  margin: 0;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1.3rem, 4.6vw, 1.9rem);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 48, 'wght' 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #F5F2EC;
+}
+
+@media (min-width: 768px) {
+  .mf-bridge-card {
+    max-width: 40rem;
+    padding: 1.85rem 2.25rem;
+  }
+}
+
+/* ---- Where leads get stuck — icon + green rule + text list ---- */
+
+.mf-stuck-br {
+  display: inline;
+}
+
+.mf-stuck-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 0;
+}
+
+.mf-stuck-icon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #1E3B2C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mf-stuck-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mf-stuck-main {
+  display: flex;
+  align-items: stretch;
+  gap: 0.9rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.mf-stuck-rule {
+  flex: none;
+  width: 2px;
+  margin: 0.2rem 0;
+  border-radius: 2px;
+  background-color: rgba(46, 125, 91, 0.65);
+}
+
+.mf-stuck-title {
+  margin: 0 0 0.3rem;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  font-weight: 700;
+  font-variation-settings: 'opsz' 36, 'wght' 700;
+  line-height: 1.25;
+  color: #212926;
+}
+
+.mf-stuck-body {
+  margin: 0;
+  max-width: 46ch;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 24, 'wght' 400;
+  line-height: 1.42;
+  color: #3D4744;
+}
+
+.mf-stuck-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.4rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  background-color: #031D2A;
+  text-align: center;
+}
+
+.mf-stuck-cta p {
+  margin: 0;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  font-weight: 700;
+  font-variation-settings: 'opsz' 36, 'wght' 700;
+  line-height: 1.3;
+  color: #F5F2EC;
+}
+
+@media (min-width: 768px) {
+  .mf-stuck-item {
+    gap: 1.25rem;
+    padding: 1.2rem 0;
+  }
+
+  .mf-stuck-icon {
+    width: 54px;
+    height: 54px;
+  }
+
+  .mf-stuck-icon svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .mf-stuck-main {
+    gap: 1.15rem;
+  }
+
+  .mf-stuck-body {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .mf-stuck-cta {
+    padding: 1.05rem 1.5rem;
+    gap: 1.15rem;
+  }
 }
 
 /* ---- Product demo animations ---- */
@@ -555,6 +944,14 @@ body {
   .mf-wave-bar,
   .mf-pulse {
     animation: none;
+  }
+
+  .mf-gap-card,
+  .mf-gap-card:hover,
+  .mf-gap-card:active,
+  .mf-gap-icon {
+    transform: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
   }
 }
 
