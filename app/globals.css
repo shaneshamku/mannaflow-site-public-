@@ -894,6 +894,308 @@ body {
   }
 }
 
+/* ---- How We Help — stacked card carousel over the ocean (deck) ---- */
+
+.mf-hwh {
+  position: relative;
+  background-color: #081924;
+  background-image:
+    linear-gradient(rgba(6, 17, 28, 0.55), rgba(6, 18, 30, 0.62)),
+    url("/pictures/new/gap-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.mf-hwh-eyebrow {
+  margin: 0 0 0.9rem;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 24, 'wght' 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #528562;
+}
+
+.mf-hwh-headline {
+  margin: 0 auto 0.9rem;
+  max-width: 20ch;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 48, 'wght' 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #F3EFE6;
+}
+
+.mf-hwh-sub {
+  margin: 0 auto;
+  max-width: 46ch;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: clamp(1rem, 2.4vw, 1.15rem);
+  font-weight: 400;
+  font-variation-settings: 'opsz' 36, 'wght' 400;
+  line-height: 1.45;
+  color: #A6BBB3;
+}
+
+/* Full-bleed wrapper so the arrows sit outside the (narrower) card. */
+.mf-hwh-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  margin: 2.25rem auto 0;
+}
+
+.mf-hwh-stage {
+  position: relative;
+  height: 384px;
+  touch-action: pan-y;
+}
+
+.mf-hwh-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(390px, 78vw);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.7rem 1.35rem;
+  border-radius: 18px;
+  background-color: rgba(8, 20, 30, 0.72);
+  border: 1px solid rgba(95, 177, 135, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Card positions — transform + depth are driven by these classes. */
+.mf-hwh-card.is-active {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 50;
+  background-color: rgba(11, 25, 35, 0.9);
+  border-color: rgba(95, 177, 135, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(95, 177, 135, 0.08);
+}
+
+.mf-hwh-card.is-prev {
+  transform: translateX(calc(-50% - 42%)) scale(0.88);
+  opacity: 0.15;
+  z-index: 40;
+}
+
+.mf-hwh-card.is-next {
+  transform: translateX(calc(-50% + 42%)) scale(0.88);
+  opacity: 0.15;
+  z-index: 40;
+}
+
+.mf-hwh-card.is-far {
+  transform: translateX(calc(-50% + 58%)) scale(0.82);
+  opacity: 0;
+  z-index: 30;
+}
+
+.mf-hwh-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(95, 177, 135, 0.1);
+  border: 1px solid rgba(95, 177, 135, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.mf-hwh-card-title {
+  margin: 0 0 0.6rem;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 1.28rem;
+  font-weight: 600;
+  font-variation-settings: 'opsz' 36, 'wght' 600;
+  line-height: 1.2;
+  color: #F5F2EC;
+}
+
+.mf-hwh-card-dash {
+  display: block;
+  width: 32px;
+  height: 2px;
+  margin-bottom: 0.95rem;
+  border-radius: 2px;
+  background-color: #5FB187;
+}
+
+.mf-hwh-card-body {
+  margin: 0 0 1.3rem;
+  max-width: 30ch;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.86rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 24, 'wght' 400;
+  line-height: 1.45;
+  color: #B7C6C0;
+}
+
+.mf-hwh-card-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(95, 177, 135, 0.6);
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 24, 'wght' 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #7FC7A0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.mf-hwh-card-cta:hover {
+  background-color: rgba(95, 177, 135, 0.14);
+  border-color: rgba(95, 177, 135, 0.85);
+}
+
+/* Arrows sit vertically centered on the card, just outside its side edges.
+   The card is min(390px, 78vw) wide and centered, so 50% - halfCard - gap
+   places each arrow in the clear space beside the card. */
+.mf-hwh-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 60;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(230, 225, 220, 0.35);
+  background-color: rgba(8, 20, 30, 0.55);
+  color: #F5F2EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.mf-hwh-arrow:hover {
+  background-color: rgba(95, 177, 135, 0.2);
+  border-color: rgba(95, 177, 135, 0.6);
+}
+
+.mf-hwh-arrow--prev {
+  transform: translateY(-50%);
+  left: calc(50% - (min(390px, 78vw) / 2) - 6px - 38px);
+}
+
+.mf-hwh-arrow--next {
+  transform: translateY(-50%);
+  right: calc(50% - (min(390px, 78vw) / 2) - 6px - 38px);
+}
+
+.mf-hwh-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.75rem;
+}
+
+.mf-hwh-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(230, 225, 220, 0.28);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mf-hwh-dot.is-active {
+  background-color: #5FB187;
+  transform: scale(1.25);
+}
+
+@media (min-width: 768px) {
+  .mf-hwh-stage {
+    height: 420px;
+  }
+
+  .mf-hwh-card {
+    width: 300px;
+    padding: 1.9rem 1.6rem;
+  }
+
+  .mf-hwh-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .mf-hwh-card-title {
+    font-size: 1.35rem;
+  }
+
+  .mf-hwh-card-body {
+    font-size: 0.9rem;
+  }
+
+  /* Side cards stay visible on desktop for the premium stacked look. */
+  .mf-hwh-card.is-prev {
+    transform: translateX(calc(-50% - 46%)) scale(0.86);
+    opacity: 0.45;
+  }
+
+  .mf-hwh-card.is-next {
+    transform: translateX(calc(-50% + 46%)) scale(0.86);
+    opacity: 0.45;
+  }
+
+  .mf-hwh-card.is-far {
+    transform: translateX(calc(-50% + 66%)) scale(0.78);
+    opacity: 0.22;
+  }
+
+  .mf-hwh-arrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mf-hwh-arrow--prev {
+    left: calc(50% - 150px - 12px - 44px);
+  }
+
+  .mf-hwh-arrow--next {
+    right: calc(50% - 150px - 12px - 44px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-hwh-card {
+    transition: opacity 0.2s ease;
+  }
+}
+
 /* ---- Product demo animations ---- */
 
 @keyframes mf-typing-dot {
@@ -1002,4 +1304,224 @@ details[open] > .faq-summary::after {
 .rule-dashed {
   border: none;
   border-top: 1.5px dashed #C9C0AE;
+}
+
+/* ---- Book a Call — dark ocean, floating cream form card ---- */
+
+.mf-book {
+  position: relative;
+  background-color: #081924;
+  background-image:
+    linear-gradient(158deg, rgba(8, 25, 38, 0.58) 0%, rgba(7, 20, 31, 0.88) 55%, rgba(7, 20, 31, 0.94) 100%),
+    url("/pictures/new/gap-bg.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: cover;
+  overflow: hidden;
+}
+
+/* Left column copy */
+.mf-book-eyebrow {
+  color: #5FA875;
+}
+.mf-book-heading {
+  color: #F5F2EC;
+}
+.mf-book-heading em {
+  font-style: italic;
+  color: #6BB585;
+}
+.mf-book-sub {
+  color: #BFCBD0;
+}
+
+/* Desktop benefit rows */
+.mf-book-benefit-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(95, 168, 117, 0.10);
+  border: 1.5px solid rgba(95, 168, 117, 0.35);
+  color: #6BB585;
+}
+.mf-book-benefit-rule {
+  align-self: stretch;
+  width: 1.5px;
+  background-color: rgba(191, 203, 208, 0.22);
+  flex-shrink: 0;
+}
+.mf-book-benefit-title {
+  color: #F5F2EC;
+}
+.mf-book-benefit-desc {
+  color: #AFBBC1;
+}
+.mf-book-close {
+  color: #AFBBC1;
+}
+
+/* Form card */
+.mf-book-card {
+  position: relative;
+  background-color: #F3EFE4;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.55);
+  padding: 2.75rem 1.5rem 1.75rem;
+}
+@media (min-width: 640px) {
+  .mf-book-card {
+    padding: 3rem 2.25rem 2rem;
+  }
+}
+
+.mf-book-badge {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  background-color: #FFFDF8;
+  border: 1.5px solid #DDD5C6;
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.mf-book-badge img {
+  width: 32px;
+  height: auto;
+}
+.mf-book-card-top {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+  margin-bottom: 1.75rem;
+}
+.mf-book-card-top span {
+  flex: 1;
+  height: 1.5px;
+  background-color: #DDD5C6;
+}
+
+.mf-book-label {
+  color: #1B2A31;
+}
+.mf-input-wrap {
+  position: relative;
+}
+.mf-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  color: #8A9BA3;
+  pointer-events: none;
+}
+.mf-book-input {
+  border-radius: 10px;
+  padding-left: 3rem;
+}
+select.mf-book-input {
+  color: #212926;
+}
+
+.mf-book-submit {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: #12633b;
+  color: #F5F2EC;
+  padding: 1rem 1.5rem;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 36, 'wght' 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.mf-book-submit:hover {
+  background-color: #0f5533;
+}
+.mf-book-submit:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.mf-book-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: #6B7A72;
+  font-size: 0.8rem;
+}
+
+/* Mobile compact trust rows */
+.mf-book-trust-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(95, 168, 117, 0.55);
+  color: #6BB585;
+}
+.mf-book-trust-label {
+  color: #F5F2EC;
+}
+.mf-book-trust-row + .mf-book-trust-row {
+  border-top: 1px solid rgba(191, 203, 208, 0.18);
+}
+
+/* ---- Scroll-down cue after "That's where MannaFlow comes in" ---- */
+
+.mf-scroll-cue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 3.25rem auto 0;
+  color: #528562;
+  text-decoration: none;
+}
+@media (min-width: 768px) {
+  .mf-scroll-cue {
+    margin-top: 4.25rem;
+  }
+}
+.mf-scroll-cue svg {
+  display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mf-scroll-cue svg {
+    animation: mf-scroll-bob 1.8s ease-in-out infinite;
+  }
+}
+@keyframes mf-scroll-bob {
+  0%, 100% { transform: translateY(-3px); opacity: 0.72; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+
+/* Modeled-estimate note — smaller on mobile so it fits on two lines */
+@media (max-width: 767px) {
+  .mf-gap-note p {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
 }

@@ -122,7 +122,7 @@ const cards: Card[] = [
 
 export default function Stats() {
   return (
-    <section id="stats" className="mf-gap pt-14 pb-28 md:pt-24 md:pb-36">
+    <section id="stats" className="mf-gap pt-14 pb-36 md:pt-24 md:pb-48">
       <div className="max-w-6xl mx-auto px-6">
         <p className="mf-gap-eyebrow">The Gap</p>
         <h2 className="mf-gap-headline">

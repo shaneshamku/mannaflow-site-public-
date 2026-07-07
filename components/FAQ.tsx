@@ -1,23 +1,35 @@
 const faqs = [
   {
     q: "Will MannaFlow replace my office staff?",
-    a: "No. MannaFlow handles the repetitive response and follow-up work so your staff can focus on scheduling, customers, and the jobs already in motion.",
+    a: "No. MannaFlow supports your team, it does not replace them. It handles missed calls, basic questions, follow-ups, and handoffs so your staff can focus on customers and work that needs a person.",
+  },
+  {
+    q: "Does it sound robotic, or like a real person?",
+    a: "It is designed to feel natural and conversational. Callers can explain what they need, ask questions, and have a normal back-and-forth. If something needs your team, MannaFlow can hand it off.",
   },
   {
     q: "How fast does a new lead get a response?",
-    a: "Seconds. Calls, texts, and website chats get an immediate answer instead of waiting for someone on your team to be free.",
+    a: "The goal is seconds, not hours. Whether the lead comes from a call, text, form, or chat, MannaFlow helps make sure they are not left waiting.",
   },
   {
     q: "What happens with urgent or emergency calls?",
-    a: "Urgent jobs are flagged and routed to your team right away, with the customer's details and job information already collected.",
+    a: "You set the rules. If a call sounds urgent, complex, or outside the normal process, MannaFlow can route it to the right person by call, text, or notification.",
   },
   {
-    q: "Do I need to change my phone system or website?",
-    a: "No. MannaFlow works alongside your existing phone number, website, and tools — nothing gets ripped out or replaced.",
+    q: "Does it work with my current phone number?",
+    a: "Yes. In most cases, you can keep your current number. Calls can be forwarded when your team is busy, after hours, or during the times you want covered.",
   },
   {
-    q: "Is there a long-term contract?",
-    a: "No. One flat monthly rate, and cancellations take effect at the end of the current billing month.",
+    q: "Can it book appointments into my calendar or software?",
+    a: "Yes, depending on your setup. MannaFlow can connect with calendars and common field-service tools, or start with a simpler handoff if that gets you live faster.",
+  },
+  {
+    q: "Do I need to change my current systems?",
+    a: "Usually, no. We start with your existing lead flow and recommend the simplest setup that saves time without forcing a full system change.",
+  },
+  {
+    q: "What does it cost?",
+    a: "Pricing depends on your lead volume and what you want MannaFlow to handle. On the demo, we map your lead flow and recommend the simplest setup that makes sense.",
   },
 ];
 
@@ -46,20 +58,21 @@ export default function FAQ() {
           {faqs.map((item) => (
             <details
               key={item.q}
+              name="faq"
               className="faq-item"
               style={{ borderBottom: "1.5px dashed #C9C0AE" }}
             >
-              <summary className="faq-summary py-4 md:py-5">
+              <summary className="faq-summary py-3.5 md:py-4">
                 <span
                   className="type-card-title"
-                  style={{ color: "#212926" }}
+                  style={{ color: "#212926", fontSize: "1.05rem", lineHeight: 1.35 }}
                 >
                   {item.q}
                 </span>
               </summary>
               <p
-                className="type-body pb-5 md:pb-6"
-                style={{ color: "#3D4744", maxWidth: "58ch" }}
+                className="type-body pb-4 md:pb-5"
+                style={{ color: "#3D4744", maxWidth: "58ch", fontSize: "0.9375rem", lineHeight: 1.6 }}
               >
                 {item.a}
               </p>

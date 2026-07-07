@@ -20,7 +20,7 @@ export default function Hero() {
           <p className="mf-hero-sub">
             Capture, track, and close every{" "}
             <br className="mf-br" />
-            customer automatically
+            customer
           </p>
 
           <div className="mf-hero-actions">
