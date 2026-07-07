@@ -22,7 +22,9 @@ export default function Home() {
         <Stats />
         <ProblemStatement />
         <Industries />
+        <SectionNotch from="#F5F2EC" />
         <HowWeHelp />
+        <SectionNotch from="#081924" />
         <FAQ />
         <Contact />
       </main>

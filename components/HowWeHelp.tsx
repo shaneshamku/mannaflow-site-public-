@@ -1,107 +1,216 @@
-const services = [
+"use client";
+
+import { useRef, useState, type ReactNode, type PointerEvent } from "react";
+
+const ACCENT = "#5FB187";
+
+const PhoneIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M6.5 3.5c.5 0 .95.32 1.1.8l.9 2.8a1.2 1.2 0 0 1-.3 1.2L7 9.5c.9 2 2.5 3.6 4.5 4.5l1.2-1.2a1.2 1.2 0 0 1 1.2-.3l2.8.9c.48.15.8.6.8 1.1V17a2.5 2.5 0 0 1-2.7 2.5C9.2 19 5 14.8 4 8.2A2.5 2.5 0 0 1 6.5 3.5Z"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const ChatIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M4 5.5h16v11H9l-5 3.5v-3.5H4z"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M8.5 11h.01M12 11h.01M15.5 11h.01"
+      stroke={ACCENT}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M4.5 9a7.5 7.5 0 0 1 12.7-3.2L20 8.5M19.5 15a7.5 7.5 0 0 1-12.7 3.2L4 15.5"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M20 4.5v4h-4M4 19.5v-4h4"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const ChartIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path d="M4 20h16" stroke={ACCENT} strokeWidth="1.4" strokeLinecap="round" />
+    <rect x="5.5" y="12" width="3" height="5" rx="0.6" stroke={ACCENT} strokeWidth="1.4" />
+    <rect x="10.5" y="8" width="3" height="9" rx="0.6" stroke={ACCENT} strokeWidth="1.4" />
+    <rect x="15.5" y="4.5" width="3" height="12.5" rx="0.6" stroke={ACCENT} strokeWidth="1.4" />
+  </svg>
+);
+
+type Card = {
+  icon: ReactNode;
+  title: string;
+  body: string;
+};
+
+const cards: Card[] = [
   {
-    icon: "📞",
-    name: "Voice Agent",
-    description:
-      "Answers your calls 24/7, qualifies the job, and books the appointment before a competitor picks up.",
-    href: "/demo#voice-agent",
+    icon: <PhoneIcon />,
+    title: "Call Coverage",
+    body: "Answers callers when your team is busy, after hours, or away from the phone.",
   },
   {
-    icon: "💬",
-    name: "Chatbot",
-    description:
-      "Handles website and text conversations, collects job details, and moves visitors toward a booked time.",
-    href: "/demo#chatbot",
+    icon: <ChatIcon />,
+    title: "Text & Website Booking",
+    body: "Collects job details, answers common questions, and moves visitors toward a booked time.",
   },
   {
-    icon: "📊",
-    name: "Dashboard",
-    description:
-      "Every lead, conversation, and next step organized in one place, so you always know what's happening.",
-    href: "/demo",
+    icon: <RefreshIcon />,
+    title: "Follow-Up Campaigns",
+    body: "Sends timed check-ins for open quotes, missed calls, and past customers.",
   },
   {
-    icon: "🔁",
-    name: "Nurture Campaign",
-    description:
-      "Timed follow-ups for open quotes and past customers, so no opportunity goes cold.",
-    href: "/demo#nurture-campaign",
+    icon: <ChartIcon />,
+    title: "Lead Dashboard",
+    body: "Keeps every lead, conversation, and next step organized in one place.",
   },
 ];
 
+const n = cards.length;
+
+function posClass(off: number) {
+  if (off === 0) return "is-active";
+  if (off === 1) return "is-next";
+  if (off === -1) return "is-prev";
+  return "is-far";
+}
+
 export default function HowWeHelp() {
+  const [active, setActive] = useState(0);
+  const startX = useRef<number | null>(null);
+
+  const go = (dir: number) => setActive((a) => (a + dir + n) % n);
+
+  function relative(i: number) {
+    let off = i - active;
+    if (off > n / 2) off -= n;
+    else if (off < -n / 2) off += n;
+    return off;
+  }
+
+  function onPointerDown(e: PointerEvent) {
+    startX.current = e.clientX;
+  }
+  function onPointerUp(e: PointerEvent) {
+    if (startX.current == null) return;
+    const dx = e.clientX - startX.current;
+    if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1);
+    startX.current = null;
+  }
+
   return (
-    <section
-      id="how-it-works"
-      style={{ backgroundColor: "#F5F2EC" }}
-      className="py-12 md:py-20"
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        <p
-          className="type-eyebrow mb-3 md:mb-4 text-center md:text-left"
-          style={{ color: "#627C85" }}
-        >
-          How We Help
-        </p>
-        <h2
-          className="type-headline mb-8 md:mb-16 text-center md:text-left"
-          style={{ color: "#212926" }}
-        >
+    <section id="how-it-works" className="mf-hwh py-14 md:py-24">
+      <div className="max-w-3xl mx-auto px-6">
+        <p className="mf-hwh-eyebrow">How We Help</p>
+        <h2 className="mf-hwh-headline">
           The lead work your team should not have to chase.
         </h2>
+        <p className="mf-hwh-sub">
+          MannaFlow keeps calls, messages, follow-ups, and lead records moving
+          while your team stays on the job.
+        </p>
+      </div>
+
+      <div className="mf-hwh-carousel">
+        <button
+          type="button"
+          className="mf-hwh-arrow mf-hwh-arrow--prev"
+          onClick={() => go(-1)}
+          aria-label="Previous capability"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 5l-7 7 7 7"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
         <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-px"
-          style={{ backgroundColor: "#DDD5C6" }}
+          className="mf-hwh-stage"
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
         >
-          {services.map((s) => (
-            <div
-              key={s.name}
-              className="p-6 md:p-10 text-center"
-              style={{
-                backgroundColor: "#F5F2EC",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <span
-                aria-hidden
-                className="mb-3 md:mb-4"
-                style={{ fontSize: "2rem", lineHeight: 1 }}
+          {cards.map((c, i) => {
+            const off = relative(i);
+            return (
+              <article
+                key={c.title}
+                className={`mf-hwh-card ${posClass(off)}`}
+                aria-hidden={off !== 0}
               >
-                {s.icon}
-              </span>
-              <h3
-                className="type-card-title mb-2 md:mb-3"
-                style={{
-                  color: "#212926",
-                  fontWeight: 700,
-                  fontVariationSettings: "'opsz' 36, 'wght' 700",
-                }}
-              >
-                {s.name}
-              </h3>
-              <p
-                className="type-body mb-5 md:mb-6"
-                style={{ color: "#3D4744", maxWidth: "44ch" }}
-              >
-                {s.description}
-              </p>
-              <a
-                href={s.href}
-                className="btn-outline-dark"
-                style={{
-                  marginTop: "auto",
-                  padding: "0.625rem 1.25rem",
-                  fontSize: "0.75rem",
-                }}
-              >
-                Click Here for Demo
-              </a>
-            </div>
-          ))}
+                <span className="mf-hwh-icon">{c.icon}</span>
+                <h3 className="mf-hwh-card-title">{c.title}</h3>
+                <span aria-hidden className="mf-hwh-card-dash" />
+                <p className="mf-hwh-card-body">{c.body}</p>
+                <a
+                  href="/demo"
+                  className="mf-hwh-card-cta"
+                  tabIndex={off === 0 ? 0 : -1}
+                >
+                  See Demo
+                </a>
+              </article>
+            );
+          })}
         </div>
+
+        <button
+          type="button"
+          className="mf-hwh-arrow mf-hwh-arrow--next"
+          onClick={() => go(1)}
+          aria-label="Next capability"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M9 5l7 7-7 7"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div className="mf-hwh-dots" role="tablist" aria-label="Capabilities">
+        {cards.map((c, i) => (
+          <button
+            key={c.title}
+            type="button"
+            className={`mf-hwh-dot${i === active ? " is-active" : ""}`}
+            onClick={() => setActive(i)}
+            aria-label={`Show ${c.title}`}
+            aria-selected={i === active}
+            role="tab"
+          />
+        ))}
       </div>
     </section>
   );

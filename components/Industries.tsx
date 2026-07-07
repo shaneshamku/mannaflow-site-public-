@@ -104,7 +104,7 @@ export default function Industries() {
     <section
       id="industries"
       style={{ backgroundColor: "#F5F2EC" }}
-      className="pt-20 pb-12 md:pt-28 md:pb-20"
+      className="pt-32 pb-12 md:pt-44 md:pb-20"
     >
       <div className="max-w-4xl mx-auto px-6">
         <p
@@ -144,6 +144,30 @@ export default function Industries() {
         <div className="mf-stuck-cta">
           <p>That&apos;s where MannaFlow comes in</p>
         </div>
+
+        <a
+          href="#how-it-works"
+          className="mf-scroll-cue"
+          aria-label="Scroll down to see how we help"
+        >
+          <svg width="30" height="34" viewBox="0 0 30 34" fill="none" aria-hidden>
+            <path
+              d="M4 6l11 9 11-9"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 18l11 9 11-9"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.5"
+            />
+          </svg>
+        </a>
       </div>
     </section>
   );
