@@ -156,7 +156,7 @@ export default function Contact({
           <div>
             <p className="type-eyebrow mf-book-eyebrow mb-4">Get Started</p>
             <h2 className="type-headline mf-book-heading mb-5">
-              Book your <em>free</em> MannaFlow demo.
+              Book your <em>free</em> MannaFlow demo
             </h2>
             <p className="type-subhead mf-book-sub" style={{ maxWidth: "42ch" }}>
               {subtext}

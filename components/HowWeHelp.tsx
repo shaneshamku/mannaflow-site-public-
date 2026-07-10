@@ -60,6 +60,31 @@ const ChartIcon = () => (
   </svg>
 );
 
+const WinBackIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
+    <path
+      d="M4.5 12a7.5 7.5 0 1 1 2.2 5.3"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M4.5 8v4h4"
+      stroke={ACCENT}
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 15.2c-1.7-1.1-3-2.2-3-3.6a1.6 1.6 0 0 1 3-.7 1.6 1.6 0 0 1 3 .7c0 1.4-1.3 2.5-3 3.6Z"
+      stroke={ACCENT}
+      strokeWidth="1.3"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 type Card = {
   icon: ReactNode;
   title: string;
@@ -80,7 +105,12 @@ const cards: Card[] = [
   {
     icon: <RefreshIcon />,
     title: "Follow-Up Campaigns",
-    body: "Sends timed check-ins for open quotes, missed calls, and past customers.",
+    body: "Send timely check-ins for open quotes, missed calls, and non-books based on past customers.",
+  },
+  {
+    icon: <WinBackIcon />,
+    title: "Win-Back Campaigns",
+    body: "Specifically targets past customers who have gone inactive, using targeted offers, check-ins, or updates to bring them back.",
   },
   {
     icon: <ChartIcon />,
@@ -126,11 +156,11 @@ export default function HowWeHelp() {
       <div className="max-w-3xl mx-auto px-6">
         <p className="mf-hwh-eyebrow">How We Help</p>
         <h2 className="mf-hwh-headline">
-          The lead work your team should not have to chase.
+          The lead work your team should not have to chase
         </h2>
         <p className="mf-hwh-sub">
-          MannaFlow keeps calls, messages, follow-ups, and lead records moving
-          while your team stays on the job.
+          MannaFlow keeps calls, messages, follow-ups, and the customer journey
+          moving while your team stays on the job.
         </p>
       </div>
 

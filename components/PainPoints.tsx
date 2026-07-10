@@ -37,7 +37,7 @@ export default function PainPoints() {
           How We Help
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
-          The lead work your team should not have to chase.
+          The lead work your team should not have to chase
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
