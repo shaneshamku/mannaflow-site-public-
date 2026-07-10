@@ -51,7 +51,7 @@ export default function FAQ() {
           className="type-headline mb-8 md:mb-12 text-center md:text-left"
           style={{ color: "#212926" }}
         >
-          Common questions, straight answers.
+          Common questions, straight answers
         </h2>
 
         <div>

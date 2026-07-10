@@ -47,7 +47,7 @@ export default function Competitive() {
           Why Contractors Use MannaFlow
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
-          A lighter way to handle lead response.
+          A lighter way to handle lead response
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"

@@ -2,9 +2,8 @@ import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import SectionNotch from "@/components/SectionNotch";
 import AgencyIntro from "@/components/AgencyIntro";
-import Stats from "@/components/Stats";
 import ProblemStatement from "@/components/ProblemStatement";
-import Industries from "@/components/Industries";
+import LeadLeak from "@/components/LeadLeak";
 import HowWeHelp from "@/components/HowWeHelp";
 import FAQ from "@/components/FAQ";
 import Contact from "@/components/Contact";
@@ -18,11 +17,8 @@ export default function Home() {
         <Hero />
         <SectionNotch from="#14181A" />
         <AgencyIntro />
-        <SectionNotch from="#F5F2EC" />
-        <Stats />
         <ProblemStatement />
-        <Industries />
-        <SectionNotch from="#F5F2EC" />
+        <LeadLeak />
         <HowWeHelp />
         <SectionNotch from="#081924" />
         <FAQ />

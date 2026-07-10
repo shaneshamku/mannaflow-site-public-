@@ -59,28 +59,18 @@ const CalendarIcon = () => (
   </svg>
 );
 
-const ClipboardIcon = () => (
+const ChannelsIcon = () => (
   <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden>
-    <rect
-      x="5"
-      y="4.5"
-      width="14"
-      height="16"
-      rx="2"
+    <path
+      d="M3 5.5h11v8H7l-4 3v-3H3z"
       stroke={GREEN}
       strokeWidth="1.4"
+      strokeLinejoin="round"
     />
     <path
-      d="M9 4.5a3 3 0 0 1 6 0"
+      d="M17 9.5h4v6h-1v2.5l-3-2.5h-4"
       stroke={GREEN}
       strokeWidth="1.4"
-      strokeLinecap="round"
-    />
-    <path
-      d="M8.5 15.5l2.3-2.3 1.6 1.6 3.1-3.4"
-      stroke={GREEN}
-      strokeWidth="1.3"
-      strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
@@ -90,6 +80,7 @@ type Card = {
   icon: ReactNode;
   label: string;
   value: string;
+  title: string;
   body: string;
 };
 
@@ -98,40 +89,43 @@ const cards: Card[] = [
     icon: <ClockIcon />,
     label: "Time",
     value: "10+ hrs/wk",
-    body: "Lost to admin, quote chasing, inbox checks, and handoffs.",
+    title: "During the Job",
+    body: "Calls come in while techs are busy, driving, or finishing the last appointment.",
   },
   {
     icon: <MoonIcon />,
     label: "Coverage",
     value: "Nights + weekends",
-    body: "Leads still need a response when your team is busy or off.",
+    title: "After Hours",
+    body: "Leads still need more than a message taken by someone else.",
   },
   {
     icon: <CalendarIcon />,
     label: "Follow-up",
-    value: "Day 1, 3, 7, 14",
-    body: "Timed check-ins keep quotes warm until they book or pass.",
+    value: "21-day sequence",
+    title: "After the Quote",
+    body: "Timed check-ins keep open quotes warm until they book or say no.",
   },
   {
-    icon: <ClipboardIcon />,
+    icon: <ChannelsIcon />,
     label: "Leakage",
     value: "3–7 jobs/mo",
-    body: "Good leads should not disappear because the day got busy.",
+    title: "Across Channels",
+    body: "Scattered calls, texts, forms, and chats create missed next steps.",
   },
 ];
 
-export default function Stats() {
+export default function LeadLeak() {
   return (
-    <section id="stats" className="mf-gap pt-14 pb-36 md:pt-24 md:pb-48">
+    <section id="lead-leak" className="mf-gap pt-28 pb-16 md:pt-36 md:pb-24">
       <div className="max-w-6xl mx-auto px-6">
-        <p className="mf-gap-eyebrow">The Gap</p>
+        <p className="mf-gap-eyebrow">Where Leads Leak</p>
         <h2 className="mf-gap-headline">
-          Good leads are not always lost because of price.
+          Good leads are not always lost because of price
         </h2>
         <p className="mf-gap-sub">
-          They are lost when calls wait, quotes go cold,{" "}
-          <br className="mf-gap-br" />
-          and follow-up gets pushed aside.
+          They are lost when calls wait, quotes go cold, and follow-up depends
+          on whoever has time that day.
         </p>
 
         <div className="mf-gap-grid">
@@ -140,6 +134,7 @@ export default function Stats() {
               <div className="mf-gap-icon">{card.icon}</div>
               <p className="mf-gap-label">{card.label}</p>
               <p className="mf-gap-value">{card.value}</p>
+              <p className="mf-gap-title">{card.title}</p>
               <span aria-hidden className="mf-gap-dash" />
               <p className="mf-gap-body">{card.body}</p>
             </div>
@@ -163,6 +158,31 @@ export default function Stats() {
             lead flow.
           </p>
         </div>
+
+        <a
+          href="#how-it-works"
+          className="mf-leak-bridge"
+          aria-label="See how MannaFlow helps"
+        >
+          <span>That&apos;s where MannaFlow comes in</span>
+          <svg width="26" height="30" viewBox="0 0 30 34" fill="none" aria-hidden>
+            <path
+              d="M4 6l11 9 11-9"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 18l11 9 11-9"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity="0.5"
+            />
+          </svg>
+        </a>
       </div>
     </section>
   );

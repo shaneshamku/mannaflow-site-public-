@@ -46,7 +46,7 @@ export default function Services() {
           What You Get
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#212926" }}>
-          Four ways to stop losing time on leads.
+          Four ways to stop losing time on leads
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"

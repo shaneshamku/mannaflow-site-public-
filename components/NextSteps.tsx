@@ -25,7 +25,7 @@ export default function NextSteps() {
           Simple Next Steps
         </p>
         <h2 className="type-headline mb-3 md:mb-4" style={{ color: "#F5F2EC" }}>
-          See how MannaFlow would fit your business.
+          See how MannaFlow would fit your business
         </h2>
         <p
           className="type-subhead mb-8 md:mb-16"
