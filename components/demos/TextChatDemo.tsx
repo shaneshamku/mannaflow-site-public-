@@ -21,7 +21,7 @@ const EVENTS: Event[] = [
 ]
 
 //              lead  typ   bot   lead  typ   bot   lead  typ   bot  confirm
-const DELAYS = [700, 1100, 1800, 2100, 1100, 1900, 2000, 1100, 1900, 1100]
+const DELAYS = [567, 891, 1458, 1701, 891, 1539, 1620, 891, 1539, 891]
 
 function Messages({ step, web }: { step: number; web: boolean }) {
   return (

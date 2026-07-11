@@ -512,7 +512,7 @@ body {
 .mf-gap {
   position: relative;
   background-color: #081924;
-  background-image: url("/pictures/new/gap-bg.png");
+  background-image: url("/pictures/new/where-leads-leak-bg.png");
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
@@ -806,7 +806,7 @@ body {
   max-width: 38rem;
   padding: 1.5rem 1.6rem;
   border-radius: 16px;
-  background-color: #528562;
+  background-color: #12633b;
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 18px 44px rgba(3, 29, 42, 0.28);
   text-align: center;
@@ -955,7 +955,7 @@ body {
   background-color: #081924;
   background-image:
     linear-gradient(rgba(6, 17, 28, 0.55), rgba(6, 18, 30, 0.62)),
-    url("/pictures/new/gap-bg.png");
+    url("/pictures/new/how-we-help-bg.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -1250,6 +1250,187 @@ body {
   }
 }
 
+/* ---- /demo page carousel — same interaction pattern as How We Help,
+   sized for full product-demo panels (620px) instead of small icon cards. */
+
+.mf-demo-carousel {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.mf-demo-stage {
+  position: relative;
+  height: 760px;
+  touch-action: pan-y;
+}
+
+.mf-demo-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(420px, 88vw);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.25rem;
+  border-radius: 18px;
+  background-color: rgba(8, 20, 30, 0.72);
+  border: 1px solid rgba(95, 177, 135, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transform-origin: center;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.mf-demo-card.is-active {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 50;
+  background-color: rgba(11, 25, 35, 0.9);
+  border-color: rgba(95, 177, 135, 0.45);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(95, 177, 135, 0.08);
+}
+
+.mf-demo-card.is-prev {
+  transform: translateX(calc(-50% - 42%)) scale(0.88);
+  opacity: 0.15;
+  z-index: 40;
+}
+
+.mf-demo-card.is-next {
+  transform: translateX(calc(-50% + 42%)) scale(0.88);
+  opacity: 0.15;
+  z-index: 40;
+}
+
+.mf-demo-card.is-far {
+  transform: translateX(calc(-50% + 58%)) scale(0.82);
+  opacity: 0;
+  z-index: 30;
+}
+
+.mf-demo-card-title {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 1.28rem;
+  font-weight: 600;
+  font-variation-settings: 'opsz' 36, 'wght' 600;
+  line-height: 1.2;
+  color: #F5F2EC;
+}
+
+.mf-demo-card-body {
+  width: 100%;
+}
+
+.mf-demo-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 60;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(230, 225, 220, 0.35);
+  background-color: rgba(8, 20, 30, 0.55);
+  color: #F5F2EC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.mf-demo-arrow:hover {
+  background-color: rgba(95, 177, 135, 0.2);
+  border-color: rgba(95, 177, 135, 0.6);
+}
+
+.mf-demo-arrow--prev {
+  transform: translateY(-50%);
+  left: calc(50% - (min(420px, 88vw) / 2) - 6px - 38px);
+}
+
+.mf-demo-arrow--next {
+  transform: translateY(-50%);
+  right: calc(50% - (min(420px, 88vw) / 2) - 6px - 38px);
+}
+
+.mf-demo-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.75rem;
+}
+
+.mf-demo-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(33, 41, 38, 0.22);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mf-demo-dot.is-active {
+  background-color: #5FB187;
+  transform: scale(1.25);
+}
+
+@media (min-width: 768px) {
+  .mf-demo-stage {
+    height: 720px;
+  }
+
+  .mf-demo-card {
+    width: 460px;
+  }
+
+  .mf-demo-card.is-prev {
+    transform: translateX(calc(-50% - 52%)) scale(0.9);
+    opacity: 0.35;
+  }
+
+  .mf-demo-card.is-next {
+    transform: translateX(calc(-50% + 52%)) scale(0.9);
+    opacity: 0.35;
+  }
+
+  .mf-demo-card.is-far {
+    transform: translateX(calc(-50% + 70%)) scale(0.8);
+    opacity: 0.16;
+  }
+
+  .mf-demo-arrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mf-demo-arrow--prev {
+    left: calc(50% - 230px - 12px - 44px);
+  }
+
+  .mf-demo-arrow--next {
+    right: calc(50% - 230px - 12px - 44px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-demo-card {
+    transition: opacity 0.2s ease;
+  }
+}
+
 /* ---- Product demo animations ---- */
 
 @keyframes mf-typing-dot {
@@ -1295,10 +1476,24 @@ body {
   animation: mf-pulse 1.6s infinite ease-in-out;
 }
 
+@keyframes mf-voice-orb-pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.mf-voice-orb-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid;
+  animation: mf-voice-orb-pulse 1.8s infinite ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mf-typing-dot,
   .mf-wave-bar,
-  .mf-pulse {
+  .mf-pulse,
+  .mf-voice-orb-pulse {
     animation: none;
   }
 
@@ -1358,6 +1553,28 @@ details[open] > .faq-summary::after {
 .rule-dashed {
   border: none;
   border-top: 1.5px dashed #C9C0AE;
+}
+
+/* ---- /demo page header — dark ocean, matches the rest of the site's
+   photo-textured sections instead of a flat solid colour ---- */
+
+.mf-demo-cta {
+  background-color: #12633b;
+}
+
+.mf-demo-cta:hover {
+  background-color: #0e4f2f;
+}
+
+.mf-demo-hero {
+  position: relative;
+  background-color: #081924;
+  background-image:
+    linear-gradient(rgba(6, 17, 28, 0.6), rgba(6, 18, 30, 0.72)),
+    url("/pictures/new/how-we-help-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 /* ---- Book a Call — dark ocean, floating cream form card ---- */
@@ -1583,6 +1800,7 @@ select.mf-book-input {
 /* Integration bar — logos scroll right-to-left and loop seamlessly */
 .mf-marquee {
   margin-top: 2.75rem;
+  margin-bottom: 3rem;
   width: 100%;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(
@@ -1603,6 +1821,7 @@ select.mf-book-input {
 @media (min-width: 768px) {
   .mf-marquee {
     margin-top: 3.75rem;
+    margin-bottom: 4rem;
   }
 }
 .mf-marquee-track {

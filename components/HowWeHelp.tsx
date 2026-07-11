@@ -89,6 +89,7 @@ type Card = {
   icon: ReactNode;
   title: string;
   body: string;
+  demoId?: string;
 };
 
 const cards: Card[] = [
@@ -96,21 +97,25 @@ const cards: Card[] = [
     icon: <PhoneIcon />,
     title: "Call Coverage",
     body: "Answers callers when your team is busy, after hours, or away from the phone.",
+    demoId: "voice-agent",
   },
   {
     icon: <ChatIcon />,
     title: "Text & Website Booking",
     body: "Collects job details, answers common questions, and moves visitors toward a booked time.",
+    demoId: "chatbot",
   },
   {
     icon: <RefreshIcon />,
     title: "Follow-Up Campaigns",
     body: "Send timely check-ins for open quotes, missed calls, and non-books based on past customers.",
+    demoId: "nurture-campaign",
   },
   {
     icon: <WinBackIcon />,
     title: "Win-Back Campaigns",
     body: "Specifically targets past customers who have gone inactive, using targeted offers, check-ins, or updates to bring them back.",
+    demoId: "nurture-winback",
   },
   {
     icon: <ChartIcon />,
@@ -200,7 +205,7 @@ export default function HowWeHelp() {
                 <span aria-hidden className="mf-hwh-card-dash" />
                 <p className="mf-hwh-card-body">{c.body}</p>
                 <a
-                  href="/demo"
+                  href={c.demoId ? `/demo#${c.demoId}` : "/demo"}
                   className="mf-hwh-card-cta"
                   tabIndex={off === 0 ? 0 : -1}
                 >

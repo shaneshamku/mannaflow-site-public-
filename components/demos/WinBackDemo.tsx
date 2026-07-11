@@ -25,7 +25,7 @@ const SEASONS = [
 ]
 
 //              month customer  msg  reply confirm counter
-const DELAYS = [700, 1400, 2000, 2000, 1400, 1200]
+const DELAYS = [567, 1134, 1620, 1620, 1134, 972]
 
 export default function WinBackDemo() {
   const { ref, step, cycle } = useScrollDemo(DELAYS)
