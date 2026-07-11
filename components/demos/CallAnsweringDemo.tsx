@@ -22,7 +22,7 @@ const LINES = [
 ]
 
 //        banner  live  ...6 transcript lines...                 confirm
-const DELAYS = [600, 1100, 1400, 1900, 1600, 2000, 1500, 1900, 1200]
+const DELAYS = [486, 891, 1134, 1539, 1296, 1620, 1215, 1539, 972]
 
 export default function CallAnsweringDemo() {
   const { ref, step } = useScrollDemo(DELAYS)

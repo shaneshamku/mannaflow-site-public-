@@ -5,6 +5,7 @@ import CallAnsweringDemo from "@/components/demos/CallAnsweringDemo";
 import TextChatDemo from "@/components/demos/TextChatDemo";
 import FollowUpDemo from "@/components/demos/FollowUpDemo";
 import WinBackDemo from "@/components/demos/WinBackDemo";
+import DemoCarousel from "@/components/demos/DemoCarousel";
 
 export const metadata: Metadata = {
   title: "See Demo | MannaFlow",
@@ -33,12 +34,15 @@ export default function DemoPage() {
       <Nav />
       <main>
         <section
-          style={{ backgroundColor: "#14181A", paddingTop: "64px" }}
-          className="py-16 md:py-24"
+          className="mf-demo-hero py-16 md:py-24"
+          style={{ paddingTop: "64px" }}
         >
           <div className="max-w-5xl mx-auto px-6 pt-10 md:pt-16">
-            <h1 className="type-headline mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
-              See MannaFlow in action
+            <h1
+              className="type-headline mb-4 md:mb-6"
+              style={{ color: "#F5F2EC", textAlign: "center" }}
+            >
+              See MannaFlow <span style={{ color: "#12633b" }}>in action</span>
             </h1>
             <p
               className="type-subhead"
@@ -50,7 +54,10 @@ export default function DemoPage() {
           </div>
         </section>
 
-        <section style={{ backgroundColor: "#F5F2EC" }} className="py-12 md:py-20">
+        <section
+          style={{ backgroundColor: "#F5F2EC", overflowX: "hidden" }}
+          className="py-12 md:py-20"
+        >
           <div className="max-w-6xl mx-auto px-6">
             <p
               className="type-body mb-8 md:mb-14"
@@ -61,22 +68,10 @@ export default function DemoPage() {
               lead back.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-              {demos.map(({ id, name, Demo }) => (
-                <div key={name} id={id} style={{ scrollMarginTop: "80px" }}>
-                  <h2
-                    className="type-card-title mb-4"
-                    style={{ color: "#212926" }}
-                  >
-                    {name}
-                  </h2>
-                  <Demo />
-                </div>
-              ))}
-            </div>
+            <DemoCarousel items={demos} />
 
             <div className="pt-10 md:pt-14 text-center">
-              <a href="/book-demo" className="btn-primary">
+              <a href="/book-demo" className="btn-primary mf-demo-cta">
                 Book a Free Demo
               </a>
             </div>

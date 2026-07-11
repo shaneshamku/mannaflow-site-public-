@@ -7,7 +7,7 @@ export default function Nav() {
       style={{ backgroundColor: "#101b1b" }}
     >
       <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[65px] md:h-16">
-        <div className="flex items-center gap-3 shrink-0">
+        <a href="/" className="flex items-center gap-3 shrink-0" aria-label="MannaFlow home">
           <Image
             src="/images/logo-icon.png"
             alt=""
@@ -28,7 +28,7 @@ export default function Nav() {
           >
             MannaFlow
           </span>
-        </div>
+        </a>
 
         <div className="hidden md:flex items-center gap-10">
           <a href="/" className="nav-link type-label">

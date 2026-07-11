@@ -1,4 +1,5 @@
 import IntegrationBar from "@/components/IntegrationBar";
+import VoiceDemoWidget from "@/components/demos/VoiceDemoWidget";
 
 export default function AgencyIntro() {
   return (
@@ -23,6 +24,8 @@ export default function AgencyIntro() {
           MannaFlow helps contractors respond faster, book more jobs, and stop
           letting good leads slip through the cracks.
         </p>
+
+        <VoiceDemoWidget />
       </div>
 
       <IntegrationBar />

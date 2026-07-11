@@ -5,7 +5,7 @@ import { useScrollDemo } from "./useScrollDemo"
 import { ConfirmBar, DemoPanel, Reveal, panel } from "./ui"
 
 //              header day1  day3  day7  reply booked confirm day14
-const DELAYS = [700, 1700, 1900, 1900, 1800, 1700, 1200, 1300]
+const DELAYS = [567, 1377, 1539, 1539, 1458, 1377, 972, 1053]
 
 function DayRow({
   day,
