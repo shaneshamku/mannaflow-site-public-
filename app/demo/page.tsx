@@ -19,12 +19,12 @@ const demos = [
   { id: "chatbot", name: "Chatbot", Demo: TextChatDemo },
   {
     id: "nurture-campaign",
-    name: "Nurture Campaign — Quote Follow-Up",
+    name: "Nurture Campaign",
     Demo: FollowUpDemo,
   },
   {
     id: "nurture-winback",
-    name: "Nurture Campaign — Customer Win-Back",
+    name: "Customer Win-Back Campaign",
     Demo: WinBackDemo,
   },
 ];

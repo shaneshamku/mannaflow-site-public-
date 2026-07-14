@@ -101,13 +101,13 @@ const cards: Card[] = [
   },
   {
     icon: <ChatIcon />,
-    title: "Text & Website Booking",
+    title: "Website & Text Response",
     body: "Qualifies new leads, answers common questions, and helps move interested customers toward booking an appointment.",
     demoId: "chatbot",
   },
   {
     icon: <RefreshIcon />,
-    title: "Follow-Up Campaigns",
+    title: "Nurture Campaigns",
     body: "Keeps warm leads from going cold with timely follow-ups at every stage of the booking journey.",
     demoId: "nurture-campaign",
   },

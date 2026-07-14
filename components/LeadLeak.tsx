@@ -78,40 +78,40 @@ const ChannelsIcon = () => (
 
 type Card = {
   icon: ReactNode;
-  label: string;
-  value: string;
-  title: string;
+  num: string;
+  unit: string;
+  subtitle: string;
   body: string;
 };
 
 const cards: Card[] = [
   {
     icon: <ClockIcon />,
-    label: "Busy on Jobs",
-    value: "10+ hrs/wk",
-    title: "Missed inquiries",
-    body: "Leads come in while your team is serving customers, driving, or handling the next job.",
+    num: "10+",
+    unit: "hrs/week",
+    subtitle: "spent unable to answer new inquiries",
+    body: "New inquiries come in while your team is busy serving customers, on the road, or handling the next job.",
   },
   {
     icon: <MoonIcon />,
-    label: "COVERAGE",
-    value: "16+ hrs/day",
-    title: "After Hours",
-    body: "Customers still expect an answer when your office is closed or your team is off the clock.",
+    num: "16+",
+    unit: "hrs/day",
+    subtitle: "without live lead response",
+    body: "Customers expect an answer, even when your office is closed",
   },
   {
     icon: <CalendarIcon />,
-    label: "FOLLOW-UP",
-    value: "21 days",
-    title: "After the Quote",
-    body: "Timed check-ins keep open quotes warm until they book or say no.",
+    num: "21",
+    unit: "days",
+    subtitle: "before most quotes go cold",
+    body: "Without consistent follow-ups, interested customers move on.",
   },
   {
     icon: <ChannelsIcon />,
-    label: "COMMUNICATION",
-    value: "4 inboxes",
-    title: "Across Channels",
-    body: "Calls, texts, forms, and chats spread across different places create missed next steps.",
+    num: "4+",
+    unit: "channels",
+    subtitle: "where leads can disappear",
+    body: "Calls, text, forms, and chats across different channels make it easy for leads to slip through the cracks.",
   },
 ];
 
@@ -126,18 +126,21 @@ export default function LeadLeak() {
           between inquiry and response
         </h2>
         <p className="mf-gap-sub">
-          Homeowners do not wait around. Slow replies, missed after-hours
-          inquiries, and weak follow-up send them to the next contractor.
+          Homeowners do not wait around. Slow responses, missed after-hours
+          inquiries, and inconsistent follow-up give them every reason to
+          choose the next contractor.
         </p>
 
         <div className="mf-gap-grid">
           {cards.map((card) => (
-            <div key={card.label} className="mf-gap-cell">
-              <p className="mf-gap-title">{card.title}</p>
+            <div key={card.subtitle} className="mf-gap-cell">
               <div className="mf-gap-card">
                 <div className="mf-gap-icon">{card.icon}</div>
-                <p className="mf-gap-label">{card.label}</p>
-                <p className="mf-gap-value">{card.value}</p>
+                <p className="mf-gap-value">
+                  <span className="mf-gap-num">{card.num}</span>{" "}
+                  <span className="mf-gap-unit">{card.unit}</span>
+                </p>
+                <p className="mf-gap-subtitle">{card.subtitle}</p>
                 <span aria-hidden className="mf-gap-dash" />
                 <p className="mf-gap-body">{card.body}</p>
               </div>
