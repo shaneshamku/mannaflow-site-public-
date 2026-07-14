@@ -8,23 +8,39 @@
   font-display: swap;
 }
 
+/* Source of truth for the site palette. These names describe the colors as
+   actually used on the live pages — when restyling, change the value here
+   first, then migrate the raw hex usages that should follow it. */
 @theme {
   --font-brand: 'MontaguSlab', Georgia, serif;
-  /* Dark surfaces — charcoal, not green */
+
+  /* Dark surfaces — charcoal for nav/footer, deep ocean behind photo sections */
   --color-brand-charcoal: #14181A;
   --color-brand-charcoal-2: #1C2224;
+  --color-brand-ocean: #081924; /* Gap / How We Help / Book a Call backdrops */
+  --color-brand-ink-deep: #101B1B; /* mobile hero base */
   --color-hairline-dark: #2A3134;
+
   /* Light surfaces */
   --color-brand-cream: #F5F2EC;
   --color-brand-sand: #EAE5D9;
   --color-hairline-light: #DDD5C6;
+
   /* Text */
   --color-brand-ink: #212926;
   --color-brand-slate: #8A9BA3;
   --color-brand-mid: #627C85;
-  /* Accents — green for CTAs only, amber for everything warm */
-  --color-brand-emerald: #32DE8A;
+
+  /* Greens — the current palette (see feature/restyle-current-palette) */
+  --color-brand-forest: #12633B; /* primary CTA fill: hero CTAs, book submit, bridge card */
+  --color-brand-forest-hover: #0F5533;
+  --color-brand-green-accent: #228754; /* accent words inside headlines */
+  --color-brand-sage: #528562; /* eyebrows, labels, dashes on dark sections */
+  --color-brand-mint: #5FB187; /* carousel dots/dashes/arrow hovers on dark */
+  --color-brand-emerald: #32DE8A; /* legacy bright CTA — only .btn-primary still uses it */
   --color-brand-pine: #2E7D5B;
+
+  /* Warm accents */
   --color-brand-amber: #D98E4A;
   --color-brand-amber-deep: #A65F28;
 }
@@ -364,7 +380,7 @@ body {
   margin: 0;
   color: #D8DED8;
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 15x;
+  font-size: 16px; /* was invalid "15x"; 16px preserves the rendered size that shipped */
   font-weight: 400;
   font-variation-settings: 'opsz' 36, 'wght' 400;
   line-height: 1.35;
@@ -393,7 +409,7 @@ body {
   top: 488px; /* 553 − 65 */
   /* background-color: #146B4B; */
   background-color: #12633b;
-  color: #101b1b;
+  color: #D8DED8;
   border: none;
 }
 
@@ -422,9 +438,9 @@ body {
     min-height: calc(100vh - 64px);
     display: flex;
     align-items: center;
-    background-image: url("/pictures/new/wave-proper.png?v=2");
+    background-image: url("/pictures/new/desktop-hero.png");
     background-size: cover;
-    background-position: 20% 30%;
+    background-position: left center;
   }
 
   .mf-hero-inner {
@@ -454,10 +470,11 @@ body {
   .mf-hero-sub {
     position: static;
     width: auto;
-    max-width: 34ch;
+    max-width: 64ch;
     margin: 0 0 2.25rem;
     font-size: 1.35rem;
     line-height: 1.5;
+    white-space: nowrap;
   }
 
   .mf-hero-actions {
@@ -532,10 +549,10 @@ body {
 
 .mf-gap-headline {
   margin: 0 auto 0.9rem;
-  max-width: 20ch;
+  max-width: 26ch;
   text-align: center;
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.25rem, 4vw, 2.5rem);
   font-weight: 600;
   font-variation-settings: 'opsz' 48, 'wght' 600;
   line-height: 1.2;
@@ -563,6 +580,11 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+}
+
+.mf-gap-cell {
+  display: flex;
+  flex-direction: column;
 }
 
 .mf-gap-card {
@@ -637,7 +659,8 @@ body {
 }
 
 .mf-gap-title {
-  margin: 0.4rem 0 0;
+  margin: 0 0 0.6rem;
+  text-align: center;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 1rem;
   font-weight: 700;
@@ -732,6 +755,14 @@ body {
 }
 
 @media (min-width: 768px) {
+  .mf-gap {
+    background-image: url("/pictures/new/gap-bg-desktop.png");
+  }
+
+  .mf-gap-headline {
+    max-width: 20ch;
+  }
+
   .mf-gap-grid {
     gap: 16px;
   }
@@ -761,7 +792,7 @@ body {
   }
 
   .mf-gap-title {
-    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
     font-size: 1.12rem;
   }
 
@@ -802,9 +833,9 @@ body {
   position: relative;
   z-index: 5;
   transform: translateY(-50%);
-  width: 90%;
+  width: 74%;
   max-width: 38rem;
-  padding: 1.5rem 1.6rem;
+  padding: 1rem 1.2rem;
   border-radius: 16px;
   background-color: #12633b;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -815,7 +846,7 @@ body {
 .mf-bridge-text {
   margin: 0;
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(1.3rem, 4.6vw, 1.9rem);
+  font-size: clamp(1.02rem, 3.6vw, 1.25rem);
   font-weight: 600;
   font-variation-settings: 'opsz' 48, 'wght' 600;
   line-height: 1.2;
@@ -825,8 +856,12 @@ body {
 
 @media (min-width: 768px) {
   .mf-bridge-card {
-    max-width: 40rem;
-    padding: 1.85rem 2.25rem;
+    max-width: 32rem;
+    padding: 1.4rem 1.8rem;
+  }
+
+  .mf-bridge-text {
+    font-size: 1.35rem;
   }
 }
 
@@ -1192,6 +1227,12 @@ body {
 }
 
 @media (min-width: 768px) {
+  .mf-hwh {
+    background-image:
+      linear-gradient(rgba(6, 17, 28, 0.55), rgba(6, 18, 30, 0.62)),
+      url("/pictures/new/how-we-help-bg-desktop.png");
+  }
+
   .mf-hwh-stage {
     height: 420px;
   }
@@ -1476,6 +1517,88 @@ body {
   animation: mf-pulse 1.6s infinite ease-in-out;
 }
 
+/* ---- Maddie voice-demo trigger (AgencyIntro) ---- */
+
+.mf-maddie-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  width: 100%;
+  max-width: 26rem;
+  margin: 4.5rem auto 4rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+}
+
+.mf-maddie-orb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mf-maddie-orb-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.mf-maddie-eyebrow {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mf-maddie-title {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #212926;
+  margin-top: 0.15rem;
+}
+
+.mf-demo-maddie .mf-maddie-trigger {
+  margin: 2.75rem auto 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .mf-maddie-trigger {
+    max-width: 34rem;
+    margin: 3.5rem auto 3rem;
+    padding: 1.5rem 1.8rem;
+    gap: 1.2rem;
+  }
+
+  .mf-demo-maddie .mf-maddie-trigger {
+    margin: 3.5rem auto 3rem;
+  }
+
+  .mf-maddie-orb {
+    width: 64px;
+    height: 64px;
+  }
+
+  .mf-maddie-orb-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mf-maddie-eyebrow {
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .mf-maddie-title {
+    font-size: 1.25rem;
+  }
+}
+
 @keyframes mf-voice-orb-pulse {
   0% { transform: scale(1); opacity: 0.55; }
   100% { transform: scale(1.55); opacity: 0; }
@@ -1560,6 +1683,7 @@ details[open] > .faq-summary::after {
 
 .mf-demo-cta {
   background-color: #12633b;
+  color: #D8DED8;
 }
 
 .mf-demo-cta:hover {
@@ -1575,6 +1699,31 @@ details[open] > .faq-summary::after {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+/* ---- How It Works / Who We Help — desktop-only theme pass so these pages
+   match the /demo page's dark ocean hero + forest-green CTA. Mobile keeps
+   its existing flat-color hero and bright-green CTA untouched. ---- */
+
+.mf-page-cta {
+  background-color: #12633b;
+  color: #D8DED8;
+}
+
+.mf-page-cta:hover {
+  background-color: #0e4f2f;
+}
+
+@media (min-width: 768px) {
+  .mf-page-hero {
+    position: relative;
+    background-image:
+      linear-gradient(rgba(6, 17, 28, 0.6), rgba(6, 18, 30, 0.72)),
+      url("/pictures/new/how-we-help-bg.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
 }
 
 /* ---- Book a Call — dark ocean, floating cream form card ---- */
@@ -1799,7 +1948,7 @@ select.mf-book-input {
 
 /* Integration bar — logos scroll right-to-left and loop seamlessly */
 .mf-marquee {
-  margin-top: 2.75rem;
+  margin-top: 5.5rem;
   margin-bottom: 3rem;
   width: 100%;
   overflow: hidden;
@@ -1820,7 +1969,7 @@ select.mf-book-input {
 }
 @media (min-width: 768px) {
   .mf-marquee {
-    margin-top: 3.75rem;
+    margin-top: 4.5rem;
     margin-bottom: 4rem;
   }
 }
@@ -1876,3 +2025,6 @@ select.mf-book-input {
     display: none;
   }
 }
+
+
+

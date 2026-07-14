@@ -75,20 +75,13 @@ export default function VoiceDemoWidget() {
     <>
       {/* Trigger card */}
       <button
+        id="maddie-demo"
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-label="Talk to Maddie, our receptionist — opens a live voice demo"
+        className="mf-maddie-trigger"
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "0.9rem",
-          width: "100%",
-          maxWidth: "26rem",
-          margin: "2rem auto 0",
-          padding: "1rem 1.1rem",
-          borderRadius: "14px",
           border: "1px solid #DDD5C6",
           backgroundColor: "#FFFFFF",
           cursor: "pointer",
@@ -98,45 +91,21 @@ export default function VoiceDemoWidget() {
       >
         <span
           aria-hidden
+          className="mf-maddie-orb"
           style={{
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "48px",
-            height: "48px",
-            borderRadius: "50%",
-            flexShrink: 0,
             background: `radial-gradient(circle at 35% 30%, ${ACCENT}, #2E7D57)`,
           }}
         >
           <span className="mf-voice-orb-pulse" style={{ borderColor: ACCENT }} />
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <svg className="mf-maddie-orb-icon" viewBox="0 0 16 16" fill="none">
             <path d="M5 3.5v9l8-4.5-8-4.5z" fill="#F5F2EC" />
           </svg>
         </span>
         <span>
-          <span
-            style={{
-              display: "block",
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: ACCENT,
-            }}
-          >
+          <span className="mf-maddie-eyebrow" style={{ color: ACCENT }}>
             Live demo
           </span>
-          <span
-            style={{
-              display: "block",
-              fontSize: "0.98rem",
-              fontWeight: 600,
-              color: "#212926",
-              marginTop: "0.15rem",
-            }}
-          >
+          <span className="mf-maddie-title">
             Talk to Maddie, our receptionist
           </span>
         </span>

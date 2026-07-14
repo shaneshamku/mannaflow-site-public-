@@ -23,14 +23,17 @@ export default function ContractorsPage() {
       <main>
         <section
           style={{ backgroundColor: "#14181A", paddingTop: "64px" }}
-          className="py-16 md:py-24"
+          className="mf-page-hero py-16 md:py-24"
         >
           <div className="max-w-5xl mx-auto px-6 pt-10 md:pt-16">
-            <h1 className="type-headline mb-4 md:mb-6" style={{ color: "#F5F2EC" }}>
+            <h1
+              className="type-headline mb-4 md:mb-6 md:text-center"
+              style={{ color: "#F5F2EC" }}
+            >
               Built for contractors with more leads than time
             </h1>
             <p
-              className="type-subhead"
+              className="type-subhead md:text-center md:mx-auto"
               style={{ color: "#C9CFCC", maxWidth: "58ch" }}
             >
               MannaFlow is for trade and service businesses that already get
@@ -67,7 +70,7 @@ export default function ContractorsPage() {
             </div>
 
             <div className="pt-10 md:pt-14">
-              <a href="/book-demo" className="btn-primary">
+              <a href="/book-demo" className="btn-primary mf-page-cta">
                 See If MannaFlow Fits
               </a>
             </div>

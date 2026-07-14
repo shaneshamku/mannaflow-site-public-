@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Nav() {
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-0 left-0 right-0 z-[100]"
       style={{ backgroundColor: "#101b1b" }}
     >
       <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[65px] md:h-16">

@@ -87,10 +87,10 @@ type Card = {
 const cards: Card[] = [
   {
     icon: <ClockIcon />,
-    label: "Time",
+    label: "Busy on Jobs",
     value: "10+ hrs/wk",
-    title: "During the Job",
-    body: "Calls come in while techs are busy, driving, or finishing the last appointment.",
+    title: "Unable to answer new inquiries",
+    body: "Leads come in while your team is serving customers, driving, or handling the next job.",
   },
   {
     icon: <MoonIcon />,
@@ -121,7 +121,9 @@ export default function LeadLeak() {
       <div className="max-w-6xl mx-auto px-6">
         <p className="mf-gap-eyebrow">Where Leads Leak</p>
         <h2 className="mf-gap-headline">
-          Good leads are not always lost because of price
+          Good leads are lost{" "}
+          <br className="mf-br" />
+          between inquiry and response
         </h2>
         <p className="mf-gap-sub">
           They are lost when calls wait, quotes go cold, and follow-up depends
@@ -130,13 +132,15 @@ export default function LeadLeak() {
 
         <div className="mf-gap-grid">
           {cards.map((card) => (
-            <div key={card.label} className="mf-gap-card">
-              <div className="mf-gap-icon">{card.icon}</div>
-              <p className="mf-gap-label">{card.label}</p>
-              <p className="mf-gap-value">{card.value}</p>
+            <div key={card.label} className="mf-gap-cell">
               <p className="mf-gap-title">{card.title}</p>
-              <span aria-hidden className="mf-gap-dash" />
-              <p className="mf-gap-body">{card.body}</p>
+              <div className="mf-gap-card">
+                <div className="mf-gap-icon">{card.icon}</div>
+                <p className="mf-gap-label">{card.label}</p>
+                <p className="mf-gap-value">{card.value}</p>
+                <span aria-hidden className="mf-gap-dash" />
+                <p className="mf-gap-body">{card.body}</p>
+              </div>
             </div>
           ))}
         </div>
