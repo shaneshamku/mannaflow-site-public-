@@ -1,4 +1,13 @@
+"use client";
+
 export default function Hero() {
+  function scrollToMaddie(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    document
+      .getElementById("maddie-demo")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   return (
     <section id="hero" className="mf-hero">
       {/* Wave photo lives on the body only, below the header. Exact asset —
@@ -28,7 +37,8 @@ export default function Hero() {
               Book a Free Demo
             </a>
             <a
-              href="#how-it-works"
+              href="#maddie-demo"
+              onClick={scrollToMaddie}
               className="mf-hero-cta mf-hero-cta--secondary"
             >
               See How It Works

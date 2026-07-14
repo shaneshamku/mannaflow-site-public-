@@ -6,6 +6,7 @@ import TextChatDemo from "@/components/demos/TextChatDemo";
 import FollowUpDemo from "@/components/demos/FollowUpDemo";
 import WinBackDemo from "@/components/demos/WinBackDemo";
 import DemoCarousel from "@/components/demos/DemoCarousel";
+import VoiceDemoWidget from "@/components/demos/VoiceDemoWidget";
 
 export const metadata: Metadata = {
   title: "See Demo | MannaFlow",
@@ -45,12 +46,16 @@ export default function DemoPage() {
               See MannaFlow <span style={{ color: "#12633b" }}>in action</span>
             </h1>
             <p
-              className="type-subhead"
+              className="type-subhead text-center mx-auto"
               style={{ color: "#C9CFCC", maxWidth: "58ch" }}
             >
               Watch how MannaFlow handles common lead situations contractors
               deal with every week.
             </p>
+
+            <div className="mf-demo-maddie flex justify-center mt-6">
+              <VoiceDemoWidget />
+            </div>
           </div>
         </section>
 
@@ -60,7 +65,7 @@ export default function DemoPage() {
         >
           <div className="max-w-6xl mx-auto px-6">
             <p
-              className="type-body mb-8 md:mb-14"
+              className="type-body mb-8 md:mb-14 text-center mx-auto"
               style={{ color: "#212926", maxWidth: "58ch" }}
             >
               These demos show the types of conversations MannaFlow can help

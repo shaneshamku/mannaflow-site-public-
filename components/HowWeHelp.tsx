@@ -96,25 +96,25 @@ const cards: Card[] = [
   {
     icon: <PhoneIcon />,
     title: "Call Coverage",
-    body: "Answers callers when your team is busy, after hours, or away from the phone.",
+    body: "Ensures every caller gets an answer, even when your team is busy, after hours, or away from the phone.",
     demoId: "voice-agent",
   },
   {
     icon: <ChatIcon />,
     title: "Text & Website Booking",
-    body: "Collects job details, answers common questions, and moves visitors toward a booked time.",
+    body: "Qualifies new leads, answers common questions, and helps move interested customers toward booking an appointment.",
     demoId: "chatbot",
   },
   {
     icon: <RefreshIcon />,
     title: "Follow-Up Campaigns",
-    body: "Send timely check-ins for open quotes, missed calls, and non-books based on past customers.",
+    body: "Keeps warm leads from going cold with timely follow-ups at every stage of the booking journey.",
     demoId: "nurture-campaign",
   },
   {
     icon: <WinBackIcon />,
     title: "Win-Back Campaigns",
-    body: "Specifically targets past customers who have gone inactive, using targeted offers, check-ins, or updates to bring them back.",
+    body: "Re-engages past customers with timely reminders, seasonal outreach, and service offers that bring them back.",
     demoId: "nurture-winback",
   },
   {
@@ -161,7 +161,7 @@ export default function HowWeHelp() {
       <div className="max-w-3xl mx-auto px-6">
         <p className="mf-hwh-eyebrow">How We Help</p>
         <h2 className="mf-hwh-headline">
-          The lead work your team should not have to chase
+          The repetitive lead work we handle for you
         </h2>
         <p className="mf-hwh-sub">
           MannaFlow keeps calls, messages, follow-ups, and the customer journey

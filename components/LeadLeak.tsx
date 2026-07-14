@@ -87,31 +87,31 @@ type Card = {
 const cards: Card[] = [
   {
     icon: <ClockIcon />,
-    label: "Time",
+    label: "Busy on Jobs",
     value: "10+ hrs/wk",
-    title: "During the Job",
-    body: "Calls come in while techs are busy, driving, or finishing the last appointment.",
+    title: "Missed inquiries",
+    body: "Leads come in while your team is serving customers, driving, or handling the next job.",
   },
   {
     icon: <MoonIcon />,
-    label: "Coverage",
-    value: "Nights + weekends",
+    label: "COVERAGE",
+    value: "16+ hrs/day",
     title: "After Hours",
-    body: "Leads still need more than a message taken by someone else.",
+    body: "Customers still expect an answer when your office is closed or your team is off the clock.",
   },
   {
     icon: <CalendarIcon />,
-    label: "Follow-up",
-    value: "21-day sequence",
+    label: "FOLLOW-UP",
+    value: "21 days",
     title: "After the Quote",
     body: "Timed check-ins keep open quotes warm until they book or say no.",
   },
   {
     icon: <ChannelsIcon />,
-    label: "Leakage",
-    value: "3–7 jobs/mo",
+    label: "COMMUNICATION",
+    value: "4 inboxes",
     title: "Across Channels",
-    body: "Scattered calls, texts, forms, and chats create missed next steps.",
+    body: "Calls, texts, forms, and chats spread across different places create missed next steps.",
   },
 ];
 
@@ -121,22 +121,26 @@ export default function LeadLeak() {
       <div className="max-w-6xl mx-auto px-6">
         <p className="mf-gap-eyebrow">Where Leads Leak</p>
         <h2 className="mf-gap-headline">
-          Good leads are not always lost because of price
+          Good leads are lost{" "}
+          <br className="mf-br" />
+          between inquiry and response
         </h2>
         <p className="mf-gap-sub">
-          They are lost when calls wait, quotes go cold, and follow-up depends
-          on whoever has time that day.
+          Homeowners do not wait around. Slow replies, missed after-hours
+          inquiries, and weak follow-up send them to the next contractor.
         </p>
 
         <div className="mf-gap-grid">
           {cards.map((card) => (
-            <div key={card.label} className="mf-gap-card">
-              <div className="mf-gap-icon">{card.icon}</div>
-              <p className="mf-gap-label">{card.label}</p>
-              <p className="mf-gap-value">{card.value}</p>
+            <div key={card.label} className="mf-gap-cell">
               <p className="mf-gap-title">{card.title}</p>
-              <span aria-hidden className="mf-gap-dash" />
-              <p className="mf-gap-body">{card.body}</p>
+              <div className="mf-gap-card">
+                <div className="mf-gap-icon">{card.icon}</div>
+                <p className="mf-gap-label">{card.label}</p>
+                <p className="mf-gap-value">{card.value}</p>
+                <span aria-hidden className="mf-gap-dash" />
+                <p className="mf-gap-body">{card.body}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -154,8 +158,8 @@ export default function LeadLeak() {
             </svg>
           </span>
           <p>
-            Modeled estimate. Your demo will calculate the gap using your actual
-            lead flow.
+            Modeled estimate and based on industry averages. Your demo will
+            calculate the gap using your actual lead flow
           </p>
         </div>
 
