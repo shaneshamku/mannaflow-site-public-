@@ -89,29 +89,29 @@ const cards: Card[] = [
     icon: <ClockIcon />,
     label: "Busy on Jobs",
     value: "10+ hrs/wk",
-    title: "Unable to answer new inquiries",
+    title: "Missed inquiries",
     body: "Leads come in while your team is serving customers, driving, or handling the next job.",
   },
   {
     icon: <MoonIcon />,
-    label: "Coverage",
-    value: "Nights + weekends",
+    label: "COVERAGE",
+    value: "16+ hrs/day",
     title: "After Hours",
-    body: "Leads still need more than a message taken by someone else.",
+    body: "Customers still expect an answer when your office is closed or your team is off the clock.",
   },
   {
     icon: <CalendarIcon />,
-    label: "Follow-up",
-    value: "21-day sequence",
+    label: "FOLLOW-UP",
+    value: "21 days",
     title: "After the Quote",
     body: "Timed check-ins keep open quotes warm until they book or say no.",
   },
   {
     icon: <ChannelsIcon />,
-    label: "Leakage",
-    value: "3–7 jobs/mo",
+    label: "COMMUNICATION",
+    value: "4 inboxes",
     title: "Across Channels",
-    body: "Scattered calls, texts, forms, and chats create missed next steps.",
+    body: "Calls, texts, forms, and chats spread across different places create missed next steps.",
   },
 ];
 
@@ -126,8 +126,8 @@ export default function LeadLeak() {
           between inquiry and response
         </h2>
         <p className="mf-gap-sub">
-          They are lost when calls wait, quotes go cold, and follow-up depends
-          on whoever has time that day.
+          Homeowners do not wait around. Slow replies, missed after-hours
+          inquiries, and weak follow-up send them to the next contractor.
         </p>
 
         <div className="mf-gap-grid">
@@ -158,8 +158,8 @@ export default function LeadLeak() {
             </svg>
           </span>
           <p>
-            Modeled estimate. Your demo will calculate the gap using your actual
-            lead flow.
+            Modeled estimate and based on industry averages. Your demo will
+            calculate the gap using your actual lead flow
           </p>
         </div>
 

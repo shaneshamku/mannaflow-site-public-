@@ -552,7 +552,7 @@ body {
   max-width: 26ch;
   text-align: center;
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(1.25rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 600;
   font-variation-settings: 'opsz' 48, 'wght' 600;
   line-height: 1.2;
@@ -579,7 +579,9 @@ body {
 .mf-gap-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-auto-rows: 1fr;
+  column-gap: 10px;
+  row-gap: 44px;
 }
 
 .mf-gap-cell {
@@ -588,6 +590,7 @@ body {
 }
 
 .mf-gap-card {
+  flex: 1;
   padding: 1.1rem 1rem 1.2rem;
   border-radius: 14px;
   background-color: rgba(10, 20, 30, 0.66);
@@ -659,7 +662,20 @@ body {
 }
 
 .mf-gap-title {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 2.35rem;
   margin: 0 0 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(82, 133, 98, 0.55);
+  border-radius: 999px;
+  background-color: rgba(82, 133, 98, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  white-space: nowrap;
   text-align: center;
   font-family: 'MontaguSlab', Georgia, serif;
   font-size: 1rem;
@@ -764,6 +780,7 @@ body {
   }
 
   .mf-gap-grid {
+    grid-auto-rows: 1fr;
     gap: 16px;
   }
 
@@ -2025,6 +2042,3 @@ select.mf-book-input {
     display: none;
   }
 }
-
-
-
