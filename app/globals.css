@@ -614,7 +614,8 @@ body {
   transition-duration: 0.08s;
 }
 
-.mf-gap-card:hover .mf-gap-value {
+.mf-gap-card:hover .mf-gap-num,
+.mf-gap-card:hover .mf-gap-unit {
   color: #FFFFFF;
 }
 
@@ -638,52 +639,41 @@ body {
   height: 30px;
 }
 
-.mf-gap-label {
-  margin: 0 0 0.4rem;
-  font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 0.66rem;
-  font-weight: 700;
-  font-variation-settings: 'opsz' 24, 'wght' 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: #528562;
-}
-
+/* Value splits into a bold number + light unit, followed by a
+   sentence-case subtitle. Desktop sizing overrides live in the
+   min-width: 768px block below. */
 .mf-gap-value {
   margin: 0;
+  line-height: 1.15;
+}
+
+.mf-gap-num {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: clamp(1.3rem, 5.6vw, 1.6rem);
-  font-weight: 400;
-  font-variation-settings: 'opsz' 48, 'wght' 400;
-  line-height: 1.1;
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variation-settings: 'opsz' 48, 'wght' 700;
   letter-spacing: -0.02em;
   color: #F5F2EC;
   transition: color 0.25s ease;
 }
 
-.mf-gap-title {
-  align-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  min-height: 2.35rem;
-  margin: 0 0 0.6rem;
-  padding: 0.45rem 0.55rem;
-  border: 1px solid rgba(82, 133, 98, 0.55);
-  border-radius: 999px;
-  background-color: rgba(82, 133, 98, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  white-space: nowrap;
-  text-align: center;
+.mf-gap-unit {
   font-family: 'MontaguSlab', Georgia, serif;
-  font-size: 1rem;
-  font-weight: 700;
-  font-variation-settings: 'opsz' 36, 'wght' 700;
-  line-height: 1.25;
-  letter-spacing: -0.005em;
-  color: #F3EFE6;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 36, 'wght' 400;
+  color: #F5F2EC;
+  transition: color 0.25s ease;
+}
+
+.mf-gap-subtitle {
+  margin: 0.45rem 0 0;
+  font-family: 'MontaguSlab', Georgia, serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 36, 'wght' 400;
+  line-height: 1.35;
+  color: #D9D2C2;
 }
 
 .mf-gap-dash {
@@ -797,20 +787,19 @@ body {
     height: 34px;
   }
 
-  .mf-gap-label {
-    margin-bottom: 0.55rem;
-    font-size: 0.74rem;
-    letter-spacing: 0.18em;
+  .mf-gap-num {
+    font-size: clamp(2.1rem, 2.6vw, 2.5rem);
+    font-variation-settings: 'opsz' 60, 'wght' 700;
   }
 
-  .mf-gap-value {
-    font-size: clamp(1.55rem, 2.2vw, 1.9rem);
-    font-variation-settings: 'opsz' 60, 'wght' 400;
+  .mf-gap-unit {
+    font-size: clamp(1.2rem, 1.5vw, 1.35rem);
+    font-variation-settings: 'opsz' 48, 'wght' 400;
   }
 
-  .mf-gap-title {
-    margin-bottom: 0.75rem;
-    font-size: 1.12rem;
+  .mf-gap-subtitle {
+    margin-top: 0.55rem;
+    font-size: 1.05rem;
   }
 
   .mf-gap-dash {
