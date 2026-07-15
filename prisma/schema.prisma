@@ -1,0 +1,169 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["hvac"]
+}
+
+enum HvacPipelineStage {
+  NEW_LEAD
+  CONTACTED
+  QUOTE_SENT
+  JOB_BOOKED
+  JOB_COMPLETE
+  INVOICE_SENT
+  PAID
+
+  @@schema("hvac")
+}
+
+enum HvacServiceType {
+  REPAIR
+  INSTALLATION
+  MAINTENANCE
+  EMERGENCY
+
+  @@schema("hvac")
+}
+
+enum HvacUrgencyLevel {
+  ROUTINE
+  URGENT
+  EMERGENCY
+
+  @@schema("hvac")
+}
+
+enum HvacActivityType {
+  CALL
+  SMS
+  EMAIL
+  NOTE
+  STAGE_CHANGE
+
+  @@schema("hvac")
+}
+
+enum HvacDirection {
+  INBOUND
+  OUTBOUND
+
+  @@schema("hvac")
+}
+
+enum HvacMessageRole {
+  USER
+  ASSISTANT
+
+  @@schema("hvac")
+}
+
+enum HvacCampaignStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+
+  @@schema("hvac")
+}
+
+model HvacLead {
+  id               String             @id @default(uuid())
+  name             String?
+  phone            String             @unique
+  email            String?
+  address          String?
+  issueDescription String?
+  serviceType      HvacServiceType?
+  urgencyLevel     HvacUrgencyLevel?
+  leadSource       String             @default("Unknown")
+  notes            String?
+  currentStage     HvacPipelineStage  @default(NEW_LEAD)
+  dateEnteredStage DateTime           @default(now())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  activityLogs HvacActivityLog[]
+  chatMessages HvacChatMessage[]
+  campaigns    HvacCampaignLead[]
+
+  @@schema("hvac")
+}
+
+model HvacActivityLog {
+  id        String           @id @default(uuid())
+  leadId    String
+  type      HvacActivityType
+  direction HvacDirection?
+  content   String
+  timestamp DateTime         @default(now())
+
+  lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@schema("hvac")
+}
+
+model HvacChatMessage {
+  id        String          @id @default(uuid())
+  leadId    String
+  role      HvacMessageRole
+  content   String
+  escalated Boolean         @default(false)
+  timestamp DateTime        @default(now())
+
+  lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@schema("hvac")
+}
+
+model HvacFollowUpJob {
+  id          String   @id @default(uuid())
+  leadId      String   @unique
+  phone       String
+  scheduledAt DateTime
+  sent        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@schema("hvac")
+}
+
+model HvacTechUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  @@schema("hvac")
+}
+
+model HvacCampaign {
+  id          String             @id @default(uuid())
+  name        String
+  path        String?
+  description String?
+  status      HvacCampaignStatus @default(ACTIVE)
+  steps       Json               @default("[]")
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  leads HvacCampaignLead[]
+
+  @@schema("hvac")
+}
+
+model HvacCampaignLead {
+  id         String   @id @default(uuid())
+  campaignId String
+  leadId     String
+  assignedAt DateTime @default(now())
+
+  campaign HvacCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead     HvacLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, leadId])
+  @@schema("hvac")
+}

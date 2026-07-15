@@ -17,6 +17,7 @@ export default function Nav() {
             priority
           />
           <span
+            className="hidden sm:inline"
             style={{
               color: "#F5F2EC",
               fontFamily: "'MontaguSlab', Georgia, serif",
@@ -45,30 +46,45 @@ export default function Nav() {
           </a>
         </div>
 
-        <a
-          href="/book-demo"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "39px",
-            minWidth: "135px",
-            padding: "0 1.25rem",
-            backgroundColor: "#12633b",
-            color: "#D8DED8",
-            fontFamily: "'MontaguSlab', Georgia, serif",
-            fontSize: "0.75rem",
-            fontWeight: 700,
-            fontVariationSettings: "'opsz' 36, 'wght' 700",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            textDecoration: "none",
-            borderRadius: "10px",
-            border: "none",
-          }}
-        >
-          Book a Demo
-        </a>
+        <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          <a
+            href="/login"
+            className="inline-flex items-center justify-center h-[39px] px-3 md:px-5 md:min-w-[90px] whitespace-nowrap text-[0.7rem] md:text-xs"
+            style={{
+              backgroundColor: "transparent",
+              color: "#D8DED8",
+              fontFamily: "'MontaguSlab', Georgia, serif",
+              fontWeight: 700,
+              fontVariationSettings: "'opsz' 36, 'wght' 700",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              borderRadius: "10px",
+              border: "1px solid #2A3134",
+            }}
+          >
+            Sign In
+          </a>
+
+          <a
+            href="/book-demo"
+            className="inline-flex items-center justify-center h-[39px] px-3 md:px-5 md:min-w-[135px] whitespace-nowrap text-[0.7rem] md:text-xs"
+            style={{
+              backgroundColor: "#12633b",
+              color: "#D8DED8",
+              fontFamily: "'MontaguSlab', Georgia, serif",
+              fontWeight: 700,
+              fontVariationSettings: "'opsz' 36, 'wght' 700",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              borderRadius: "10px",
+              border: "none",
+            }}
+          >
+            Book a Demo
+          </a>
+        </div>
       </nav>
     </header>
   );

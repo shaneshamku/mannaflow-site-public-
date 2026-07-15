@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import "./globals.css";
+import "./hvac-app.css";
+import { SessionProvider } from "@/components/providers/SessionProvider";
+
+// Geist is used only by the signed-in HVAC app (via the --font-geist-sans
+// CSS var referenced in hvac-app.css). Declaring the variable here does not
+// change the marketing pages' font.
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export const metadata: Metadata = {
   title: "MannaFlow | Saving Time and Money on Every Lead",
@@ -24,8 +32,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={geist.variable}>
+      <body>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
