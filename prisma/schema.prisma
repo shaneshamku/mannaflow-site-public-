@@ -155,11 +155,22 @@ model HvacCampaign {
   @@schema("hvac")
 }
 
+enum HvacCampaignLeadStatus {
+  ACTIVE
+  STOPPED
+  COMPLETED
+
+  @@schema("hvac")
+}
+
 model HvacCampaignLead {
-  id         String   @id @default(uuid())
-  campaignId String
-  leadId     String
-  assignedAt DateTime @default(now())
+  id                String                 @id @default(uuid())
+  campaignId        String
+  leadId            String
+  assignedAt        DateTime               @default(now())
+  status            HvacCampaignLeadStatus @default(ACTIVE)
+  lastStepIndexSent Int                    @default(-1)
+  stoppedReason     String?
 
   campaign HvacCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   lead     HvacLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
