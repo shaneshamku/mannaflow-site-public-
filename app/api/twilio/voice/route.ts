@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSMS } from "@/lib/twilio";
 import { prisma } from "@/lib/prisma";
+import { autoAssignPathAOnMissedCall } from "@/lib/campaigns";
 
 const INITIAL_SMS =
   "Hi, thanks for calling MannaFlow HVAC! We missed your call — let us know what's going on with your HVAC system and we'll get back to you fast.";
@@ -34,12 +35,7 @@ export async function POST(req: NextRequest) {
         ],
       });
 
-      const followUpAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      await prisma.hvacFollowUpJob.upsert({
-        where: { leadId: lead.id },
-        update: { scheduledAt: followUpAt, sent: false },
-        create: { leadId: lead.id, phone: from, scheduledAt: followUpAt },
-      });
+      await autoAssignPathAOnMissedCall(lead.id);
     }
   } catch (err) {
     console.error("twilio/voice error:", err);

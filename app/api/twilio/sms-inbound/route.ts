@@ -3,6 +3,7 @@ import { sendSMS } from "@/lib/twilio";
 import { prisma } from "@/lib/prisma";
 import { anthropic, SYSTEM_PROMPT, INFO_EXTRACT_PROMPT, shouldEscalate } from "@/lib/claude";
 import { sendEscalationAlert } from "@/lib/resend";
+import { autoAssignPathBOnInboundReply } from "@/lib/campaigns";
 import { HvacServiceType, HvacUrgencyLevel } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
@@ -22,9 +23,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Customer replied — cancel the 24h follow-up
-  await prisma.hvacFollowUpJob.deleteMany({ where: { leadId: lead.id } });
-
   // Persist inbound message
   await prisma.hvacChatMessage.create({
     data: { leadId: lead.id, role: "USER", content: messageBody },
@@ -33,10 +31,12 @@ export async function POST(req: NextRequest) {
     data: { leadId: lead.id, type: "SMS", direction: "INBOUND", content: messageBody },
   });
 
+  await autoAssignPathBOnInboundReply(lead.id);
+
   // Hard trigger check
   if (shouldEscalate(messageBody)) {
     const escalationMsg =
-      "I've flagged this as urgent. A technician will reach out to you very shortly — please call 911 if this is a safety emergency.";
+      "I've flagged this as urgent. A technician will reach out to you very shortly, please call 911 if this is a safety emergency.";
     await sendSMS(from, escalationMsg);
     await persistAndEscalate(lead.id, from, lead.name, escalationMsg);
     return new NextResponse("", { status: 200 });

@@ -147,6 +147,7 @@ model HvacCampaign {
   description String?
   status      HvacCampaignStatus @default(ACTIVE)
   steps       Json               @default("[]")
+  timezone    String             @default("UTC")
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
@@ -171,6 +172,7 @@ model HvacCampaignLead {
   status            HvacCampaignLeadStatus @default(ACTIVE)
   lastStepIndexSent Int                    @default(-1)
   stoppedReason     String?
+  stepOverrides     Json?
 
   campaign HvacCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   lead     HvacLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
