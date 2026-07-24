@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node scripts/seed-local.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
