@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { HvacPipelineStage } from "@prisma/client";
+import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 export async function PATCH(req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id } = await params;
   const { stage } = (await req.json()) as { stage: HvacPipelineStage };
 
-  const lead = await prisma.hvacLead.findUnique({ where: { id } });
+  const lead = await prisma.hvacLead.findFirst({ where: { id, ...organizationScope(access) } });
   if (!lead) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const updated = await prisma.hvacLead.update({
@@ -24,6 +23,7 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   await prisma.hvacActivityLog.create({
     data: {
       leadId: id,
+      organizationId: lead.organizationId,
       type: "STAGE_CHANGE",
       content: `Stage changed from ${lead.currentStage} to ${stage}`,
     },

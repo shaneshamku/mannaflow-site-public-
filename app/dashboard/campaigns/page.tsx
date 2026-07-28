@@ -1,20 +1,21 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { CampaignsExplorer } from "@/components/campaigns/CampaignsExplorer";
 
 export default async function CampaignsPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  const access = await getDashboardAccess();
+  if (!access) redirect("/login");
 
   const [campaigns, leads] = await Promise.all([
     prisma.hvacCampaign.findMany({
+      where: organizationScope(access),
       orderBy: { createdAt: "asc" },
       include: { _count: { select: { leads: true } } },
     }),
     prisma.hvacLead.findMany({
+      where: organizationScope(access),
       orderBy: { createdAt: "desc" },
       select: { id: true, name: true, phone: true, currentStage: true },
     }),

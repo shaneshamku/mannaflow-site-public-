@@ -12,33 +12,40 @@ export async function POST(req: NextRequest) {
   body.forEach((v, k) => { params[k] = v.toString(); });
 
   const from = params["From"];
+  const to = params["To"];
   const messageBody = params["Body"]?.trim();
   if (!from || !messageBody) return new NextResponse("", { status: 200 });
 
+  const organization = to ? await prisma.hvacOrganization.findUnique({ where: { inboundPhone: to } }) : null;
+  if (!organization?.inboundPhone) {
+    console.error("twilio/sms-inbound rejected: inbound number is not assigned to an organization");
+    return new NextResponse("", { status: 200 });
+  }
+
   // Upsert lead
-  let lead = await prisma.hvacLead.findUnique({ where: { phone: from } });
+  let lead = await prisma.hvacLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
   if (!lead) {
     lead = await prisma.hvacLead.create({
-      data: { phone: from, leadSource: "Inbound SMS", currentStage: "NEW_LEAD", dateEnteredStage: new Date() },
+      data: { organizationId: organization.id, phone: from, leadSource: "Inbound SMS", currentStage: "NEW_LEAD", dateEnteredStage: new Date() },
     });
   }
 
   // Persist inbound message
   await prisma.hvacChatMessage.create({
-    data: { leadId: lead.id, role: "USER", content: messageBody },
+    data: { leadId: lead.id, organizationId: organization.id, role: "USER", content: messageBody },
   });
   await prisma.hvacActivityLog.create({
-    data: { leadId: lead.id, type: "SMS", direction: "INBOUND", content: messageBody },
+    data: { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "INBOUND", content: messageBody },
   });
 
-  await autoAssignPathBOnInboundReply(lead.id);
+  await autoAssignPathBOnInboundReply(lead.id, organization.id);
 
   // Hard trigger check
   if (shouldEscalate(messageBody)) {
     const escalationMsg =
       "I've flagged this as urgent. A technician will reach out to you very shortly, please call 911 if this is a safety emergency.";
-    await sendSMS(from, escalationMsg);
-    await persistAndEscalate(lead.id, from, lead.name, escalationMsg);
+    await sendSMS(from, escalationMsg, organization.inboundPhone);
+    await persistAndEscalate(lead.id, organization.id, from, lead.name, escalationMsg);
     return new NextResponse("", { status: 200 });
   }
 
@@ -70,13 +77,13 @@ export async function POST(req: NextRequest) {
   const isEscalation = rawReply.startsWith("[ESCALATE]");
   const replyText = isEscalation ? rawReply.slice("[ESCALATE]".length).trim() : rawReply;
 
-  await sendSMS(from, replyText);
+  await sendSMS(from, replyText, organization.inboundPhone);
 
   await prisma.hvacChatMessage.create({
-    data: { leadId: lead.id, role: "ASSISTANT", content: replyText, escalated: isEscalation },
+    data: { leadId: lead.id, organizationId: organization.id, role: "ASSISTANT", content: replyText, escalated: isEscalation },
   });
   await prisma.hvacActivityLog.create({
-    data: { leadId: lead.id, type: "SMS", direction: "OUTBOUND", content: replyText },
+    data: { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "OUTBOUND", content: replyText },
   });
 
   // Auto-update lead record with any info Claude extracted
@@ -85,7 +92,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (isEscalation) {
-    await alertTech(lead.id, from, lead.name);
+    await alertTech(lead.id, organization.id, from, lead.name);
   }
 
   return new NextResponse("", { status: 200 });
@@ -141,20 +148,21 @@ async function updateLeadFromExtraction(
 
 async function persistAndEscalate(
   leadId: string,
+  organizationId: string,
   phone: string,
   name: string | null,
   sentMsg: string
 ) {
   await prisma.hvacChatMessage.create({
-    data: { leadId, role: "ASSISTANT", content: sentMsg, escalated: true },
+    data: { leadId, organizationId, role: "ASSISTANT", content: sentMsg, escalated: true },
   });
   await prisma.hvacActivityLog.create({
-    data: { leadId, type: "SMS", direction: "OUTBOUND", content: sentMsg },
+    data: { leadId, organizationId, type: "SMS", direction: "OUTBOUND", content: sentMsg },
   });
-  await alertTech(leadId, phone, name);
+  await alertTech(leadId, organizationId, phone, name);
 }
 
-async function alertTech(leadId: string, phone: string, name: string | null) {
+async function alertTech(leadId: string, organizationId: string, phone: string, name: string | null) {
   const transcript = await prisma.hvacChatMessage.findMany({
     where: { leadId },
     orderBy: { timestamp: "asc" },
@@ -168,6 +176,6 @@ async function alertTech(leadId: string, phone: string, name: string | null) {
   await sendEscalationAlert(phone, name, transcript);
 
   await prisma.hvacActivityLog.create({
-    data: { leadId, type: "NOTE", content: "Conversation escalated — tech alert sent" },
+    data: { leadId, organizationId, type: "NOTE", content: "Conversation escalated — tech alert sent" },
   });
 }

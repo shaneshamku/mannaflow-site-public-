@@ -33,8 +33,8 @@ cp .env.example .env
 # 3. Start local Postgres (creates the `hvac` schema automatically)
 docker-compose up -d
 
-# 4. Apply the Prisma schema to it
-npm run db:push
+# 4. Apply reviewed Prisma migrations
+npx prisma migrate deploy
 
 # 5. Seed a dashboard login + realistic sample leads/campaigns/activity
 npm run db:seed
@@ -42,6 +42,10 @@ npm run db:seed
 # 6. Start the app
 npm run dev
 ```
+
+The local seed creates `dev@local.test` / `localdev123` (internal admin) and
+`client-demo@local.test` / `clientdemo123` (Client Demo admin). Run
+`npm run test:e2e` to verify local cross-tenant access controls.
 
 Open [http://localhost:3000/login](http://localhost:3000/login) and sign in with:
 

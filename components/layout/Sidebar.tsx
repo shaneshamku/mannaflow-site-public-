@@ -11,7 +11,7 @@ const nav = [
   { href: "/dashboard/analytics", label: "Analytics", icon: "📊" },
 ];
 
-export function Sidebar() {
+export function Sidebar({ organizationName, internal }: { organizationName: string; internal: boolean }) {
   const path = usePathname();
 
   return (
@@ -21,7 +21,7 @@ export function Sidebar() {
           <span className="text-xl">🔧</span>
           <h1 className="text-white font-bold text-lg leading-tight">MannaFlow</h1>
         </div>
-        <p className="text-gray-400 text-xs">HVAC CRM</p>
+        <p className="text-gray-400 text-xs">{internal ? "Internal workspace" : organizationName}</p>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">

@@ -71,10 +71,37 @@ enum HvacCampaignStatus {
   @@schema("hvac")
 }
 
+enum HvacUserRole {
+  INTERNAL_ADMIN
+  CLIENT_ADMIN
+  CLIENT_MEMBER
+
+  @@schema("hvac")
+}
+
+model HvacOrganization {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  inboundPhone  String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  users          HvacTechUser[]
+  leads          HvacLead[]
+  campaigns      HvacCampaign[]
+  activityLogs   HvacActivityLog[]
+  chatMessages   HvacChatMessage[]
+  followUpJobs   HvacFollowUpJob[]
+  campaignLeads  HvacCampaignLead[]
+
+  @@schema("hvac")
+}
+
 model HvacLead {
   id               String             @id @default(uuid())
   name             String?
-  phone            String             @unique
+  organizationId   String
+  phone            String
   email            String?
   address          String?
   issueDescription String?
@@ -90,44 +117,57 @@ model HvacLead {
   activityLogs HvacActivityLog[]
   chatMessages HvacChatMessage[]
   campaigns    HvacCampaignLead[]
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
+  @@unique([organizationId, phone])
+  @@index([organizationId])
   @@schema("hvac")
 }
 
 model HvacActivityLog {
   id        String           @id @default(uuid())
   leadId    String
+  organizationId String
   type      HvacActivityType
   direction HvacDirection?
   content   String
   timestamp DateTime         @default(now())
 
   lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
+  @@index([organizationId])
   @@schema("hvac")
 }
 
 model HvacChatMessage {
   id        String          @id @default(uuid())
   leadId    String
+  organizationId String
   role      HvacMessageRole
   content   String
   escalated Boolean         @default(false)
   timestamp DateTime        @default(now())
 
   lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
+  @@index([organizationId])
   @@schema("hvac")
 }
 
 model HvacFollowUpJob {
   id          String   @id @default(uuid())
   leadId      String   @unique
+  organizationId String
   phone       String
   scheduledAt DateTime
   sent        Boolean  @default(false)
   createdAt   DateTime @default(now())
 
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId])
   @@schema("hvac")
 }
 
@@ -135,24 +175,33 @@ model HvacTechUser {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
+  organizationId String
+  role      HvacUserRole @default(CLIENT_MEMBER)
   createdAt DateTime @default(now())
 
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId])
   @@schema("hvac")
 }
 
 model HvacCampaign {
   id          String             @id @default(uuid())
   name        String
+  organizationId String
   path        String?
   description String?
-  status      HvacCampaignStatus @default(ACTIVE)
+  status         HvacCampaignStatus @default(ACTIVE)
   steps       Json               @default("[]")
   timezone    String             @default("UTC")
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
   leads HvacCampaignLead[]
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
+  @@unique([organizationId, path])
+  @@index([organizationId])
   @@schema("hvac")
 }
 
@@ -168,6 +217,7 @@ model HvacCampaignLead {
   id                String                 @id @default(uuid())
   campaignId        String
   leadId            String
+  organizationId    String
   assignedAt        DateTime               @default(now())
   status            HvacCampaignLeadStatus @default(ACTIVE)
   lastStepIndexSent Int                    @default(-1)
@@ -176,7 +226,9 @@ model HvacCampaignLead {
 
   campaign HvacCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   lead     HvacLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@unique([campaignId, leadId])
+  @@index([organizationId])
   @@schema("hvac")
 }

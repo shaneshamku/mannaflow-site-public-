@@ -7,12 +7,13 @@ export const twilioClient =
     ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
     : null;
 
-export async function sendSMS(to: string, body: string) {
+export async function sendSMS(to: string, body: string, from = TWILIO_PHONE) {
   if (!twilioClient) {
     console.error("sendSMS skipped — TWILIO_ACCOUNT_SID/TWILIO_AUTH_TOKEN not configured");
     return null;
   }
-  return twilioClient.messages.create({ from: TWILIO_PHONE, to, body });
+  if (!from) throw new Error("No organization inbound phone is configured for this SMS");
+  return twilioClient.messages.create({ from, to, body });
 }
 
 export function validateTwilioSignature(

@@ -12,12 +12,15 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.formData();
     const from = body.get("From") as string;
+    const to = body.get("To") as string;
 
-    if (from) {
-      let lead = await prisma.hvacLead.findUnique({ where: { phone: from } });
+    const organization = to ? await prisma.hvacOrganization.findUnique({ where: { inboundPhone: to } }) : null;
+    if (from && organization) {
+      let lead = await prisma.hvacLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
       if (!lead) {
         lead = await prisma.hvacLead.create({
           data: {
+            organizationId: organization.id,
             phone: from,
             leadSource: "Missed Call",
             currentStage: "NEW_LEAD",
@@ -26,16 +29,18 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      await sendSMS(from, INITIAL_SMS);
+      await sendSMS(from, INITIAL_SMS, organization.inboundPhone!);
 
       await prisma.hvacActivityLog.createMany({
         data: [
-          { leadId: lead.id, type: "CALL", direction: "INBOUND", content: "Missed call — auto-SMS sent" },
-          { leadId: lead.id, type: "SMS", direction: "OUTBOUND", content: INITIAL_SMS },
+          { leadId: lead.id, organizationId: organization.id, type: "CALL", direction: "INBOUND", content: "Missed call — auto-SMS sent" },
+          { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "OUTBOUND", content: INITIAL_SMS },
         ],
       });
 
-      await autoAssignPathAOnMissedCall(lead.id);
+      await autoAssignPathAOnMissedCall(lead.id, organization.id);
+    } else if (from) {
+      console.error("twilio/voice rejected: inbound number is not assigned to an organization");
     }
   } catch (err) {
     console.error("twilio/voice error:", err);

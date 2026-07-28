@@ -1,6 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const organizationName = process.env.SEED_ORGANIZATION ?? "Client Demo";
+const organization = await prisma.hvacOrganization.upsert({
+  where: { name: organizationName }, update: {}, create: { name: organizationName },
+});
 
 // Step shape consumed by lib/campaigns.ts (see docs/CAMPAIGN_ENGINE.md for the
 // full design writeup — this file is the single source of truth for campaign
@@ -290,7 +294,7 @@ const campaigns = [
 ];
 
 for (const c of campaigns) {
-  const existing = await prisma.hvacCampaign.findFirst({ where: { path: c.path } });
+  const existing = await prisma.hvacCampaign.findFirst({ where: { organizationId: organization.id, path: c.path } });
   if (existing) {
     await prisma.hvacCampaign.update({
       where: { id: existing.id },
@@ -299,7 +303,7 @@ for (const c of campaigns) {
     console.log(`Updated campaign: ${c.name}`);
   } else {
     await prisma.hvacCampaign.create({
-      data: { name: c.name, path: c.path, description: c.description, steps: c.steps },
+      data: { organizationId: organization.id, name: c.name, path: c.path, description: c.description, steps: c.steps },
     });
     console.log(`Created campaign: ${c.name}`);
   }

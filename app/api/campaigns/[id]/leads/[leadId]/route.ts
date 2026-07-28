@@ -1,19 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { Prisma } from "@prisma/client";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CampaignStep, parseStepsInput, stepsToIntervals } from "@/lib/campaigns";
+import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 type Context = { params: Promise<{ id: string; leadId: string }> };
 
 export async function GET(_req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id, leadId } = await params;
-  const assignment = await prisma.hvacCampaignLead.findUnique({
-    where: { campaignId_leadId: { campaignId: id, leadId } },
+  const assignment = await prisma.hvacCampaignLead.findFirst({
+    where: { campaignId: id, leadId, ...organizationScope(access) },
     include: { campaign: true },
   });
   if (!assignment) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -29,8 +28,8 @@ export async function GET(_req: NextRequest, { params }: Context) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id, leadId } = await params;
   const data = await req.json();
@@ -38,8 +37,8 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   const parsed = parseStepsInput(data.steps);
   if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
-  const existing = await prisma.hvacCampaignLead.findUnique({
-    where: { campaignId_leadId: { campaignId: id, leadId } },
+  const existing = await prisma.hvacCampaignLead.findFirst({
+    where: { campaignId: id, leadId, ...organizationScope(access) },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
@@ -54,12 +53,12 @@ export async function PATCH(req: NextRequest, { params }: Context) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id, leadId } = await params;
-  const existing = await prisma.hvacCampaignLead.findUnique({
-    where: { campaignId_leadId: { campaignId: id, leadId } },
+  const existing = await prisma.hvacCampaignLead.findFirst({
+    where: { campaignId: id, leadId, ...organizationScope(access) },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 

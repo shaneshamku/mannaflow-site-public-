@@ -1,7 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 import { getStage, STAGES, SERVICE_TYPE_LABELS, URGENCY_LABELS, URGENCY_COLORS } from "@/lib/pipeline";
 import { LeadStageSelect } from "@/components/leads/LeadStageSelect";
 import Link from "next/link";
@@ -26,12 +25,12 @@ const ACTIVITY_ICONS: Record<string, string> = {
 };
 
 export default async function LeadPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  const access = await getDashboardAccess();
+  if (!access) redirect("/login");
 
   const { id } = await params;
-  const lead = await prisma.hvacLead.findUnique({
-    where: { id },
+  const lead = await prisma.hvacLead.findFirst({
+    where: { id, ...organizationScope(access) },
     include: {
       activityLogs: { orderBy: { timestamp: "desc" } },
       chatMessages: { orderBy: { timestamp: "asc" } },

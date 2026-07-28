@@ -22,6 +22,13 @@ The mobile layout (iPhone, < 768px) is the owner's reference visual and is pixel
 - `npm run build` — production build (also the full typecheck)
 - `npm run lint` — ESLint
 
+## Dashboard handoff
+
+For the local dashboard database, seeded demo account, environment separation,
+and required multi-tenant follow-up work, read
+[`docs/DASHBOARD_DEVELOPMENT.md`](docs/DASHBOARD_DEVELOPMENT.md) before making
+dashboard/auth/data-model changes.
+
 ## Stack
 
 Next.js 16 (App Router) · React 19 · Tailwind v4 (CSS-first config via `@theme` in `app/globals.css` — there is no `tailwind.config`) · TypeScript · Resend (contact email) · Retell (live voice demo). Font: **MontaguSlab variable** only (self-hosted in `public/fonts/`, loaded via `@font-face`; Georgia fallback). No other font is used anywhere.

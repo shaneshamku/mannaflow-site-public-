@@ -1,17 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 type Context = { params: Promise<{ id: string }> };
 
 export async function GET(_req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id } = await params;
-  const lead = await prisma.hvacLead.findUnique({
-    where: { id },
+  const lead = await prisma.hvacLead.findFirst({
+    where: { id, ...organizationScope(access) },
     include: {
       activityLogs: { orderBy: { timestamp: "desc" } },
       chatMessages: { orderBy: { timestamp: "asc" } },
@@ -23,11 +22,15 @@ export async function GET(_req: NextRequest, { params }: Context) {
 }
 
 export async function PATCH(req: NextRequest, { params }: Context) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const { id } = await params;
   const data = await req.json();
-  const lead = await prisma.hvacLead.update({ where: { id }, data });
+  const existing = await prisma.hvacLead.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
+  if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const safeData = { ...data };
+  delete safeData.organizationId;
+  const lead = await prisma.hvacLead.update({ where: { id }, data: safeData });
   return NextResponse.json(lead);
 }

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const leads = await prisma.hvacLead.findMany({
+    where: organizationScope(access),
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { activityLogs: true } } },
   });
@@ -16,13 +16,14 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { access, response } = await requireDashboardAccess();
+  if (!access) return response!;
 
   const data = await req.json();
   const lead = await prisma.hvacLead.create({
     data: {
       ...data,
+      organizationId: access.organizationId,
       serviceType: data.serviceType || null,
       urgencyLevel: data.urgencyLevel || null,
       currentStage: "NEW_LEAD",
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
   });
 
   await prisma.hvacActivityLog.create({
-    data: { leadId: lead.id, type: "NOTE", content: "Lead created manually" },
+    data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: "Lead created manually" },
   });
 
   return NextResponse.json(lead, { status: 201 });

@@ -15,6 +15,8 @@ const prisma = new PrismaClient();
 
 const LOCAL_EMAIL = "dev@local.test";
 const LOCAL_PASSWORD = "localdev123";
+const CLIENT_EMAIL = "client-demo@local.test";
+const CLIENT_PASSWORD = "clientdemo123";
 
 // North American fictional number range (555-0100..555-0199) — guaranteed
 // non-routable, so nothing accidentally texts a real person even if Twilio
@@ -137,13 +139,14 @@ const SAMPLE_LEADS = [
   },
 ];
 
-async function seedLeads() {
+async function seedLeads(organizationId) {
   const leads = [];
   for (const l of SAMPLE_LEADS) {
     const lead = await prisma.hvacLead.upsert({
-      where: { phone: phone(l.n) },
+      where: { organizationId_phone: { organizationId, phone: phone(l.n) } },
       update: {},
       create: {
+        organizationId,
         phone: phone(l.n),
         name: l.name,
         leadSource: l.leadSource,
@@ -162,14 +165,14 @@ async function seedLeads() {
       await prisma.hvacActivityLog.createMany({
         data: [
           {
-            leadId: lead.id,
+            leadId: lead.id, organizationId,
             type: "CALL",
             direction: "INBOUND",
             content: "Missed call — auto-SMS sent",
             timestamp: l.createdAt,
           },
           {
-            leadId: lead.id,
+            leadId: lead.id, organizationId,
             type: "STAGE_CHANGE",
             content: `Moved to ${l.currentStage.replaceAll("_", " ")}`,
             timestamp: l.dateEnteredStage ?? l.createdAt,
@@ -187,18 +190,18 @@ async function seedChatTranscript(lead) {
 
   await prisma.hvacChatMessage.createMany({
     data: [
-      { leadId: lead.id, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow HVAC! We missed your call — what's going on with your system?" },
-      { leadId: lead.id, role: "USER", content: lead.issueDescription ?? "My furnace stopped working." },
-      { leadId: lead.id, role: "ASSISTANT", content: "Got it — sorry to hear that. Can I grab your name and address so we can get a tech out?" },
-      { leadId: lead.id, role: "USER", content: `${lead.name}, thanks for the quick reply.` },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow HVAC! We missed your call — what's going on with your system?" },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: lead.issueDescription ?? "My furnace stopped working." },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Got it — sorry to hear that. Can I grab your name and address so we can get a tech out?" },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: `${lead.name}, thanks for the quick reply.` },
     ],
   });
 }
 
-async function seedCampaignEnrollments(leads) {
+async function seedCampaignEnrollments(leads, organizationId) {
   const [pathA, pathB] = await Promise.all([
-    prisma.hvacCampaign.findFirst({ where: { path: "A" } }),
-    prisma.hvacCampaign.findFirst({ where: { path: "B" } }),
+    prisma.hvacCampaign.findFirst({ where: { organizationId, path: "A" } }),
+    prisma.hvacCampaign.findFirst({ where: { organizationId, path: "B" } }),
   ]);
   if (!pathA || !pathB) return;
 
@@ -219,6 +222,7 @@ async function seedCampaignEnrollments(leads) {
       create: {
         campaignId: e.campaignId,
         leadId: e.lead.id,
+        organizationId,
         lastStepIndexSent: e.lastStepIndexSent,
         status: e.status,
       },
@@ -227,17 +231,32 @@ async function seedCampaignEnrollments(leads) {
 }
 
 async function main() {
-  console.log("1/3 Seeding local dashboard account...");
-  run("node", ["scripts/seed-tech.mjs"], { SEED_EMAIL: LOCAL_EMAIL, SEED_PASSWORD: LOCAL_PASSWORD });
+  console.log("1/3 Seeding local dashboard accounts...");
+  run("node", ["scripts/seed-tech.mjs"], { SEED_EMAIL: LOCAL_EMAIL, SEED_PASSWORD: LOCAL_PASSWORD, SEED_ORGANIZATION: "MannaFlow Internal", SEED_ROLE: "INTERNAL_ADMIN" });
+  run("node", ["scripts/seed-tech.mjs"], { SEED_EMAIL: CLIENT_EMAIL, SEED_PASSWORD: CLIENT_PASSWORD, SEED_ORGANIZATION: "Client Demo", SEED_ROLE: "CLIENT_ADMIN" });
 
   console.log("\n2/3 Seeding campaign templates (Paths A-D)...");
-  run("node", ["scripts/seed-campaigns.mjs"]);
+  run("node", ["scripts/seed-campaigns.mjs"], { SEED_ORGANIZATION: "Client Demo" });
+  run("node", ["scripts/seed-campaigns.mjs"], { SEED_ORGANIZATION: "MannaFlow Internal" });
 
   console.log("\n3/3 Seeding sample leads, activity, chat transcripts, and campaign enrollments...");
-  const leads = await seedLeads();
+  const clientOrganization = await prisma.hvacOrganization.findUniqueOrThrow({ where: { name: "Client Demo" } });
+  const internalOrganization = await prisma.hvacOrganization.findUniqueOrThrow({ where: { name: "MannaFlow Internal" } });
+  const leads = await seedLeads(clientOrganization.id);
+  await prisma.hvacLead.upsert({
+    where: { organizationId_phone: { organizationId: internalOrganization.id, phone: "+155501099" } },
+    update: {},
+    create: {
+      organizationId: internalOrganization.id,
+      phone: "+155501099",
+      name: "Internal QA Lead",
+      leadSource: "Internal QA",
+      currentStage: "CONTACTED",
+    },
+  });
   await seedChatTranscript(leads.find((l) => l.name === "Alicia Chen"));
   await seedChatTranscript(leads.find((l) => l.name === "Priya Nair"));
-  await seedCampaignEnrollments(leads);
+  await seedCampaignEnrollments(leads, clientOrganization.id);
 
   console.log(`
 ✅ Local dev environment seeded.
@@ -245,6 +264,10 @@ async function main() {
    Dashboard login:
      Email:    ${LOCAL_EMAIL}
      Password: ${LOCAL_PASSWORD}
+
+   Client demo login:
+     Email:    ${CLIENT_EMAIL}
+     Password: ${CLIENT_PASSWORD}
 
    ${SAMPLE_LEADS.length} sample leads across every pipeline stage, 4 campaign
    templates (Paths A-D), 4 campaign enrollments, and 2 sample chat

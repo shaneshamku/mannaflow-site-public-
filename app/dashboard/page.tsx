@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 import { PipelineBoard } from "@/components/pipeline/PipelineBoard";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+  const access = await getDashboardAccess();
+  if (!access) redirect("/login");
 
-  const leads = await prisma.hvacLead.findMany({ orderBy: { createdAt: "desc" } });
+  const leads = await prisma.hvacLead.findMany({ where: organizationScope(access), orderBy: { createdAt: "desc" } });
 
   return (
     <div className="flex flex-col h-full">
