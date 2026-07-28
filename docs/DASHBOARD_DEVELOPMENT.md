@@ -79,6 +79,21 @@ Never use production credentials or copy production client data into local
 development. Each environment needs its own database, deployment, and auth
 secrets.
 
+For staging, create distinct accounts with strong passwords. The staging seed
+refuses to run without all four values, so it cannot accidentally create the
+public local-development logins:
+
+```bash
+SEED_INTERNAL_EMAIL=staging-admin@example.test \
+SEED_INTERNAL_PASSWORD='choose-a-strong-staging-password' \
+SEED_CLIENT_EMAIL=staging-client@example.test \
+SEED_CLIENT_PASSWORD='choose-a-different-strong-staging-password' \
+npm run db:seed:staging
+```
+
+Use only fictional test data in staging. Never use real client credentials or
+contact information there.
+
 ## Multi-tenant architecture (implemented locally)
 
 The local implementation provides:

@@ -13,10 +13,24 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const LOCAL_EMAIL = "dev@local.test";
-const LOCAL_PASSWORD = "localdev123";
-const CLIENT_EMAIL = "client-demo@local.test";
-const CLIENT_PASSWORD = "clientdemo123";
+const LOCAL_EMAIL = process.env.SEED_INTERNAL_EMAIL ?? "dev@local.test";
+const LOCAL_PASSWORD = process.env.SEED_INTERNAL_PASSWORD ?? "localdev123";
+const CLIENT_EMAIL = process.env.SEED_CLIENT_EMAIL ?? "client-demo@local.test";
+const CLIENT_PASSWORD = process.env.SEED_CLIENT_PASSWORD ?? "clientdemo123";
+const isStaging = process.env.SEED_ENVIRONMENT === "staging";
+
+if (isStaging) {
+  const required = [
+    "SEED_INTERNAL_EMAIL",
+    "SEED_INTERNAL_PASSWORD",
+    "SEED_CLIENT_EMAIL",
+    "SEED_CLIENT_PASSWORD",
+  ];
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    throw new Error(`Staging seed requires: ${missing.join(", ")}`);
+  }
+}
 
 // North American fictional number range (555-0100..555-0199) — guaranteed
 // non-routable, so nothing accidentally texts a real person even if Twilio
@@ -42,7 +56,7 @@ const SAMPLE_LEADS = [
     leadSource: "Missed Call",
     serviceType: "REPAIR",
     urgencyLevel: "EMERGENCY",
-    issueDescription: "No heat, furnace making a loud banging noise",
+    issueDescription: "Water is entering the utility room after a storm",
     currentStage: "NEW_LEAD",
     createdAt: thisMonth,
   },
@@ -52,7 +66,7 @@ const SAMPLE_LEADS = [
     leadSource: "Website Form",
     serviceType: "MAINTENANCE",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Annual furnace tune-up",
+    issueDescription: "Annual property maintenance visit",
     currentStage: "NEW_LEAD",
     createdAt: thisMonth,
   },
@@ -62,7 +76,7 @@ const SAMPLE_LEADS = [
     leadSource: "Referral",
     serviceType: "REPAIR",
     urgencyLevel: "URGENT",
-    issueDescription: "AC not cooling, warm air only",
+    issueDescription: "Repair damaged drywall after a small leak",
     currentStage: "CONTACTED",
     createdAt: thisMonth,
   },
@@ -72,7 +86,7 @@ const SAMPLE_LEADS = [
     leadSource: "Google Ads",
     serviceType: "INSTALLATION",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Quote for new central AC install",
+    issueDescription: "Quote for a basement finishing project",
     currentStage: "CONTACTED",
     createdAt: lastMonth,
   },
@@ -82,7 +96,7 @@ const SAMPLE_LEADS = [
     leadSource: "Website Form",
     serviceType: "INSTALLATION",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Replacing a 15-year-old furnace",
+    issueDescription: "Replace a worn exterior door",
     currentStage: "QUOTE_SENT",
     createdAt: lastMonth,
   },
@@ -92,7 +106,7 @@ const SAMPLE_LEADS = [
     leadSource: "Facebook",
     serviceType: "REPAIR",
     urgencyLevel: "URGENT",
-    issueDescription: "Thermostat unresponsive, no display",
+    issueDescription: "Kitchen outlet stopped working",
     currentStage: "QUOTE_SENT",
     createdAt: thisMonth,
   },
@@ -102,7 +116,7 @@ const SAMPLE_LEADS = [
     leadSource: "Referral",
     serviceType: "MAINTENANCE",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Duct cleaning + filter replacement",
+    issueDescription: "Gutter and exterior cleaning",
     currentStage: "JOB_BOOKED",
     createdAt: lastMonth,
   },
@@ -112,7 +126,7 @@ const SAMPLE_LEADS = [
     leadSource: "Missed Call",
     serviceType: "REPAIR",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Water heater pilot light won't stay lit",
+    issueDescription: "Repair a loose deck board",
     currentStage: "JOB_COMPLETE",
     createdAt: lastMonth,
   },
@@ -122,7 +136,7 @@ const SAMPLE_LEADS = [
     leadSource: "Website Form",
     serviceType: "INSTALLATION",
     urgencyLevel: "ROUTINE",
-    issueDescription: "New heat pump install, 2-story house",
+    issueDescription: "Estimate for a bathroom refresh",
     currentStage: "INVOICE_SENT",
     createdAt: lastMonth,
   },
@@ -132,7 +146,7 @@ const SAMPLE_LEADS = [
     leadSource: "Referral",
     serviceType: "MAINTENANCE",
     urgencyLevel: "ROUTINE",
-    issueDescription: "Spring AC tune-up before summer",
+    issueDescription: "Completed entryway repair",
     currentStage: "PAID",
     createdAt: lastMonth,
     dateEnteredStage: thisMonth,
@@ -190,9 +204,9 @@ async function seedChatTranscript(lead) {
 
   await prisma.contractorChatMessage.createMany({
     data: [
-      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow CONTRACTOR! We missed your call — what's going on with your system?" },
-      { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: lead.issueDescription ?? "My furnace stopped working." },
-      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Got it — sorry to hear that. Can I grab your name and address so we can get a tech out?" },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow. We missed your call — how can we help with your project?" },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: lead.issueDescription ?? "I need help with a home repair." },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Got it — can I grab your name and address so we can arrange the next step?" },
       { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: `${lead.name}, thanks for the quick reply.` },
     ],
   });
@@ -231,7 +245,7 @@ async function seedCampaignEnrollments(leads, organizationId) {
 }
 
 async function main() {
-  console.log("1/3 Seeding local dashboard accounts...");
+  console.log(`1/3 Seeding ${isStaging ? "staging" : "local"} dashboard accounts...`);
   run("node", ["scripts/seed-tech.mjs"], { SEED_EMAIL: LOCAL_EMAIL, SEED_PASSWORD: LOCAL_PASSWORD, SEED_ORGANIZATION: "MannaFlow Internal", SEED_ROLE: "INTERNAL_ADMIN" });
   run("node", ["scripts/seed-tech.mjs"], { SEED_EMAIL: CLIENT_EMAIL, SEED_PASSWORD: CLIENT_PASSWORD, SEED_ORGANIZATION: "Client Demo", SEED_ROLE: "CLIENT_ADMIN" });
 
@@ -259,7 +273,7 @@ async function main() {
   await seedCampaignEnrollments(leads, clientOrganization.id);
 
   console.log(`
-✅ Local dev environment seeded.
+✅ ${isStaging ? "Staging" : "Local dev"} environment seeded.
 
    Dashboard login:
      Email:    ${LOCAL_EMAIL}

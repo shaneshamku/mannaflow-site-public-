@@ -10,7 +10,8 @@
     "test:e2e": "playwright test",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "node scripts/seed-local.mjs"
+    "db:seed": "node scripts/seed-local.mjs",
+    "db:seed:staging": "SEED_ENVIRONMENT=staging node scripts/seed-local.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
