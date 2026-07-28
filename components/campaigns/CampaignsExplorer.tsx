@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 import { getStage } from "@/lib/pipeline";
 import { AddCampaignModal } from "./AddCampaignModal";
 import { LeadOverrideModal } from "./LeadOverrideModal";
@@ -74,7 +74,7 @@ type LeadSummary = {
   id: string;
   name: string | null;
   phone: string;
-  currentStage: HvacPipelineStage;
+  currentStage: ContractorPipelineStage;
 };
 
 type CampaignDetail = Campaign & {

@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.hvacTechUser.findUnique({
+        const user = await prisma.contractorTechUser.findUnique({
           where: { email: credentials.email },
         });
         if (!user) return null;

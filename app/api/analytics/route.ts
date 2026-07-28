@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 export async function GET() {
@@ -13,23 +13,23 @@ export async function GET() {
 
   const [stageCounts, newThisMonth, paidThisMonth, leadSources, serviceTypes, urgencyCounts] =
     await Promise.all([
-      prisma.hvacLead.groupBy({ by: ["currentStage"], where: scope, _count: { id: true } }),
-      prisma.hvacLead.count({ where: { ...scope, createdAt: { gte: startOfMonth } } }),
-      prisma.hvacLead.count({ where: { ...scope, currentStage: "PAID", dateEnteredStage: { gte: startOfMonth } } }),
-      prisma.hvacLead.groupBy({ by: ["leadSource"], where: scope, _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 5 }),
-      prisma.hvacLead.groupBy({ by: ["serviceType"], where: scope, _count: { id: true } }),
-      prisma.hvacLead.groupBy({ by: ["urgencyLevel"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.groupBy({ by: ["currentStage"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.count({ where: { ...scope, createdAt: { gte: startOfMonth } } }),
+      prisma.contractorLead.count({ where: { ...scope, currentStage: "PAID", dateEnteredStage: { gte: startOfMonth } } }),
+      prisma.contractorLead.groupBy({ by: ["leadSource"], where: scope, _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 5 }),
+      prisma.contractorLead.groupBy({ by: ["serviceType"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.groupBy({ by: ["urgencyLevel"], where: scope, _count: { id: true } }),
     ]);
 
   const stageMap: Record<string, number> = {};
   for (const s of stageCounts) stageMap[s.currentStage] = s._count.id;
 
-  const totalActive = await prisma.hvacLead.count({
-    where: { ...scope, currentStage: { notIn: ["PAID"] as HvacPipelineStage[] } },
+  const totalActive = await prisma.contractorLead.count({
+    where: { ...scope, currentStage: { notIn: ["PAID"] as ContractorPipelineStage[] } },
   });
 
-  const emergencyCount = await prisma.hvacLead.count({
-    where: { ...scope, urgencyLevel: "EMERGENCY", currentStage: { notIn: ["PAID"] as HvacPipelineStage[] } },
+  const emergencyCount = await prisma.contractorLead.count({
+    where: { ...scope, urgencyLevel: "EMERGENCY", currentStage: { notIn: ["PAID"] as ContractorPipelineStage[] } },
   });
 
   return NextResponse.json({

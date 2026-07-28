@@ -33,7 +33,7 @@ without checking in again:
    *not* automated — the engine sends the accompanying SMS and creates an
    internal alert (activity log NOTE + email to `TECH_EMAIL`) telling a
    human to make the call. No outbound-calling automation was built.
-2. **Stop condition**: once a lead's `HvacLead.currentStage` reaches
+2. **Stop condition**: once a lead's `ContractorLead.currentStage` reaches
    `JOB_BOOKED`, `JOB_COMPLETE`, `INVOICE_SENT`, or `PAID`, their campaign
    assignment is marked `STOPPED` and no further steps send. Chosen over
    "only stop at PAID" or "never stop" — the reasoning was that once
@@ -92,21 +92,21 @@ without checking in again:
 
 Added to `prisma/schema.prisma`:
 
-- `HvacCampaign.steps` (`Json`) — already existed; each element is now a
+- `ContractorCampaign.steps` (`Json`) — already existed; each element is now a
   richer object (see "Step shape" below) instead of just display copy.
-- `HvacCampaignLeadStatus` enum: `ACTIVE | STOPPED | COMPLETED`.
-- `HvacCampaignLead.status` — defaults `ACTIVE`; flips to `STOPPED` (stage
+- `ContractorCampaignLeadStatus` enum: `ACTIVE | STOPPED | COMPLETED`.
+- `ContractorCampaignLead.status` — defaults `ACTIVE`; flips to `STOPPED` (stage
   gate) or `COMPLETED` (ran out of steps).
-- `HvacCampaignLead.lastStepIndexSent` — `Int`, default `-1`. This is the
+- `ContractorCampaignLead.lastStepIndexSent` — `Int`, default `-1`. This is the
   idempotency mechanism: the cron only ever looks at steps with index
   `> lastStepIndexSent`. A step counts as "processed" whether it was
   actually sent or deliberately skipped (see skip conditions below) — both
   advance the cursor so the engine never re-evaluates a step twice.
-- `HvacCampaignLead.stoppedReason` — free text, set when `status` becomes
+- `ContractorCampaignLead.stoppedReason` — free text, set when `status` becomes
   `STOPPED` (currently only "Lead reached stage X").
 
 No new table was added for send history — sends are logged into the
-existing `HvacActivityLog` table (`type: SMS | EMAIL | NOTE`), prefixed
+existing `ContractorActivityLog` table (`type: SMS | EMAIL | NOTE`), prefixed
 with `[Campaign Name]` in the content field, so they show up alongside a
 lead's other activity. (Note: the Leads-tab UI no longer *displays* the
 activity log panel per a separate, earlier request — the data is still
@@ -133,9 +133,9 @@ being written, just not shown there currently.)
 ```
 
 Merge tokens resolved by `resolveMergeTags()`: `{{name}}` (falls back to
-"there"), `{{issue}}` (falls back to "your HVAC system"), `{{link}}`
+"there"), `{{issue}}` (falls back to "your CONTRACTOR system"), `{{link}}`
 (→ `BOOKING_LINK` env var). There is no `{{company}}` token — "MannaFlow
-HVAC" is hardcoded in the copy, matching how the existing missed-call SMS
+CONTRACTOR" is hardcoded in the copy, matching how the existing missed-call SMS
 in `app/api/twilio/voice/route.ts` already hardcodes it.
 
 ## How the doc's "Channel" column was translated into flags
@@ -152,7 +152,7 @@ calls, not things the user explicitly signed off on line by line:**
   `needsManualCallback: true`. The voice call itself is not automated
   (no Retell outbound-calling wiring exists for this flow).
 - Path D day 1 "Email only (SMS only if phone captured via chat/form)" →
-  `sendEmail: true, sendSms: false`. Our `HvacLead.phone` is a required,
+  `sendEmail: true, sendSms: false`. Our `ContractorLead.phone` is a required,
   unique field (every lead has one), so the doc's phone-conditional nuance
   doesn't map cleanly onto our schema. Defaulted to the doc's primary
   instruction ("Email only") rather than sending SMS to every Path D lead.
@@ -178,7 +178,7 @@ later steps (day 3+) are educational/proof content the doc clearly intends
 to send regardless of earlier replies:
 
 - **`skipIfReplied`** (Path A step 2 / day 0.5, Path B step 2 / day 0.5):
-  skipped if the lead has any inbound chat message (`HvacChatMessage` with
+  skipped if the lead has any inbound chat message (`ContractorChatMessage` with
   `role: USER`) timestamped after `assignedAt`.
 - **`onlyIfUrgency`** (Path B step 2 / day 0.5): skipped unless
   `lead.urgencyLevel` is `URGENT` or `EMERGENCY`, per the doc's "Second
@@ -215,7 +215,7 @@ lead's current stage is in this list, the assignment is immediately marked
 
 ## Idempotency / catch-up behavior
 
-Each cron run re-queries all `HvacCampaignLead` rows with `status: ACTIVE`
+Each cron run re-queries all `ContractorCampaignLead` rows with `status: ACTIVE`
 and, for each, processes **every currently-due step it hasn't processed
 yet** (not just the next one) — so if the cron doesn't run for a few days
 for any reason, leads catch up correctly on the next run rather than

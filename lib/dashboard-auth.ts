@@ -1,4 +1,4 @@
-import { HvacUserRole } from "@prisma/client";
+import { ContractorUserRole } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export type DashboardAccess = {
   userId: string;
   organizationId: string;
-  role: HvacUserRole;
+  role: ContractorUserRole;
   organizationName: string;
 };
 
@@ -15,7 +15,7 @@ export async function getDashboardAccess(): Promise<DashboardAccess | null> {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) return null;
 
-  const user = await prisma.hvacTechUser.findUnique({
+  const user = await prisma.contractorTechUser.findUnique({
     where: { email: session.user.email },
     select: { id: true, organizationId: true, role: true, organization: { select: { name: true } } },
   });
@@ -23,7 +23,7 @@ export async function getDashboardAccess(): Promise<DashboardAccess | null> {
 }
 
 export function organizationScope(access: DashboardAccess) {
-  return access.role === HvacUserRole.INTERNAL_ADMIN ? {} : { organizationId: access.organizationId };
+  return access.role === ContractorUserRole.INTERNAL_ADMIN ? {} : { organizationId: access.organizationId };
 }
 
 export async function requireDashboardAccess() {

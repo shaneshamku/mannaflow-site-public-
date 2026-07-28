@@ -7,7 +7,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!access) redirect("/login");
 
   return (
-    <div className="hvac-app flex h-screen overflow-hidden">
+    <div className="contractor-app flex h-screen overflow-hidden">
       <Sidebar organizationName={access.organizationName} internal={access.role === "INTERNAL_ADMIN"} />
       <main className="flex-1 min-w-0 overflow-hidden">{children}</main>
     </div>

@@ -11,7 +11,7 @@ export async function GET(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id, leadId } = await params;
-  const assignment = await prisma.hvacCampaignLead.findFirst({
+  const assignment = await prisma.contractorCampaignLead.findFirst({
     where: { campaignId: id, leadId, ...organizationScope(access) },
     include: { campaign: true },
   });
@@ -37,12 +37,12 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   const parsed = parseStepsInput(data.steps);
   if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
-  const existing = await prisma.hvacCampaignLead.findFirst({
+  const existing = await prisma.contractorCampaignLead.findFirst({
     where: { campaignId: id, leadId, ...organizationScope(access) },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  await prisma.hvacCampaignLead.update({
+  await prisma.contractorCampaignLead.update({
     where: { campaignId_leadId: { campaignId: id, leadId } },
     data: { stepOverrides: parsed.steps },
   });
@@ -57,12 +57,12 @@ export async function DELETE(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id, leadId } = await params;
-  const existing = await prisma.hvacCampaignLead.findFirst({
+  const existing = await prisma.contractorCampaignLead.findFirst({
     where: { campaignId: id, leadId, ...organizationScope(access) },
   });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  await prisma.hvacCampaignLead.update({
+  await prisma.contractorCampaignLead.update({
     where: { campaignId_leadId: { campaignId: id, leadId } },
     data: { stepOverrides: Prisma.DbNull },
   });

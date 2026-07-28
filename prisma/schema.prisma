@@ -7,10 +7,10 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas   = ["hvac"]
+  schemas   = ["contractor"]
 }
 
-enum HvacPipelineStage {
+enum ContractorPipelineStage {
   NEW_LEAD
   CONTACTED
   QUOTE_SENT
@@ -19,85 +19,85 @@ enum HvacPipelineStage {
   INVOICE_SENT
   PAID
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacServiceType {
+enum ContractorServiceType {
   REPAIR
   INSTALLATION
   MAINTENANCE
   EMERGENCY
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacUrgencyLevel {
+enum ContractorUrgencyLevel {
   ROUTINE
   URGENT
   EMERGENCY
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacActivityType {
+enum ContractorActivityType {
   CALL
   SMS
   EMAIL
   NOTE
   STAGE_CHANGE
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacDirection {
+enum ContractorDirection {
   INBOUND
   OUTBOUND
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacMessageRole {
+enum ContractorMessageRole {
   USER
   ASSISTANT
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacCampaignStatus {
+enum ContractorCampaignStatus {
   ACTIVE
   PAUSED
   COMPLETED
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacUserRole {
+enum ContractorUserRole {
   INTERNAL_ADMIN
   CLIENT_ADMIN
   CLIENT_MEMBER
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacOrganization {
+model ContractorOrganization {
   id            String   @id @default(uuid())
   name          String   @unique
   inboundPhone  String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  users          HvacTechUser[]
-  leads          HvacLead[]
-  campaigns      HvacCampaign[]
-  activityLogs   HvacActivityLog[]
-  chatMessages   HvacChatMessage[]
-  followUpJobs   HvacFollowUpJob[]
-  campaignLeads  HvacCampaignLead[]
+  users          ContractorTechUser[]
+  leads          ContractorLead[]
+  campaigns      ContractorCampaign[]
+  activityLogs   ContractorActivityLog[]
+  chatMessages   ContractorChatMessage[]
+  followUpJobs   ContractorFollowUpJob[]
+  campaignLeads  ContractorCampaignLead[]
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacLead {
+model ContractorLead {
   id               String             @id @default(uuid())
   name             String?
   organizationId   String
@@ -105,58 +105,58 @@ model HvacLead {
   email            String?
   address          String?
   issueDescription String?
-  serviceType      HvacServiceType?
-  urgencyLevel     HvacUrgencyLevel?
+  serviceType      ContractorServiceType?
+  urgencyLevel     ContractorUrgencyLevel?
   leadSource       String             @default("Unknown")
   notes            String?
-  currentStage     HvacPipelineStage  @default(NEW_LEAD)
+  currentStage     ContractorPipelineStage  @default(NEW_LEAD)
   dateEnteredStage DateTime           @default(now())
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
-  activityLogs HvacActivityLog[]
-  chatMessages HvacChatMessage[]
-  campaigns    HvacCampaignLead[]
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  activityLogs ContractorActivityLog[]
+  chatMessages ContractorChatMessage[]
+  campaigns    ContractorCampaignLead[]
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@unique([organizationId, phone])
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacActivityLog {
+model ContractorActivityLog {
   id        String           @id @default(uuid())
   leadId    String
   organizationId String
-  type      HvacActivityType
-  direction HvacDirection?
+  type      ContractorActivityType
+  direction ContractorDirection?
   content   String
   timestamp DateTime         @default(now())
 
-  lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  lead ContractorLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacChatMessage {
+model ContractorChatMessage {
   id        String          @id @default(uuid())
   leadId    String
   organizationId String
-  role      HvacMessageRole
+  role      ContractorMessageRole
   content   String
   escalated Boolean         @default(false)
   timestamp DateTime        @default(now())
 
-  lead HvacLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  lead ContractorLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacFollowUpJob {
+model ContractorFollowUpJob {
   id          String   @id @default(uuid())
   leadId      String   @unique
   organizationId String
@@ -165,70 +165,70 @@ model HvacFollowUpJob {
   sent        Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacTechUser {
+model ContractorTechUser {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   organizationId String
-  role      HvacUserRole @default(CLIENT_MEMBER)
+  role      ContractorUserRole @default(CLIENT_MEMBER)
   createdAt DateTime @default(now())
 
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacCampaign {
+model ContractorCampaign {
   id          String             @id @default(uuid())
   name        String
   organizationId String
   path        String?
   description String?
-  status         HvacCampaignStatus @default(ACTIVE)
+  status         ContractorCampaignStatus @default(ACTIVE)
   steps       Json               @default("[]")
   timezone    String             @default("UTC")
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
 
-  leads HvacCampaignLead[]
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leads ContractorCampaignLead[]
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@unique([organizationId, path])
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-enum HvacCampaignLeadStatus {
+enum ContractorCampaignLeadStatus {
   ACTIVE
   STOPPED
   COMPLETED
 
-  @@schema("hvac")
+  @@schema("contractor")
 }
 
-model HvacCampaignLead {
+model ContractorCampaignLead {
   id                String                 @id @default(uuid())
   campaignId        String
   leadId            String
   organizationId    String
   assignedAt        DateTime               @default(now())
-  status            HvacCampaignLeadStatus @default(ACTIVE)
+  status            ContractorCampaignLeadStatus @default(ACTIVE)
   lastStepIndexSent Int                    @default(-1)
   stoppedReason     String?
   stepOverrides     Json?
 
-  campaign HvacCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  lead     HvacLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  organization HvacOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  campaign ContractorCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  lead     ContractorLead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  organization ContractorOrganization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 
   @@unique([campaignId, leadId])
   @@index([organizationId])
-  @@schema("hvac")
+  @@schema("contractor")
 }

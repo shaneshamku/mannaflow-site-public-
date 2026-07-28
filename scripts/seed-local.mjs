@@ -142,7 +142,7 @@ const SAMPLE_LEADS = [
 async function seedLeads(organizationId) {
   const leads = [];
   for (const l of SAMPLE_LEADS) {
-    const lead = await prisma.hvacLead.upsert({
+    const lead = await prisma.contractorLead.upsert({
       where: { organizationId_phone: { organizationId, phone: phone(l.n) } },
       update: {},
       create: {
@@ -160,9 +160,9 @@ async function seedLeads(organizationId) {
     });
     leads.push(lead);
 
-    const existingActivity = await prisma.hvacActivityLog.count({ where: { leadId: lead.id } });
+    const existingActivity = await prisma.contractorActivityLog.count({ where: { leadId: lead.id } });
     if (existingActivity === 0) {
-      await prisma.hvacActivityLog.createMany({
+      await prisma.contractorActivityLog.createMany({
         data: [
           {
             leadId: lead.id, organizationId,
@@ -185,12 +185,12 @@ async function seedLeads(organizationId) {
 }
 
 async function seedChatTranscript(lead) {
-  const existing = await prisma.hvacChatMessage.count({ where: { leadId: lead.id } });
+  const existing = await prisma.contractorChatMessage.count({ where: { leadId: lead.id } });
   if (existing > 0) return;
 
-  await prisma.hvacChatMessage.createMany({
+  await prisma.contractorChatMessage.createMany({
     data: [
-      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow HVAC! We missed your call — what's going on with your system?" },
+      { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Hi, thanks for calling MannaFlow CONTRACTOR! We missed your call — what's going on with your system?" },
       { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: lead.issueDescription ?? "My furnace stopped working." },
       { leadId: lead.id, organizationId: lead.organizationId, role: "ASSISTANT", content: "Got it — sorry to hear that. Can I grab your name and address so we can get a tech out?" },
       { leadId: lead.id, organizationId: lead.organizationId, role: "USER", content: `${lead.name}, thanks for the quick reply.` },
@@ -200,8 +200,8 @@ async function seedChatTranscript(lead) {
 
 async function seedCampaignEnrollments(leads, organizationId) {
   const [pathA, pathB] = await Promise.all([
-    prisma.hvacCampaign.findFirst({ where: { organizationId, path: "A" } }),
-    prisma.hvacCampaign.findFirst({ where: { organizationId, path: "B" } }),
+    prisma.contractorCampaign.findFirst({ where: { organizationId, path: "A" } }),
+    prisma.contractorCampaign.findFirst({ where: { organizationId, path: "B" } }),
   ]);
   if (!pathA || !pathB) return;
 
@@ -216,7 +216,7 @@ async function seedCampaignEnrollments(leads, organizationId) {
 
   for (const e of enrollments) {
     if (!e.lead) continue;
-    await prisma.hvacCampaignLead.upsert({
+    await prisma.contractorCampaignLead.upsert({
       where: { campaignId_leadId: { campaignId: e.campaignId, leadId: e.lead.id } },
       update: {},
       create: {
@@ -240,10 +240,10 @@ async function main() {
   run("node", ["scripts/seed-campaigns.mjs"], { SEED_ORGANIZATION: "MannaFlow Internal" });
 
   console.log("\n3/3 Seeding sample leads, activity, chat transcripts, and campaign enrollments...");
-  const clientOrganization = await prisma.hvacOrganization.findUniqueOrThrow({ where: { name: "Client Demo" } });
-  const internalOrganization = await prisma.hvacOrganization.findUniqueOrThrow({ where: { name: "MannaFlow Internal" } });
+  const clientOrganization = await prisma.contractorOrganization.findUniqueOrThrow({ where: { name: "Client Demo" } });
+  const internalOrganization = await prisma.contractorOrganization.findUniqueOrThrow({ where: { name: "MannaFlow Internal" } });
   const leads = await seedLeads(clientOrganization.id);
-  await prisma.hvacLead.upsert({
+  await prisma.contractorLead.upsert({
     where: { organizationId_phone: { organizationId: internalOrganization.id, phone: "+155501099" } },
     update: {},
     create: {

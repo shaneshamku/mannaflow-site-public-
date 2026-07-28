@@ -1,4 +1,4 @@
-import { HvacLead, HvacCampaign, HvacCampaignLead } from "@prisma/client";
+import { ContractorLead, ContractorCampaign, ContractorCampaignLead } from "@prisma/client";
 import { prisma } from "./prisma";
 import { sendSMS } from "./twilio";
 import { sendCampaignEmail } from "./gmail";
@@ -141,22 +141,22 @@ export function parseStepsInput(input: unknown): ParseStepsResult {
   return { ok: true, steps: intervalsToSteps(stepsWithoutDay, intervals) };
 }
 
-function resolveMergeTags(template: string, lead: HvacLead) {
+function resolveMergeTags(template: string, lead: ContractorLead) {
   const link = process.env.BOOKING_LINK || DEFAULT_BOOKING_LINK;
   return template
     .replaceAll("{{name}}", lead.name?.trim() || "there")
-    .replaceAll("{{issue}}", lead.issueDescription?.trim() || "your HVAC system")
+    .replaceAll("{{issue}}", lead.issueDescription?.trim() || "your CONTRACTOR system")
     .replaceAll("{{link}}", link);
 }
 
 async function hasRepliedSince(leadId: string, since: Date) {
-  const msg = await prisma.hvacChatMessage.findFirst({
+  const msg = await prisma.contractorChatMessage.findFirst({
     where: { leadId, role: "USER", timestamp: { gte: since } },
   });
   return !!msg;
 }
 
-function urgencyAllows(step: CampaignStep, lead: HvacLead) {
+function urgencyAllows(step: CampaignStep, lead: ContractorLead) {
   if (!step.onlyIfUrgency || step.onlyIfUrgency.length === 0) return true;
   return !!lead.urgencyLevel && step.onlyIfUrgency.includes(lead.urgencyLevel);
 }
@@ -171,9 +171,9 @@ export type ProcessResult = {
   reason?: string;
 };
 
-type Assignment = HvacCampaignLead & {
-  lead: HvacLead;
-  campaign: HvacCampaign & { organization: { inboundPhone: string | null } };
+type Assignment = ContractorCampaignLead & {
+  lead: ContractorLead;
+  campaign: ContractorCampaign & { organization: { inboundPhone: string | null } };
 };
 
 export async function processCampaignAssignment(
@@ -186,7 +186,7 @@ export async function processCampaignAssignment(
   if (STOP_STAGES.includes(lead.currentStage)) {
     const reason = `Lead reached stage ${lead.currentStage}`;
     if (!opts.dryRun) {
-      await prisma.hvacCampaignLead.update({
+      await prisma.contractorCampaignLead.update({
         where: { id: assignment.id },
         data: { status: "STOPPED", stoppedReason: reason },
       });
@@ -213,13 +213,13 @@ export async function processCampaignAssignment(
 
     if (step.skipIfReplied && (await hasRepliedSince(lead.id, assignment.assignedAt))) {
       results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "skipped", stepIndex: i, reason: "lead replied since assignment" });
-      if (!opts.dryRun) await prisma.hvacCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
+      if (!opts.dryRun) await prisma.contractorCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
       continue;
     }
     if (!urgencyAllows(step, lead)) {
       const reason = `urgency ${lead.urgencyLevel ?? "unset"} not in [${step.onlyIfUrgency?.join(", ")}]`;
       results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "skipped", stepIndex: i, reason });
-      if (!opts.dryRun) await prisma.hvacCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
+      if (!opts.dryRun) await prisma.contractorCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
       continue;
     }
 
@@ -229,7 +229,7 @@ export async function processCampaignAssignment(
       if (!opts.dryRun) {
         const body = resolveMergeTags(step.smsBody, lead);
         await sendSMS(lead.phone, body, campaign.organization.inboundPhone ?? undefined);
-        await prisma.hvacActivityLog.create({
+        await prisma.contractorActivityLog.create({
           data: { leadId: lead.id, organizationId: lead.organizationId, type: "SMS", direction: "OUTBOUND", content: `[${campaign.name}] ${body}` },
         });
       }
@@ -242,13 +242,13 @@ export async function processCampaignAssignment(
           const subject = resolveMergeTags(step.emailSubject ?? campaign.name, lead);
           const body = resolveMergeTags(step.emailBody, lead);
           await sendCampaignEmail(lead.email, subject, body);
-          await prisma.hvacActivityLog.create({
+          await prisma.contractorActivityLog.create({
             data: { leadId: lead.id, organizationId: lead.organizationId, type: "EMAIL", direction: "OUTBOUND", content: `[${campaign.name}] ${subject}` },
           });
         }
         channels.push("EMAIL");
       } else if (!opts.dryRun) {
-        await prisma.hvacActivityLog.create({
+        await prisma.contractorActivityLog.create({
           data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} email skipped — no email address on file` },
         });
       } else {
@@ -258,7 +258,7 @@ export async function processCampaignAssignment(
 
     if (step.needsManualCallback) {
       if (!opts.dryRun) {
-        await prisma.hvacActivityLog.create({
+        await prisma.contractorActivityLog.create({
           data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} needs a human/voice callback — ${step.intent}` },
         });
         if (process.env.TECH_EMAIL) {
@@ -274,7 +274,7 @@ export async function processCampaignAssignment(
 
     if (!opts.dryRun) {
       const isLastStep = i === steps.length - 1;
-      await prisma.hvacCampaignLead.update({
+      await prisma.contractorCampaignLead.update({
         where: { id: assignment.id },
         data: { lastStepIndexSent: i, status: isLastStep ? "COMPLETED" : "ACTIVE" },
       });
@@ -296,16 +296,16 @@ export async function processCampaignAssignment(
 // Skipped entirely if the lead is already booked, or already active in some
 // other campaign (a repeat missed call shouldn't reset progress on Path B).
 export async function autoAssignPathAOnMissedCall(leadId: string, organizationId: string) {
-  const lead = await prisma.hvacLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
+  const lead = await prisma.contractorLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
   if (!lead || STOP_STAGES.includes(lead.currentStage)) return;
 
-  const alreadyActive = await prisma.hvacCampaignLead.findFirst({ where: { leadId, organizationId, status: "ACTIVE" } });
+  const alreadyActive = await prisma.contractorCampaignLead.findFirst({ where: { leadId, organizationId, status: "ACTIVE" } });
   if (alreadyActive) return;
 
-  const campaign = await prisma.hvacCampaign.findFirst({ where: { path: "A", organizationId } });
+  const campaign = await prisma.contractorCampaign.findFirst({ where: { path: "A", organizationId } });
   if (!campaign) return;
 
-  await prisma.hvacCampaignLead.upsert({
+  await prisma.contractorCampaignLead.upsert({
     where: { campaignId_leadId: { campaignId: campaign.id, leadId } },
     update: {},
     create: { campaignId: campaign.id, leadId, organizationId, lastStepIndexSent: 0 },
@@ -318,23 +318,23 @@ export async function autoAssignPathAOnMissedCall(leadId: string, organizationId
 // book") instead. Idempotent — upsert leaves an existing Path B assignment
 // untouched rather than resetting its progress on a second reply.
 export async function autoAssignPathBOnInboundReply(leadId: string, organizationId: string) {
-  const lead = await prisma.hvacLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
+  const lead = await prisma.contractorLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
   if (!lead || STOP_STAGES.includes(lead.currentStage)) return;
 
   const [pathA, pathB] = await Promise.all([
-    prisma.hvacCampaign.findFirst({ where: { path: "A", organizationId } }),
-    prisma.hvacCampaign.findFirst({ where: { path: "B", organizationId } }),
+    prisma.contractorCampaign.findFirst({ where: { path: "A", organizationId } }),
+    prisma.contractorCampaign.findFirst({ where: { path: "B", organizationId } }),
   ]);
   if (!pathB) return;
 
   if (pathA) {
-    await prisma.hvacCampaignLead.updateMany({
+    await prisma.contractorCampaignLead.updateMany({
       where: { leadId, organizationId, campaignId: pathA.id, status: "ACTIVE" },
       data: { status: "STOPPED", stoppedReason: "Lead replied, moved to Path B" },
     });
   }
 
-  await prisma.hvacCampaignLead.upsert({
+  await prisma.contractorCampaignLead.upsert({
     where: { campaignId_leadId: { campaignId: pathB.id, leadId } },
     update: {},
     create: { campaignId: pathB.id, leadId, organizationId },
@@ -342,7 +342,7 @@ export async function autoAssignPathBOnInboundReply(leadId: string, organization
 }
 
 export async function processAllActiveCampaignAssignments(opts: { dryRun?: boolean } = {}) {
-  const assignments = await prisma.hvacCampaignLead.findMany({
+  const assignments = await prisma.contractorCampaignLead.findMany({
     where: { status: "ACTIVE" },
     include: { lead: true, campaign: { include: { organization: { select: { inboundPhone: true } } } } },
   });

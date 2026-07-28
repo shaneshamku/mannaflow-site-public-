@@ -1,6 +1,6 @@
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 
-export const STAGES: { key: HvacPipelineStage; label: string; color: string; bg: string }[] = [
+export const STAGES: { key: ContractorPipelineStage; label: string; color: string; bg: string }[] = [
   { key: "NEW_LEAD",     label: "New Lead",      color: "text-gray-700",    bg: "bg-gray-100"    },
   { key: "CONTACTED",    label: "Contacted",     color: "text-blue-700",    bg: "bg-blue-100"    },
   { key: "QUOTE_SENT",   label: "Quote Sent",    color: "text-orange-700",  bg: "bg-orange-100"  },
@@ -10,7 +10,7 @@ export const STAGES: { key: HvacPipelineStage; label: string; color: string; bg:
   { key: "PAID",         label: "Paid",          color: "text-emerald-700", bg: "bg-emerald-100" },
 ];
 
-export function getStage(key: HvacPipelineStage) {
+export function getStage(key: ContractorPipelineStage) {
   return STAGES.find((s) => s.key === key)!;
 }
 

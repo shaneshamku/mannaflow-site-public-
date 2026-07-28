@@ -9,12 +9,12 @@ export default async function CampaignsPage() {
   if (!access) redirect("/login");
 
   const [campaigns, leads] = await Promise.all([
-    prisma.hvacCampaign.findMany({
+    prisma.contractorCampaign.findMany({
       where: organizationScope(access),
       orderBy: { createdAt: "asc" },
       include: { _count: { select: { leads: true } } },
     }),
-    prisma.hvacLead.findMany({
+    prisma.contractorLead.findMany({
       where: organizationScope(access),
       orderBy: { createdAt: "desc" },
       select: { id: true, name: true, phone: true, currentStage: true },

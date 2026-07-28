@@ -2,7 +2,7 @@
 
 ## Current state
 
-The `website-sign-in` branch adds a password-protected HVAC dashboard with
+The `website-sign-in` branch adds a password-protected CONTRACTOR dashboard with
 leads, campaigns, and analytics. It uses NextAuth credentials authentication,
 Prisma, and PostgreSQL.
 
@@ -83,7 +83,7 @@ secrets.
 
 The local implementation provides:
 
-1. `HvacOrganization` and roles: `INTERNAL_ADMIN`, `CLIENT_ADMIN`, and
+1. `ContractorOrganization` and roles: `INTERNAL_ADMIN`, `CLIENT_ADMIN`, and
    `CLIENT_MEMBER`.
 2. Required organization ownership on users, leads, campaigns, conversations,
    activities, follow-up jobs, and campaign assignments.
@@ -100,7 +100,7 @@ organization's data, even by changing a URL or calling an API directly.
 The implementation below is complete locally. Before production access, review
 it as one atomic change and validate it in staging.
 
-1. Add `HvacOrganization` and user roles: `INTERNAL_ADMIN`, `CLIENT_ADMIN`,
+1. Add `ContractorOrganization` and user roles: `INTERNAL_ADMIN`, `CLIENT_ADMIN`,
    and `CLIENT_MEMBER`.
 2. Add a required organization relation to users, leads, and campaigns.
 3. Resolve the signed-in user's role and organization server-side on every

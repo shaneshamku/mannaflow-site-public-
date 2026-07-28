@@ -9,7 +9,7 @@ export async function GET(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
-  const lead = await prisma.hvacLead.findFirst({
+  const lead = await prisma.contractorLead.findFirst({
     where: { id, ...organizationScope(access) },
     include: {
       activityLogs: { orderBy: { timestamp: "desc" } },
@@ -27,10 +27,10 @@ export async function PATCH(req: NextRequest, { params }: Context) {
 
   const { id } = await params;
   const data = await req.json();
-  const existing = await prisma.hvacLead.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
+  const existing = await prisma.contractorLead.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const safeData = { ...data };
   delete safeData.organizationId;
-  const lead = await prisma.hvacLead.update({ where: { id }, data: safeData });
+  const lead = await prisma.contractorLead.update({ where: { id }, data: safeData });
   return NextResponse.json(lead);
 }

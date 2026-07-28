@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 type Context = { params: Promise<{ id: string }> };
@@ -10,17 +10,17 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
-  const { stage } = (await req.json()) as { stage: HvacPipelineStage };
+  const { stage } = (await req.json()) as { stage: ContractorPipelineStage };
 
-  const lead = await prisma.hvacLead.findFirst({ where: { id, ...organizationScope(access) } });
+  const lead = await prisma.contractorLead.findFirst({ where: { id, ...organizationScope(access) } });
   if (!lead) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const updated = await prisma.hvacLead.update({
+  const updated = await prisma.contractorLead.update({
     where: { id },
     data: { currentStage: stage, dateEnteredStage: new Date() },
   });
 
-  await prisma.hvacActivityLog.create({
+  await prisma.contractorActivityLog.create({
     data: {
       leadId: id,
       organizationId: lead.organizationId,

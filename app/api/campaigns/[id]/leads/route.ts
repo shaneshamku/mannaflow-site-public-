@@ -13,11 +13,11 @@ export async function POST(req: NextRequest, { params }: Context) {
   if (!leadId) return NextResponse.json({ error: "leadId required" }, { status: 400 });
 
   const [campaign, lead] = await Promise.all([
-    prisma.hvacCampaign.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } }),
-    prisma.hvacLead.findFirst({ where: { id: leadId, ...organizationScope(access) }, select: { id: true } }),
+    prisma.contractorCampaign.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } }),
+    prisma.contractorLead.findFirst({ where: { id: leadId, ...organizationScope(access) }, select: { id: true } }),
   ]);
   if (!campaign || !lead) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const assignment = await prisma.hvacCampaignLead.upsert({
+  const assignment = await prisma.contractorCampaignLead.upsert({
     where: { campaignId_leadId: { campaignId: id, leadId } },
     update: {},
     create: { campaignId: id, leadId, organizationId: access.organizationId },
@@ -34,6 +34,6 @@ export async function DELETE(req: NextRequest, { params }: Context) {
   const leadId = req.nextUrl.searchParams.get("leadId");
   if (!leadId) return NextResponse.json({ error: "leadId required" }, { status: 400 });
 
-  await prisma.hvacCampaignLead.deleteMany({ where: { campaignId: id, leadId, ...organizationScope(access) } });
+  await prisma.contractorCampaignLead.deleteMany({ where: { campaignId: id, leadId, ...organizationScope(access) } });
   return NextResponse.json({ ok: true });
 }

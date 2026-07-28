@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 
-type Stage = { key: HvacPipelineStage; label: string; color: string; bg: string };
+type Stage = { key: ContractorPipelineStage; label: string; color: string; bg: string };
 
 export function LeadStageSelect({
   leadId,
@@ -12,14 +12,14 @@ export function LeadStageSelect({
   stages,
 }: {
   leadId: string;
-  currentStage: HvacPipelineStage;
+  currentStage: ContractorPipelineStage;
   stages: Stage[];
 }) {
   const router = useRouter();
-  const [stage, setStage] = useState<HvacPipelineStage>(currentStage);
+  const [stage, setStage] = useState<ContractorPipelineStage>(currentStage);
   const [saving, setSaving] = useState(false);
 
-  async function handleChange(newStage: HvacPipelineStage) {
+  async function handleChange(newStage: ContractorPipelineStage) {
     setStage(newStage);
     setSaving(true);
     await fetch(`/api/leads/${leadId}/stage`, {
@@ -35,7 +35,7 @@ export function LeadStageSelect({
     <div>
       <select
         value={stage}
-        onChange={(e) => handleChange(e.target.value as HvacPipelineStage)}
+        onChange={(e) => handleChange(e.target.value as ContractorPipelineStage)}
         disabled={saving}
         className="input text-sm"
       >

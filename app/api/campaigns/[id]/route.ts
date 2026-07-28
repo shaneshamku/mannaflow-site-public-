@@ -10,7 +10,7 @@ export async function GET(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
-  const campaign = await prisma.hvacCampaign.findFirst({
+  const campaign = await prisma.contractorCampaign.findFirst({
     where: { id, ...organizationScope(access) },
     include: {
       leads: {
@@ -51,9 +51,9 @@ export async function PATCH(req: NextRequest, { params }: Context) {
     return NextResponse.json({ error: "timezone must be a valid IANA timezone (e.g. America/New_York)" }, { status: 400 });
   }
 
-  const existing = await prisma.hvacCampaign.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
+  const existing = await prisma.contractorCampaign.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const campaign = await prisma.hvacCampaign.update({
+  const campaign = await prisma.contractorCampaign.update({
     where: { id },
     data: {
       ...(data.name !== undefined ? { name: data.name } : {}),
@@ -71,7 +71,7 @@ export async function DELETE(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
-  const deleted = await prisma.hvacCampaign.deleteMany({ where: { id, ...organizationScope(access) } });
+  const deleted = await prisma.contractorCampaign.deleteMany({ where: { id, ...organizationScope(access) } });
   if (deleted.count === 0) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

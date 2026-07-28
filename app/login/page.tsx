@@ -31,11 +31,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="hvac-app min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="contractor-app min-h-screen flex items-center justify-center bg-gray-50">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="text-3xl mb-2">🔧</div>
-          <h1 className="text-2xl font-bold text-gray-900">MannaFlow HVAC</h1>
+          <h1 className="text-2xl font-bold text-gray-900">MannaFlow CONTRACTOR</h1>
           <p className="text-sm text-gray-500 mt-1">Lead Management CRM</p>
         </div>
 

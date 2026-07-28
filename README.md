@@ -1,6 +1,6 @@
 # MannaFlow marketing site
 
-Marketing site for MannaFlow — lead capture, follow-up, and voice-AI demos for contractors — plus a sign-in HVAC contractor dashboard (lead pipeline, campaigns, analytics).
+Marketing site for MannaFlow — lead capture, follow-up, and voice-AI demos for contractors — plus a sign-in contractor dashboard (lead pipeline, campaigns, analytics).
 
 Next.js 16 (App Router) · React 19 · Tailwind v4 · TypeScript · Prisma/Postgres · NextAuth · Resend · Retell · Twilio · Anthropic.
 
@@ -30,7 +30,7 @@ npm install
 #    auto-loads `.env`, and Next.js reads both, so `.env` works for everything.
 cp .env.example .env
 
-# 3. Start local Postgres (creates the `hvac` schema automatically)
+# 3. Start local Postgres (creates the `contractor` schema automatically)
 docker-compose up -d
 
 # 4. Apply reviewed Prisma migrations
@@ -62,7 +62,7 @@ This is a **local-only, throwaway account** created by `scripts/seed-local.mjs` 
 SEED_EMAIL=someone@local.test SEED_PASSWORD=whateveryouwant node scripts/seed-tech.mjs
 ```
 
-This upserts an `HvacTechUser` by email — re-running with an existing email just updates its password.
+This upserts an `ContractorTechUser` by email — re-running with an existing email just updates its password.
 
 **Stopping/cleaning up the local database:**
 

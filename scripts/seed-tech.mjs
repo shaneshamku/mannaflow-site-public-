@@ -9,19 +9,19 @@ const organizationName = process.env.SEED_ORGANIZATION ?? "MannaFlow Internal";
 const role = process.env.SEED_ROLE ?? "INTERNAL_ADMIN";
 
 const hash = await bcrypt.hash(password, 12);
-const organization = await prisma.hvacOrganization.upsert({
+const organization = await prisma.contractorOrganization.upsert({
   where: { name: organizationName },
   update: {},
   create: { name: organizationName },
 });
 
-const user = await prisma.hvacTechUser.upsert({
+const user = await prisma.contractorTechUser.upsert({
   where: { email },
   update: { password: hash, organizationId: organization.id, role },
   create: { email, password: hash, organizationId: organization.id, role },
 });
 
-console.log(`✅ HvacTechUser created: ${user.email}`);
+console.log(`✅ ContractorTechUser created: ${user.email}`);
 console.log(`   Login password: ${password}`);
 console.log(`   Change this after first login.`);
 

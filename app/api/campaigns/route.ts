@@ -6,7 +6,7 @@ export async function GET() {
   const { access, response } = await requireDashboardAccess();
   if (!access) return response!;
 
-  const campaigns = await prisma.hvacCampaign.findMany({
+  const campaigns = await prisma.contractorCampaign.findMany({
     where: organizationScope(access),
     orderBy: { createdAt: "asc" },
     include: { _count: { select: { leads: true } } },
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (!access) return response!;
 
   const data = await req.json();
-  const campaign = await prisma.hvacCampaign.create({
+  const campaign = await prisma.contractorCampaign.create({
     data: {
       organizationId: access.organizationId,
       name: data.name,

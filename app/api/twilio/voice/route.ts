@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { autoAssignPathAOnMissedCall } from "@/lib/campaigns";
 
 const INITIAL_SMS =
-  "Hi, thanks for calling MannaFlow HVAC! We missed your call — let us know what's going on with your HVAC system and we'll get back to you fast.";
+  "Hi, thanks for calling MannaFlow CONTRACTOR! We missed your call — let us know what's going on with your CONTRACTOR system and we'll get back to you fast.";
 
 const TWIML = `<?xml version="1.0" encoding="UTF-8"?><Response><Hangup/></Response>`;
 
@@ -14,11 +14,11 @@ export async function POST(req: NextRequest) {
     const from = body.get("From") as string;
     const to = body.get("To") as string;
 
-    const organization = to ? await prisma.hvacOrganization.findUnique({ where: { inboundPhone: to } }) : null;
+    const organization = to ? await prisma.contractorOrganization.findUnique({ where: { inboundPhone: to } }) : null;
     if (from && organization) {
-      let lead = await prisma.hvacLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
+      let lead = await prisma.contractorLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
       if (!lead) {
-        lead = await prisma.hvacLead.create({
+        lead = await prisma.contractorLead.create({
           data: {
             organizationId: organization.id,
             phone: from,
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
       await sendSMS(from, INITIAL_SMS, organization.inboundPhone!);
 
-      await prisma.hvacActivityLog.createMany({
+      await prisma.contractorActivityLog.createMany({
         data: [
           { leadId: lead.id, organizationId: organization.id, type: "CALL", direction: "INBOUND", content: "Missed call — auto-SMS sent" },
           { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "OUTBOUND", content: INITIAL_SMS },

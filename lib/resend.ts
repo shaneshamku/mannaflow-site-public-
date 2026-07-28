@@ -14,9 +14,9 @@ export async function sendEscalationAlert(
     .join("\n");
 
   await getResend().emails.send({
-    from: "MannaFlow HVAC <noreply@mannaflow.ca>",
+    from: "MannaFlow CONTRACTOR <noreply@mannaflow.ca>",
     to: process.env.TECH_EMAIL!,
-    subject: `Action Required: HVAC Lead Escalation — ${leadName ?? leadPhone}`,
+    subject: `Action Required: CONTRACTOR Lead Escalation — ${leadName ?? leadPhone}`,
     text: `A customer has requested immediate attention.\n\nCustomer: ${leadName ?? "Unknown"}\nPhone: ${leadPhone}\n\n--- Conversation Transcript ---\n${transcriptText}`,
   });
 }

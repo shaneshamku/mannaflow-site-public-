@@ -6,7 +6,7 @@ export async function GET() {
   const { access, response } = await requireDashboardAccess();
   if (!access) return response!;
 
-  const leads = await prisma.hvacLead.findMany({
+  const leads = await prisma.contractorLead.findMany({
     where: organizationScope(access),
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { activityLogs: true } } },
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   if (!access) return response!;
 
   const data = await req.json();
-  const lead = await prisma.hvacLead.create({
+  const lead = await prisma.contractorLead.create({
     data: {
       ...data,
       organizationId: access.organizationId,
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  await prisma.hvacActivityLog.create({
+  await prisma.contractorActivityLog.create({
     data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: "Lead created manually" },
   });
 

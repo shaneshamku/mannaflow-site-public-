@@ -8,7 +8,7 @@ export default async function LeadsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const leads = await prisma.hvacLead.findMany({
+  const leads = await prisma.contractorLead.findMany({
     where: organizationScope(access),
     orderBy: { createdAt: "desc" },
   });

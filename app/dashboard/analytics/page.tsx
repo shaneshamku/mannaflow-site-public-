@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { AnalyticsCards } from "@/components/dashboard/AnalyticsCards";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 
 async function getAnalytics(scope: { organizationId?: string }) {
@@ -11,16 +11,16 @@ async function getAnalytics(scope: { organizationId?: string }) {
 
   const [stageCounts, newThisMonth, paidThisMonth, leadSources, serviceTypes, urgencyCounts, totalLeads, totalActive, emergencyCount, campaignCount] =
     await Promise.all([
-      prisma.hvacLead.groupBy({ by: ["currentStage"], where: scope, _count: { id: true } }),
-      prisma.hvacLead.count({ where: { ...scope, createdAt: { gte: startOfMonth } } }),
-      prisma.hvacLead.count({ where: { ...scope, currentStage: "PAID", dateEnteredStage: { gte: startOfMonth } } }),
-      prisma.hvacLead.groupBy({ by: ["leadSource"], where: scope, _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 5 }),
-      prisma.hvacLead.groupBy({ by: ["serviceType"], where: scope, _count: { id: true } }),
-      prisma.hvacLead.groupBy({ by: ["urgencyLevel"], where: scope, _count: { id: true } }),
-      prisma.hvacLead.count({ where: scope }),
-      prisma.hvacLead.count({ where: { ...scope, currentStage: { not: "PAID" } } }),
-      prisma.hvacLead.count({ where: { ...scope, urgencyLevel: "EMERGENCY", currentStage: { notIn: ["PAID"] as HvacPipelineStage[] } } }),
-      prisma.hvacCampaign.count({ where: { ...scope, status: "ACTIVE" } }),
+      prisma.contractorLead.groupBy({ by: ["currentStage"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.count({ where: { ...scope, createdAt: { gte: startOfMonth } } }),
+      prisma.contractorLead.count({ where: { ...scope, currentStage: "PAID", dateEnteredStage: { gte: startOfMonth } } }),
+      prisma.contractorLead.groupBy({ by: ["leadSource"], where: scope, _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 5 }),
+      prisma.contractorLead.groupBy({ by: ["serviceType"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.groupBy({ by: ["urgencyLevel"], where: scope, _count: { id: true } }),
+      prisma.contractorLead.count({ where: scope }),
+      prisma.contractorLead.count({ where: { ...scope, currentStage: { not: "PAID" } } }),
+      prisma.contractorLead.count({ where: { ...scope, urgencyLevel: "EMERGENCY", currentStage: { notIn: ["PAID"] as ContractorPipelineStage[] } } }),
+      prisma.contractorCampaign.count({ where: { ...scope, status: "ACTIVE" } }),
     ]);
 
   const stageMap: Record<string, number> = {};

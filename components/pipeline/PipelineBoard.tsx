@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DndContext, DragEndEvent, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { PipelineColumn } from "./PipelineColumn";
 import { STAGES } from "@/lib/pipeline";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 
 type Lead = {
   id: string;
@@ -14,7 +14,7 @@ type Lead = {
   serviceType: string | null;
   urgencyLevel: string | null;
   issueDescription: string | null;
-  currentStage: HvacPipelineStage;
+  currentStage: ContractorPipelineStage;
   createdAt: Date | string;
 };
 
@@ -30,7 +30,7 @@ export function PipelineBoard({ initialLeads }: { initialLeads: Lead[] }) {
     if (!over || active.id === over.id) return;
 
     const leadId = active.id as string;
-    const newStage = over.id as HvacPipelineStage;
+    const newStage = over.id as ContractorPipelineStage;
     const lead = leads.find((l) => l.id === leadId);
     if (!lead || lead.currentStage === newStage) return;
 

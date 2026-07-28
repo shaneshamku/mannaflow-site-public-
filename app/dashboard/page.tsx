@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const leads = await prisma.hvacLead.findMany({ where: organizationScope(access), orderBy: { createdAt: "desc" } });
+  const leads = await prisma.contractorLead.findMany({ where: organizationScope(access), orderBy: { createdAt: "desc" } });
 
   return (
     <div className="flex flex-col h-full">

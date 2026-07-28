@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { HvacPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@prisma/client";
 import { getStage, SERVICE_TYPE_LABELS, URGENCY_COLORS, URGENCY_LABELS } from "@/lib/pipeline";
 
 type Lead = {
@@ -15,7 +15,7 @@ type Lead = {
   urgencyLevel: string | null;
   leadSource: string;
   notes: string | null;
-  currentStage: HvacPipelineStage;
+  currentStage: ContractorPipelineStage;
   dateEnteredStage: Date | string;
   createdAt: Date | string;
 };

@@ -29,7 +29,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   if (!access) redirect("/login");
 
   const { id } = await params;
-  const lead = await prisma.hvacLead.findFirst({
+  const lead = await prisma.contractorLead.findFirst({
     where: { id, ...organizationScope(access) },
     include: {
       activityLogs: { orderBy: { timestamp: "desc" } },
@@ -43,7 +43,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   const urgencyStyle = lead.urgencyLevel ? URGENCY_COLORS[lead.urgencyLevel] : "bg-gray-100 text-gray-600";
 
   return (
-    <div className="hvac-app flex flex-col min-h-screen">
+    <div className="contractor-app flex flex-col min-h-screen">
       <div className="flex items-center gap-4 px-6 py-4 border-b border-gray-200 bg-white">
         <Link href="/dashboard" className="text-gray-400 hover:text-gray-600 text-sm">
           ← Dashboard
