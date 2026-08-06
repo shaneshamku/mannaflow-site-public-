@@ -182,7 +182,39 @@ iterate on, not maximal environment ceremony. Decisions recorded in
 
 Replaces the generic "Client Demo" org. Each org carries `retell_agent_id`.
 
-### This iteration
+### This iteration — SHIPPED 2026-08-05
+
+Live on **https://mannaflow.io** (production domain; the `*.vercel.app` alias
+serves a stale CDN cache — ignore it when verifying). All backend paths verified
+against the single Supabase project `ncyffjajttlxkjiihbvr`.
+
+- Committed + pushed; `main` deploys production. Cron emptied (see memory /
+  ADR-0001 rationale) pending the phase-"b" engine port.
+- Four orgs + three admin logins seeded (`admin@mannaflow.com` = MannaFlow admin;
+  `truenorth@` / `sleepnation@` = client admins).
+- Retell call-log analytics built and **backfilled: 73 calls** ingested and
+  org-attributed (unmapped agents skipped). Calls list + tiles render; admin
+  sees the org column.
+- **Two deploy gotchas hit and fixed** (both worth remembering):
+  1. `NEXT_PUBLIC_*` vars only inline on a *fresh* build — a cache-reusing
+     redeploy served empty values. Forced a clean rebuild by touching
+     `lib/supabase/browser.ts`.
+  2. The site **CSP `connect-src`** blocked the browser from reaching Supabase
+     (login failed silently with "Failed to fetch"). Fixed in `next.config.ts`
+     by adding `https://*.supabase.co wss://*.supabase.co`.
+
+Remaining to fully close this iteration:
+
+- **Configure the real-time Retell webhook.** The endpoint exists
+  (`/api/retell/webhook`, HMAC-verified) but is not yet wired in the Retell
+  dashboard. Set each agent's (or the account) webhook URL to
+  `https://mannaflow.io/api/retell/webhook`, then place a test call and confirm
+  it appears without re-running the backfill. Backfill remains the catch-up
+  path; the webhook is go-forward.
+- **Verify tenant isolation as a client.** Log in as `truenorth@` and
+  `sleepnation@` and confirm each sees only its own calls and no org column.
+
+Original task list (all done):
 
 1. Review, commit, and push the uncommitted Supabase work on `staging`.
 2. **Deploy on the real MannaFlow site against the single existing Supabase
