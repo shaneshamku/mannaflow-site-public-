@@ -205,7 +205,10 @@ Replaces the generic "Client Demo" org. Each org carries `retell_agent_id`.
    the Twilio inbound webhook off Prisma to a service-role Supabase design that
    resolves an organization before every write, enabling **live** campaign
    sending. Add the real-time Retell webhook's production config here if not
-   already live.
+   already live. **Then restore the hourly cron in `vercel.json`** — it was
+   emptied (`"crons": []`) for the dashboard/Retell deploy so the still-Prisma
+   send engine could not auto-fire on production. Do not restore it until the
+   engine is Supabase-native and live sends are intended.
 6. In a separate reviewed removal, retire Prisma, NextAuth, Docker, Neon, and
    the local fallback once the Supabase path is stable.
 7. On the **first real client with real customer data**, stand up a separate
