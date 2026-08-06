@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
+import { getDashboardAccess } from "@/lib/dashboard-auth";
+import { getDashboardLeads } from "@/lib/dashboard-data";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { LeadsExplorer } from "@/components/leads/LeadsExplorer";
 
@@ -8,10 +8,7 @@ export default async function LeadsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const leads = await prisma.contractorLead.findMany({
-    where: organizationScope(access),
-    orderBy: { createdAt: "desc" },
-  });
+  const leads = await getDashboardLeads(access);
 
   return (
     <div className="flex flex-col h-full">

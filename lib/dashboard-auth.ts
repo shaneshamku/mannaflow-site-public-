@@ -1,17 +1,40 @@
-import { ContractorUserRole } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export type DashboardAccess = {
   userId: string;
   organizationId: string;
-  role: ContractorUserRole;
+  role: "MANNAFLOW_ADMIN" | "CLIENT_ADMIN" | "CLIENT_MEMBER";
   organizationName: string;
 };
 
 export async function getDashboardAccess(): Promise<DashboardAccess | null> {
+  if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id, organization_id, role, organizations(name)")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!profile?.organization_id || !profile.organizations) return null;
+    const organization = Array.isArray(profile.organizations) ? profile.organizations[0] : profile.organizations;
+    if (!organization?.name) return null;
+
+    return {
+      userId: profile.id,
+      organizationId: profile.organization_id,
+      role: profile.role as DashboardAccess["role"],
+      organizationName: organization.name,
+    };
+  }
+
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) return null;
 
@@ -19,11 +42,16 @@ export async function getDashboardAccess(): Promise<DashboardAccess | null> {
     where: { email: session.user.email },
     select: { id: true, organizationId: true, role: true, organization: { select: { name: true } } },
   });
-  return user && { userId: user.id, organizationId: user.organizationId, role: user.role, organizationName: user.organization.name };
+  return user && {
+    userId: user.id,
+    organizationId: user.organizationId,
+    role: user.role === "INTERNAL_ADMIN" ? "MANNAFLOW_ADMIN" : user.role,
+    organizationName: user.organization.name,
+  };
 }
 
 export function organizationScope(access: DashboardAccess) {
-  return access.role === ContractorUserRole.INTERNAL_ADMIN ? {} : { organizationId: access.organizationId };
+  return access.role === "MANNAFLOW_ADMIN" ? {} : { organizationId: access.organizationId };
 }
 
 export async function requireDashboardAccess() {

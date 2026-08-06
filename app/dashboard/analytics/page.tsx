@@ -4,6 +4,7 @@ import { AnalyticsCards } from "@/components/dashboard/AnalyticsCards";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { ContractorPipelineStage } from "@prisma/client";
 import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
+import { getSupabaseAnalytics, supabaseEnabled } from "@/lib/dashboard-data";
 
 async function getAnalytics(scope: { organizationId?: string }) {
   const now = new Date();
@@ -44,7 +45,7 @@ export default async function AnalyticsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const analytics = await getAnalytics(organizationScope(access));
+  const analytics = supabaseEnabled() ? await getSupabaseAnalytics() : await getAnalytics(organizationScope(access));
 
   return (
     <div className="flex flex-col h-full">

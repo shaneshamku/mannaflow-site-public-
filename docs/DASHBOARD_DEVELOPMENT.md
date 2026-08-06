@@ -1,5 +1,15 @@
 # Dashboard development handoff
 
+> Supabase is the active and future-production direction. The Prisma /
+> NextAuth / Docker instructions below describe the temporary local fallback;
+> do not use the old Neon migration or staging-seed path. Read
+> [`SUPABASE_DASHBOARD_ARCHITECTURE.md`](SUPABASE_DASHBOARD_ARCHITECTURE.md)
+> first — its "Revised plan — 2026-08-05" section and
+> [`adr/0001`](adr/0001-single-supabase-project-no-staging-tier.md) are current.
+> **Note:** the multi-environment (local → staging → production) guidance below
+> is superseded for now — the dashboard runs on a single Supabase project
+> deployed on the real site until the first real client (ADR-0001).
+
 ## Current state
 
 The `website-sign-in` branch adds a password-protected CONTRACTOR dashboard with

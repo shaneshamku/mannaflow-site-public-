@@ -4,6 +4,8 @@ import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
 import { getStage, STAGES, SERVICE_TYPE_LABELS, URGENCY_LABELS, URGENCY_COLORS } from "@/lib/pipeline";
 import { LeadStageSelect } from "@/components/leads/LeadStageSelect";
 import Link from "next/link";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { leadFromRow, supabaseEnabled } from "@/lib/dashboard-data";
 
 function formatDate(d: Date | string) {
   return new Date(d).toLocaleString("en-CA", {
@@ -29,7 +31,20 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   if (!access) redirect("/login");
 
   const { id } = await params;
-  const lead = await prisma.contractorLead.findFirst({
+  const lead = supabaseEnabled() ? await (async () => {
+    const supabase = await createServerSupabaseClient();
+    const { data: leadRow } = await supabase.from("leads").select("*").eq("id", id).maybeSingle();
+    if (!leadRow) return null;
+    const [{ data: activities }, { data: messages }] = await Promise.all([
+      supabase.from("activities").select("*").eq("lead_id", id).order("occurred_at", { ascending: false }),
+      supabase.from("messages").select("*").eq("lead_id", id).order("occurred_at"),
+    ]);
+    return {
+      ...leadFromRow(leadRow),
+      activityLogs: (activities ?? []).map((a) => ({ ...a, timestamp: a.occurred_at })),
+      chatMessages: (messages ?? []).map((m) => ({ ...m, timestamp: m.occurred_at })),
+    };
+  })() : await prisma.contractorLead.findFirst({
     where: { id, ...organizationScope(access) },
     include: {
       activityLogs: { orderBy: { timestamp: "desc" } },

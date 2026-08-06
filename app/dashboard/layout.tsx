@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="contractor-app flex h-screen overflow-hidden">
-      <Sidebar organizationName={access.organizationName} internal={access.role === "INTERNAL_ADMIN"} />
+      <Sidebar organizationName={access.organizationName} internal={access.role === "MANNAFLOW_ADMIN"} />
       <main className="flex-1 min-w-0 overflow-hidden">{children}</main>
     </div>
   );

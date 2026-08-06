@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { CampaignStep, isValidTimezone, parseStepsInput, stepsToIntervals } from "@/lib/campaigns";
 import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { campaignFromRow, leadFromRow, supabaseEnabled } from "@/lib/dashboard-data";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -10,6 +12,16 @@ export async function GET(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
+  if (supabaseEnabled()) {
+    const supabase = await createServerSupabaseClient();
+    const { data: campaign, error } = await supabase.from("campaigns").select("*").eq("id", id).maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (!campaign) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const { data: assignments, error: assignmentsError } = await supabase.from("campaign_leads").select("*, leads(*)").eq("campaign_id", id).order("assigned_at", { ascending: false });
+    if (assignmentsError) return NextResponse.json({ error: assignmentsError.message }, { status: 400 });
+    const steps = (campaign.steps as CampaignStep[]) ?? []; const intervals = stepsToIntervals(steps);
+    return NextResponse.json({ ...campaignFromRow(campaign), steps: steps.map((step, i) => ({ ...step, intervalDays: intervals[i] })), leads: (assignments ?? []).map((a) => ({ id: a.id, leadId: a.lead_id, assignedAt: a.assigned_at, lead: leadFromRow(a.leads as Record<string, unknown>), hasOverride: a.step_overrides != null })) });
+  }
   const campaign = await prisma.contractorCampaign.findFirst({
     where: { id, ...organizationScope(access) },
     include: {
@@ -50,6 +62,14 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   if (data.timezone !== undefined && !isValidTimezone(data.timezone)) {
     return NextResponse.json({ error: "timezone must be a valid IANA timezone (e.g. America/New_York)" }, { status: 400 });
   }
+  if (supabaseEnabled()) {
+    const supabase = await createServerSupabaseClient();
+    const update = { ...(data.name !== undefined ? { name: data.name } : {}), ...(data.description !== undefined ? { description: data.description } : {}), ...(data.status !== undefined ? { status: data.status } : {}), ...(stepsData !== undefined ? { steps: stepsData } : {}), ...(data.timezone !== undefined ? { timezone: data.timezone } : {}) };
+    const { data: campaign, error } = await supabase.from("campaigns").update(update).eq("id", id).select().maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (!campaign) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json(campaignFromRow(campaign));
+  }
 
   const existing = await prisma.contractorCampaign.findFirst({ where: { id, ...organizationScope(access) }, select: { id: true } });
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -71,6 +91,13 @@ export async function DELETE(_req: NextRequest, { params }: Context) {
   if (!access) return response!;
 
   const { id } = await params;
+  if (supabaseEnabled()) {
+    const supabase = await createServerSupabaseClient();
+    const { data, error } = await supabase.from("campaigns").delete().eq("id", id).select("id");
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (!data?.length) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true });
+  }
   const deleted = await prisma.contractorCampaign.deleteMany({ where: { id, ...organizationScope(access) } });
   if (deleted.count === 0) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json({ ok: true });

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { createBrowserSupabaseClient, isSupabaseConfigured } from "@/lib/supabase/browser";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,11 +17,22 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    if (isSupabaseConfigured()) {
+      const { error: signInError } = await createBrowserSupabaseClient().auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (signInError) {
+        setError("Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+      router.push("/dashboard");
+      router.refresh();
+      return;
+    }
+
+    const result = await signIn("credentials", { email, password, redirect: false });
 
     if (result?.error) {
       setError("Invalid email or password.");

@@ -3,16 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { createBrowserSupabaseClient, isSupabaseConfigured } from "@/lib/supabase/browser";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: "⬛" },
   { href: "/dashboard/leads", label: "Leads", icon: "👤" },
   { href: "/dashboard/campaigns", label: "Campaigns", icon: "📣" },
+  { href: "/dashboard/calls", label: "Calls", icon: "📞" },
   { href: "/dashboard/analytics", label: "Analytics", icon: "📊" },
 ];
 
 export function Sidebar({ organizationName, internal }: { organizationName: string; internal: boolean }) {
   const path = usePathname();
+
+  async function handleSignOut() {
+    if (isSupabaseConfigured()) {
+      await createBrowserSupabaseClient().auth.signOut();
+      window.location.assign("/login");
+      return;
+    }
+    await signOut({ callbackUrl: "/login" });
+  }
 
   return (
     <aside className="w-56 shrink-0 bg-gray-900 flex flex-col h-full">
@@ -25,7 +36,7 @@ export function Sidebar({ organizationName, internal }: { organizationName: stri
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {nav.map((item) => {
+        {[...nav, ...(internal ? [{ href: "/dashboard/admin", label: "Team", icon: "⚙️" }] : [])].map((item) => {
           const active =
             item.href === "/dashboard"
               ? path === item.href
@@ -49,7 +60,7 @@ export function Sidebar({ organizationName, internal }: { organizationName: stri
 
       <div className="px-3 py-4 border-t border-gray-800">
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={handleSignOut}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
         >
           <span>→</span> Sign out

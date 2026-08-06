@@ -1,5 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const internalCredentials = {
+  email: process.env.E2E_INTERNAL_EMAIL ?? "dev@local.test",
+  password: process.env.E2E_INTERNAL_PASSWORD ?? "localdev123",
+};
+const clientCredentials = {
+  email: process.env.E2E_CLIENT_EMAIL ?? "client-demo@local.test",
+  password: process.env.E2E_CLIENT_PASSWORD ?? "clientdemo123",
+};
+
 async function signIn(page: Page, email: string, password: string) {
   await page.goto("/login");
   await page.getByPlaceholder("you@example.com").fill(email);
@@ -19,7 +28,7 @@ async function getJson<T>(page: Page, url: string): Promise<T> {
 test("client users cannot read or enroll internal records; internal admins can read both organizations", async ({ browser }) => {
   const internalContext = await browser.newContext();
   const internalPage = await internalContext.newPage();
-  await signIn(internalPage, "dev@local.test", "localdev123");
+  await signIn(internalPage, internalCredentials.email, internalCredentials.password);
 
   const internalLeads = await getJson<Array<{ id: string; name: string | null }>>(internalPage, "/api/leads");
   const internalLead = internalLeads.find((lead) => lead.name === "Internal QA Lead");
@@ -33,7 +42,7 @@ test("client users cannot read or enroll internal records; internal admins can r
 
   const clientContext = await browser.newContext();
   const clientPage = await clientContext.newPage();
-  await signIn(clientPage, "client-demo@local.test", "clientdemo123");
+  await signIn(clientPage, clientCredentials.email, clientCredentials.password);
 
   await expect(clientPage.getByText("Internal QA Lead")).toHaveCount(0);
   const clientCampaigns = await getJson<Array<{ id: string }>>(clientPage, "/api/campaigns");

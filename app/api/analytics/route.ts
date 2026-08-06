@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ContractorPipelineStage } from "@prisma/client";
 import { requireDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
+import { getSupabaseAnalytics, supabaseEnabled } from "@/lib/dashboard-data";
 
 export async function GET() {
   const { access, response } = await requireDashboardAccess();
   if (!access) return response!;
+  if (supabaseEnabled()) return NextResponse.json(await getSupabaseAnalytics());
   const scope = organizationScope(access);
 
   const now = new Date();
