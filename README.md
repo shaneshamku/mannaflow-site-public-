@@ -30,7 +30,7 @@ npm install
 #    auto-loads `.env`, and Next.js reads both, so `.env` works for everything.
 cp .env.example .env
 
-# 3. Start local Postgres (creates the `contractor` schema automatically)
+# 3. Start local Postgres
 docker-compose up -d
 
 # 4. Apply reviewed Prisma migrations

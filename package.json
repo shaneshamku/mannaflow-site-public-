@@ -10,8 +10,8 @@
     "test:e2e": "node --env-file=.env ./node_modules/@playwright/test/cli.js test",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "node scripts/seed-local.mjs",
-    "db:seed:staging": "SEED_ENVIRONMENT=staging node scripts/seed-local.mjs",
+    "db:seed": "node --env-file=.env scripts/seed-local.mjs",
+    "db:seed:staging": "SEED_ENVIRONMENT=staging node --env-file=.env scripts/seed-local.mjs",
     "supabase:seed:staging": "node --env-file=.env scripts/seed-supabase-staging.mjs"
   },
   "dependencies": {
