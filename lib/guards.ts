@@ -1,5 +1,6 @@
 // Code-level backstop for the chiropractic vertical's "never give medical
-// advice" rule. The system prompt already instructs Claude never to
+// advice" rule, covering both services the clinic books (chiropractic care
+// and massage therapy). The system prompt already instructs Claude never to
 // diagnose/treat/prescribe (lib/claude.ts); this catches it in the rare case
 // a reply slips through anyway, before it reaches a patient over SMS.
 
@@ -10,12 +11,13 @@ const MEDICAL_ADVICE_PATTERNS = [
   /\bdiagnos(e|is|ed|ing)\b/i,
 
   // Treatment/exercise/medication recommendations
-  /\bI (recommend|suggest|advise|would)\b.{0,40}\b(stretch|ice|heat|rest|exercise|massage|adjustment|medication|ibuprofen|tylenol|advil|acetaminophen|naproxen)\b/i,
+  /\bI (recommend|suggest|advise|would)\b.{0,40}\b(stretch(ing|es)?|ic(e|ing)|heat(ing)?|rest(ing)?|exercises?|adjustments?|medications?|ibuprofen|tylenol|advil|acetaminophen|naproxen)\b/i,
   /\byou should (take|try|do|use)\b/i,
-  /\btry (stretching|icing|applying heat|resting|taking)\b/i,
+  /\btry (stretch(ing)?|ic(e|ing)|applying heat|rest(ing)?|taking)\b/i,
 
   // Clinical appropriateness / outcome claims
-  /\bchiropractic (care )?(will|can|should) (fix|cure|help with|treat)\b/i,
+  /\b(chiropractic( care)?|massage( therapy)?) (will|can|should) (fix|cure|help with|treat|relieve)\b/i,
+  /\b(a |get a )?massage\b.{0,20}\bfor your\b/i,
   /\bthis (will|should) (fix|cure|resolve|heal)\b/i,
 ];
 

@@ -28,6 +28,7 @@ export const SERVICE_TYPE_LABELS: Record<string, string> = {
   AUTO_ACCIDENT: "Auto accident",
   WELLNESS_ADJUSTMENT: "Wellness adjustment",
   PRENATAL: "Prenatal",
+  MASSAGE: "Massage",
   OTHER: "Other",
 };
 

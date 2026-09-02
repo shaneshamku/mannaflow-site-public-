@@ -30,6 +30,7 @@ export type ContractorServiceType =
   | "AUTO_ACCIDENT"
   | "WELLNESS_ADJUSTMENT"
   | "PRENATAL"
+  | "MASSAGE"
   | "OTHER";
 
 export type ContractorUrgencyLevel = "ROUTINE" | "URGENT" | "EMERGENCY";
