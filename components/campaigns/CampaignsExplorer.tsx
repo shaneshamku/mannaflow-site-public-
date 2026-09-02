@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ContractorPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@/lib/types";
 import { getStage } from "@/lib/pipeline";
 import { AddCampaignModal } from "./AddCampaignModal";
 import { LeadOverrideModal } from "./LeadOverrideModal";

@@ -1,10 +1,21 @@
-import { PrismaClient } from "@prisma/client";
+import { createClient } from "@supabase/supabase-js";
 
-const prisma = new PrismaClient();
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const secretKey = process.env.SUPABASE_SECRET_KEY;
+if (!supabaseUrl || !secretKey) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY are required to seed campaigns");
+}
+const supabase = createClient(supabaseUrl, secretKey, { auth: { autoRefreshToken: false, persistSession: false } });
+
 const organizationName = process.env.SEED_ORGANIZATION ?? "Client Demo";
-const organization = await prisma.contractorOrganization.upsert({
-  where: { name: organizationName }, update: {}, create: { name: organizationName },
-});
+let { data: organization } = await supabase.from("organizations").select("id, name, vertical").eq("name", organizationName).maybeSingle();
+if (!organization) {
+  const { data: created, error } = await supabase.from("organizations").insert({ name: organizationName }).select("id, name, vertical").single();
+  if (error) throw error;
+  organization = created;
+}
+
+const signOff = `— ${organization.name}`;
 
 // Step shape consumed by lib/campaigns.ts (see docs/CAMPAIGN_ENGINE.md for the
 // full design writeup — this file is the single source of truth for campaign
@@ -21,7 +32,7 @@ const organization = await prisma.contractorOrganization.upsert({
 //   needsManualCallback - logs a NOTE activity + alerts TECH_EMAIL that a human/
 //                        Retell voice callback is owed; the call itself isn't automated.
 
-const campaigns = [
+const hvacCampaigns = [
   {
     path: "A",
     name: "Path A — Missed Call, No Contact",
@@ -35,7 +46,7 @@ const campaigns = [
         sampleCopy: "Hi, this is [Company] — sorry we missed your call! If you need help with your heating/cooling today, just reply here or tap to book a time: [link]",
         sendSms: true,
         sendEmail: false,
-        smsBody: "Hi {{name}}, this is MannaFlow CONTRACTOR — sorry we missed your call! If you need help with your heating/cooling today, just reply here or tap to book a time: {{link}}",
+        smsBody: `Hi {{name}}, this is ${organization.name} — sorry we missed your call! If you need help with your heating/cooling today, just reply here or tap to book a time: {{link}}`,
       },
       {
         day: 0.5,
@@ -56,7 +67,7 @@ const campaigns = [
         sendEmail: true,
         smsBody: "Just checking — did you get your {{issue}} sorted? If not, here's a 2-minute way to book a tech: {{link}}. No back-and-forth needed.",
         emailSubject: "Still need help with {{issue}}?",
-        emailBody: "Hi {{name}},\n\nJust checking in — did you get your {{issue}} taken care of? If not, it only takes a couple minutes to book a technician:\n\n{{link}}\n\nNo obligation, no back-and-forth — just pick a time that works.\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nJust checking in — did you get your {{issue}} taken care of? If not, it only takes a couple minutes to book a technician:\n\n{{link}}\n\nNo obligation, no back-and-forth — just pick a time that works.\n\n${signOff}`,
       },
       {
         day: 3,
@@ -66,7 +77,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "What happens if you wait on {{issue}}?",
-        emailBody: "Hi {{name}},\n\nA quick note on why we suggest not waiting too long on {{issue}}: small CONTRACTOR issues have a way of turning into bigger, more expensive ones — and in some cases, safety issues. We're not trying to scare you into anything, just want you to have the full picture.\n\nIf you'd like a tech to take a look: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nA quick note on why we suggest not waiting too long on {{issue}}: small HVAC issues have a way of turning into bigger, more expensive ones — and in some cases, safety issues. We're not trying to scare you into anything, just want you to have the full picture.\n\nIf you'd like a tech to take a look: {{link}}\n\n${signOff}`,
       },
       {
         day: 7,
@@ -85,7 +96,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "Before the season catches up with you",
-        emailBody: "Hi {{name}},\n\nJust a heads up — this is usually the time of year we start getting busier, so if {{issue}} is still on your list, now's a good time to get ahead of it before appointments fill up.\n\nBook a time here: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nJust a heads up — this is usually the time of year we start getting busier, so if {{issue}} is still on your list, now's a good time to get ahead of it before appointments fill up.\n\nBook a time here: {{link}}\n\n${signOff}`,
       },
       {
         day: 21,
@@ -133,7 +144,7 @@ const campaigns = [
         sendEmail: true,
         smsBody: "Still thinking it over? Happy to answer questions about cost or timing — or just book a time that works: {{link}}",
         emailSubject: "Questions about cost or timing for {{issue}}?",
-        emailBody: "Hi {{name}},\n\nWanted to follow up on {{issue}}. If cost or scheduling is what's holding things up, happy to talk through options — we often have same-day availability.\n\nBook a time here: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nWanted to follow up on {{issue}}. If cost or scheduling is what's holding things up, happy to talk through options — we often have same-day availability.\n\nBook a time here: {{link}}\n\n${signOff}`,
       },
       {
         day: 3,
@@ -143,7 +154,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "What's actually going on with {{issue}}",
-        emailBody: "Hi {{name}},\n\nA short explainer on {{issue}}: common causes we see, and how to tell if it needs same-day attention versus something that can be scheduled in the next few days.\n\nIf you'd like a tech to take a look either way: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nA short explainer on {{issue}}: common causes we see, and how to tell if it needs same-day attention versus something that can be scheduled in the next few days.\n\nIf you'd like a tech to take a look either way: {{link}}\n\n${signOff}`,
       },
       {
         day: 7,
@@ -163,7 +174,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "What your neighbours are saying",
-        emailBody: "Hi {{name}},\n\nA lot of homeowners dealing with {{issue}} end up glad they got it looked at sooner rather than later. If you'd still like a tech to take a look, we'd be happy to help:\n\n{{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nA lot of homeowners dealing with {{issue}} end up glad they got it looked at sooner rather than later. If you'd still like a tech to take a look, we'd be happy to help:\n\n{{link}}\n\n${signOff}`,
       },
       {
         day: 21,
@@ -191,7 +202,7 @@ const campaigns = [
         sendEmail: true,
         smsBody: "Thanks again for having us out! Here's a copy of your quote for {{issue}}: {{link}}. Happy to answer any questions before you decide.",
         emailSubject: "Your quote for {{issue}}",
-        emailBody: "Hi {{name}},\n\nThanks again for having us out. Here's a copy of your quote for {{issue}}:\n\n{{link}}\n\nHappy to answer any questions before you decide — just reply to this email or give us a call.\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nThanks again for having us out. Here's a copy of your quote for {{issue}}:\n\n{{link}}\n\nHappy to answer any questions before you decide — just reply to this email or give us a call.\n\n${signOff}`,
       },
       {
         day: 3,
@@ -201,7 +212,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "Financing options for {{issue}}",
-        emailBody: "Hi {{name}},\n\nIf cost is what's giving you pause on {{issue}}, we get it — it's a big decision. We offer financing options and can walk through exactly what's included so there are no surprises.\n\nReply to this email or book a time to talk it through: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nIf cost is what's giving you pause on {{issue}}, we get it — it's a big decision. We offer financing options and can walk through exactly what's included so there are no surprises.\n\nReply to this email or book a time to talk it through: {{link}}\n\n${signOff}`,
       },
       {
         day: 7,
@@ -220,7 +231,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "Availability is tightening up",
-        emailBody: "Hi {{name}},\n\nJust a heads up that install slots are starting to fill up as the season picks up, and some rebate/incentive programs have deadlines coming. If you'd like to move forward on {{issue}}, now's a good time.\n\nBook a time here: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nJust a heads up that install slots are starting to fill up as the season picks up, and some rebate/incentive programs have deadlines coming. If you'd like to move forward on {{issue}}, now's a good time.\n\nBook a time here: {{link}}\n\n${signOff}`,
       },
       {
         day: 21,
@@ -246,8 +257,8 @@ const campaigns = [
         sampleCopy: "Thanks for stopping by [Company]'s site — if you're weighing options for [service they viewed], happy to answer questions, no pressure.",
         sendSms: false,
         sendEmail: true,
-        emailSubject: "Thanks for stopping by MannaFlow CONTRACTOR",
-        emailBody: "Hi {{name}},\n\nThanks for stopping by our site — if you're weighing options for {{issue}}, happy to answer any questions. No pressure at all.\n\nIf you'd like to book a time to talk: {{link}}\n\n— MannaFlow CONTRACTOR",
+        emailSubject: `Thanks for stopping by ${organization.name}`,
+        emailBody: `Hi {{name}},\n\nThanks for stopping by our site — if you're weighing options for {{issue}}, happy to answer any questions. No pressure at all.\n\nIf you'd like to book a time to talk: {{link}}\n\n${signOff}`,
       },
       {
         day: 3,
@@ -257,7 +268,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "Is this the right fit for your home?",
-        emailBody: "Hi {{name}},\n\nA short explainer that might help as you weigh options for {{issue}} — happy to answer specific questions about your home's setup any time.\n\n{{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nA short explainer that might help as you weigh options for {{issue}} — happy to answer specific questions about your home's setup any time.\n\n{{link}}\n\n${signOff}`,
       },
       {
         day: 7,
@@ -267,7 +278,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "What homeowners say about working with us",
-        emailBody: "Hi {{name}},\n\nA couple of reviews and our warranty/guarantee info, in case it's useful while you're deciding on {{issue}}:\n\n{{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nA couple of reviews and our warranty/guarantee info, in case it's useful while you're deciding on {{issue}}:\n\n{{link}}\n\n${signOff}`,
       },
       {
         day: 14,
@@ -277,7 +288,7 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "A good time to get ahead of it",
-        emailBody: "Hi {{name}},\n\nWith the season changing, now's a good time to get a free estimate for {{issue}} before things get busier.\n\n{{link}}\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nWith the season changing, now's a good time to get a free estimate for {{issue}} before things get busier.\n\n{{link}}\n\n${signOff}`,
       },
       {
         day: 21,
@@ -287,26 +298,275 @@ const campaigns = [
         sendSms: false,
         sendEmail: true,
         emailSubject: "We're here whenever you're ready",
-        emailBody: "Hi {{name}},\n\nWe'll leave things here for now — if {{issue}} comes up again or you'd like to talk, we're just an email away. We'll also add you to our seasonal tips list in case that's useful.\n\n— MannaFlow CONTRACTOR",
+        emailBody: `Hi {{name}},\n\nWe'll leave things here for now — if {{issue}} comes up again or you'd like to talk, we're just an email away. We'll also add you to our seasonal tips list in case that's useful.\n\n${signOff}`,
       },
     ],
   },
 ];
 
+// Chiropractic equivalents. No campaign step here should ever name a
+// condition, recommend treatment, or discuss what the doctor will do —
+// same "never give medical advice" boundary as the live chatbot prompt
+// (lib/claude.ts). These only reference booking a visit.
+const chiropracticCampaigns = [
+  {
+    path: "A",
+    name: "Path A — Missed Call, No Contact",
+    description:
+      "Missed-call nurture for patients who haven't been reached yet. Acknowledges the missed call, removes friction to book, and closes out low-pressure by day 21.",
+    steps: [
+      {
+        day: 0,
+        channel: "SMS",
+        intent: "Acknowledge + offer instant path back in",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: `Hi {{name}}, this is ${organization.name} — sorry we missed your call! If you'd like to get in for a visit, just reply here or tap to book a time: {{link}}`,
+      },
+      {
+        day: 0.5,
+        channel: "SMS",
+        intent: "Light second touch, lower pressure (if no reply, same evening)",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "Still around if you'd like to get booked in — reply YES and we'll get you set up: {{link}}",
+        skipIfReplied: true,
+      },
+      {
+        day: 1,
+        channel: "SMS + Email",
+        intent: "Direct ask, remove friction",
+        sendSms: true,
+        sendEmail: true,
+        smsBody: "Just checking — still dealing with {{issue}}? It only takes a couple minutes to book a visit: {{link}}. No back-and-forth needed.",
+        emailSubject: "Still want to get {{issue}} looked at?",
+        emailBody: `Hi {{name}},\n\nJust checking in — if you'd still like to come in about {{issue}}, it only takes a couple minutes to book:\n\n{{link}}\n\nNo obligation, no back-and-forth — just pick a time that works.\n\n${signOff}`,
+      },
+      {
+        day: 3,
+        channel: "Email",
+        intent: "Trust content — why getting looked at sooner helps",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "Why it's worth getting in sooner",
+        emailBody: `Hi {{name}},\n\nA quick note on why we suggest not waiting too long to get {{issue}} looked at: minor discomfort has a way of sticking around longer than it needs to when it's put off. We're not trying to pressure you, just want you to have the full picture.\n\nIf you'd like to book a visit: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 7,
+        channel: "SMS",
+        intent: "Proof + direct ask",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "We've been keeping busy helping people in the area feel better — want us to grab you a slot this week? {{link}}",
+      },
+      {
+        day: 14,
+        channel: "Email",
+        intent: "Seasonal/wellness hook",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "A good time to get ahead of it",
+        emailBody: `Hi {{name}},\n\nJust a heads up — if {{issue}} is still on your mind, now's a good time to get ahead of it before appointments fill up.\n\nBook a time here: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 21,
+        channel: "SMS",
+        intent: "Close-out, low pressure",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "We'll leave it here for now — if anything comes up, we're one text away: {{link}}. Take care!",
+      },
+    ],
+  },
+  {
+    path: "B",
+    name: "Path B — Engaged, Didn't Book",
+    description:
+      "For patients who talked to the agent about a specific reason for visiting but didn't book. References their reason directly and escalates to a human callback by day 7.",
+    steps: [
+      {
+        day: 0,
+        channel: "SMS",
+        intent: "Reference the specific reason for visit, offer booking directly (agent handoff)",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "Hi {{name}}, following up on {{issue}} you mentioned — want me to lock in a visit? Here's what's open: {{link}}",
+      },
+      {
+        day: 0.5,
+        channel: "SMS",
+        intent: "Second nudge only if urgency_level = high (same evening)",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "Just making sure this didn't slip — if {{issue}} is still bothering you, we can likely get you in soon: {{link}}",
+        skipIfReplied: true,
+        onlyIfUrgency: ["URGENT", "EMERGENCY"],
+      },
+      {
+        day: 1,
+        channel: "SMS + Email",
+        intent: "Direct + remove objection (insurance/timing)",
+        sendSms: true,
+        sendEmail: true,
+        smsBody: "Still thinking it over? Happy to help with insurance or timing questions — or just book a time that works: {{link}}",
+        emailSubject: "Questions about insurance or timing?",
+        emailBody: `Hi {{name}},\n\nWanted to follow up on {{issue}}. If insurance or scheduling is what's holding things up, our front desk is happy to help walk through it — we often have same-week availability.\n\nBook a time here: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 3,
+        channel: "Email",
+        intent: "General education, no diagnosis",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "What to expect at your first visit",
+        emailBody: `Hi {{name}},\n\nA quick note on what to expect: the doctor will spend time understanding what's going on with {{issue}} and go over next steps with you directly, no guesswork over text.\n\nIf you'd like to come in: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 7,
+        channel: "Voice callback (human) + SMS",
+        intent: "Highest-touch — real callback for warm, qualified leads gone quiet",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "Wanted to check in personally since {{issue}} sounded like it's been bothering you — a member of our team will be reaching out by phone shortly. You can also book directly: {{link}}",
+        needsManualCallback: true,
+      },
+      {
+        day: 14,
+        channel: "Email",
+        intent: "Proof + seasonal",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "What our patients are saying",
+        emailBody: `Hi {{name}},\n\nA lot of patients dealing with {{issue}} end up glad they came in sooner rather than later. If you'd still like to get looked at, we'd be happy to help:\n\n{{link}}\n\n${signOff}`,
+      },
+      {
+        day: 21,
+        channel: "SMS",
+        intent: "Close-out",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "We'll leave it here for now — if {{issue}} is still bothering you, we're one text away: {{link}}. Take care!",
+      },
+    ],
+  },
+  {
+    path: "C",
+    name: "Path C — Consulted, Went Cold",
+    description:
+      "For patients who came in for a consult or assessment but haven't booked a follow-up. Recaps next steps, handles insurance/cost objections, and leans on social proof — never restates or expands on clinical findings.",
+    steps: [
+      {
+        day: 1,
+        channel: "SMS + Email",
+        intent: "Thank-you + single clear next step",
+        sendSms: true,
+        sendEmail: true,
+        smsBody: "Thanks for coming in! Ready to book your next visit? {{link}}. Happy to answer any scheduling questions.",
+        emailSubject: "Booking your next visit",
+        emailBody: `Hi {{name}},\n\nThanks again for coming in. Whenever you're ready to book your next visit:\n\n{{link}}\n\nHappy to answer any scheduling or insurance questions — just reply to this email or give us a call.\n\n${signOff}`,
+      },
+      {
+        day: 3,
+        channel: "Email",
+        intent: "Handle the #1 objection: insurance/cost",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "Insurance and payment options",
+        emailBody: `Hi {{name}},\n\nIf cost or insurance is what's giving you pause, we get it. Our front desk can walk through exactly what's covered and what to expect, no surprises.\n\nReply to this email or book a time to talk it through: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 7,
+        channel: "SMS",
+        intent: "Social proof + soft urgency",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "A few patients nearby have made regular visits part of their routine this year — happy to share what that's looked like if useful. Let us know: {{link}}",
+      },
+      {
+        day: 14,
+        channel: "Email",
+        intent: "Availability urgency",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "Availability is tightening up",
+        emailBody: `Hi {{name}},\n\nJust a heads up that our schedule is starting to fill up. If you'd like to move forward with your next visit, now's a good time.\n\nBook a time here: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 21,
+        channel: "SMS",
+        intent: "Final, respectful close",
+        sendSms: true,
+        sendEmail: false,
+        smsBody: "We'll hold your file — no pressure. Reply anytime if you'd like to book your next visit or have questions: {{link}}",
+      },
+    ],
+  },
+  {
+    path: "D",
+    name: "Path D — Website/Chat Engagement, No Call",
+    description:
+      "Softest-touch path for website/chat visitors who never called. Starts at day 1 with no hard ask and rolls into the general list.",
+    steps: [
+      {
+        day: 1,
+        channel: "Email only (SMS only if phone captured via chat/form)",
+        intent: "Soft welcome, no ask beyond \"here if you need us\"",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: `Thanks for stopping by ${organization.name}`,
+        emailBody: `Hi {{name}},\n\nThanks for stopping by our site — if you're weighing whether to come in about {{issue}}, happy to answer any questions. No pressure at all.\n\nIf you'd like to book a time: {{link}}\n\n${signOff}`,
+      },
+      {
+        day: 3,
+        channel: "Email",
+        intent: "Educational content, no diagnosis",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "What a first visit looks like",
+        emailBody: `Hi {{name}},\n\nA short overview of what to expect at a first visit, in case it's useful as you decide about {{issue}} — happy to answer specific questions any time.\n\n{{link}}\n\n${signOff}`,
+      },
+      {
+        day: 7,
+        channel: "Email + SMS if engaged (opened/clicked prior emails)",
+        intent: "Light proof point",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "What our patients say",
+        emailBody: `Hi {{name}},\n\nA couple of reviews, in case it's useful while you're deciding about {{issue}}:\n\n{{link}}\n\n${signOff}`,
+      },
+      {
+        day: 14,
+        channel: "Email",
+        intent: "Low-friction nudge",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "A good time to get ahead of it",
+        emailBody: `Hi {{name}},\n\nNow's a good time to get ahead of {{issue}} before things get busier — happy to get you booked in whenever you're ready.\n\n{{link}}\n\n${signOff}`,
+      },
+      {
+        day: 21,
+        channel: "Email",
+        intent: "Roll into general list",
+        sendSms: false,
+        sendEmail: true,
+        emailSubject: "We're here whenever you're ready",
+        emailBody: `Hi {{name}},\n\nWe'll leave things here for now — if {{issue}} comes up again or you'd like to talk, we're just an email away.\n\n${signOff}`,
+      },
+    ],
+  },
+];
+
+const campaigns = organization.vertical === "chiropractic" ? chiropracticCampaigns : hvacCampaigns;
+
 for (const c of campaigns) {
-  const existing = await prisma.contractorCampaign.findFirst({ where: { organizationId: organization.id, path: c.path } });
+  const { data: existing } = await supabase.from("campaigns").select("id").eq("organization_id", organization.id).eq("path", c.path).maybeSingle();
   if (existing) {
-    await prisma.contractorCampaign.update({
-      where: { id: existing.id },
-      data: { name: c.name, description: c.description, steps: c.steps },
-    });
+    const { error } = await supabase.from("campaigns").update({ name: c.name, description: c.description, steps: c.steps }).eq("id", existing.id);
+    if (error) throw error;
     console.log(`Updated campaign: ${c.name}`);
   } else {
-    await prisma.contractorCampaign.create({
-      data: { organizationId: organization.id, name: c.name, path: c.path, description: c.description, steps: c.steps },
-    });
+    const { error } = await supabase.from("campaigns").insert({ organization_id: organization.id, name: c.name, path: c.path, description: c.description, steps: c.steps });
+    if (error) throw error;
     console.log(`Created campaign: ${c.name}`);
   }
 }
-
-await prisma.$disconnect();

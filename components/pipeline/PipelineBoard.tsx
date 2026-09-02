@@ -4,7 +4,7 @@ import { useState } from "react";
 import { DndContext, DragEndEvent, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { PipelineColumn } from "./PipelineColumn";
 import { STAGES } from "@/lib/pipeline";
-import { ContractorPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@/lib/types";
 
 type Lead = {
   id: string;

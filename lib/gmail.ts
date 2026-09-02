@@ -35,7 +35,7 @@ export async function sendCampaignEmail(to: string, subject: string, text: strin
   }
 
   return t.sendMail({
-    from: `MannaFlow CONTRACTOR <${process.env.GMAIL_USER}>`,
+    from: `MannaFlow <${process.env.GMAIL_USER}>`,
     to,
     subject,
     text,

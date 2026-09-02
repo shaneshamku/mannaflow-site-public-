@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import "./contractor-app.css";
-import { SessionProvider } from "@/components/providers/SessionProvider";
 
 // Geist is used only by the signed-in CONTRACTOR app (via the --font-geist-sans
 // CSS var referenced in contractor-app.css). Declaring the variable here does not
@@ -33,9 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={geist.variable}>
-      <body>
-        <SessionProvider>{children}</SessionProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

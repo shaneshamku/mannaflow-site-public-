@@ -1,4 +1,4 @@
-import { ContractorPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@/lib/types";
 
 export const STAGES: { key: ContractorPipelineStage; label: string; color: string; bg: string }[] = [
   { key: "NEW_LEAD",     label: "New Lead",      color: "text-gray-700",    bg: "bg-gray-100"    },
@@ -15,10 +15,20 @@ export function getStage(key: ContractorPipelineStage) {
 }
 
 export const SERVICE_TYPE_LABELS: Record<string, string> = {
+  // HVAC
   REPAIR: "Repair",
   INSTALLATION: "Installation",
   MAINTENANCE: "Maintenance",
   EMERGENCY: "Emergency",
+  // Chiropractic
+  BACK_PAIN: "Back pain",
+  NECK_PAIN: "Neck pain",
+  HEADACHE: "Headache",
+  SPORTS_INJURY: "Sports injury",
+  AUTO_ACCIDENT: "Auto accident",
+  WELLNESS_ADJUSTMENT: "Wellness adjustment",
+  PRENATAL: "Prenatal",
+  OTHER: "Other",
 };
 
 export const URGENCY_LABELS: Record<string, string> = {

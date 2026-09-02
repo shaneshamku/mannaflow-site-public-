@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ContractorPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@/lib/types";
 import { getStage, SERVICE_TYPE_LABELS, URGENCY_COLORS, URGENCY_LABELS } from "@/lib/pipeline";
 
 type Lead = {

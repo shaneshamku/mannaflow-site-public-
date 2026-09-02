@@ -1,8 +1,9 @@
-import { prisma } from "@/lib/prisma";
-import { type ContractorLead, type ContractorPipelineStage, type ContractorServiceType, type ContractorUrgencyLevel } from "@prisma/client";
-import { type DashboardAccess, organizationScope } from "@/lib/dashboard-auth";
+import { type ContractorLead, type ContractorPipelineStage, type ContractorServiceType, type ContractorUrgencyLevel } from "@/lib/types";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
+// Guards routes that need to fail gracefully (503) if Supabase env vars are
+// missing in a given deployment, rather than crashing. Supabase is the only
+// data path now — this is a configuration check, not a fallback selector.
 export const supabaseEnabled = () => Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
 
 export function leadFromRow(row: Record<string, unknown>): ContractorLead {
@@ -17,8 +18,7 @@ export function leadFromRow(row: Record<string, unknown>): ContractorLead {
   };
 }
 
-export async function getDashboardLeads(access: DashboardAccess): Promise<ContractorLead[]> {
-  if (!supabaseEnabled()) return prisma.contractorLead.findMany({ where: organizationScope(access), orderBy: { createdAt: "desc" } });
+export async function getDashboardLeads(): Promise<ContractorLead[]> {
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.from("leads").select("*").order("created_at", { ascending: false });
   if (error) throw error;
@@ -115,7 +115,6 @@ export function callLogFromRow(row: Record<string, unknown>): DashboardCallLog {
 // RLS scopes rows: a MannaFlow admin sees every org's calls (each carrying its
 // organizationName); a client admin sees only its own. Supabase-only feature.
 export async function getDashboardCallLogs(): Promise<DashboardCallLog[]> {
-  if (!supabaseEnabled()) return [];
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("call_logs")

@@ -1,10 +1,12 @@
-import { ContractorLead, ContractorCampaign, ContractorCampaignLead } from "@prisma/client";
-import { prisma } from "./prisma";
-import { sendSMS } from "./twilio";
-import { sendCampaignEmail } from "./gmail";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { sendSMS } from "@/lib/twilio";
+import { sendCampaignEmail } from "@/lib/gmail";
+import type { ContractorLead, Vertical } from "@/lib/types";
 
 // See docs/CAMPAIGN_ENGINE.md for the full design writeup — what this does,
 // why each decision was made, and known gaps/simplifications.
+
+type AdminClient = ReturnType<typeof createAdminSupabaseClient>;
 
 export type CampaignStep = {
   day: number;
@@ -58,7 +60,7 @@ function sendTimeReached(sendTime: string | undefined, now: Date, timezone: stri
 }
 
 export const STOP_STAGES = ["JOB_BOOKED", "JOB_COMPLETE", "INVOICE_SENT", "PAID"];
-const DEFAULT_BOOKING_LINK = "https://mannaflow-site.vercel.app/book-demo";
+const DEFAULT_BOOKING_LINK = "https://mannaflow.io/";
 const VALID_URGENCY_LEVELS = ["ROUTINE", "URGENT", "EMERGENCY"];
 
 // Steps are stored/engine-facing as absolute `day` offsets since assignedAt.
@@ -141,19 +143,28 @@ export function parseStepsInput(input: unknown): ParseStepsResult {
   return { ok: true, steps: intervalsToSteps(stepsWithoutDay, intervals) };
 }
 
-function resolveMergeTags(template: string, lead: ContractorLead) {
-  const link = process.env.BOOKING_LINK || DEFAULT_BOOKING_LINK;
+const DEFAULT_ISSUE_FALLBACK: Record<Vertical, string> = {
+  hvac: "your HVAC system",
+  chiropractic: "your health",
+};
+
+function resolveMergeTags(template: string, lead: ContractorLead, vertical: Vertical, bookingUrl: string | null) {
+  const link = bookingUrl || process.env.BOOKING_LINK || DEFAULT_BOOKING_LINK;
   return template
     .replaceAll("{{name}}", lead.name?.trim() || "there")
-    .replaceAll("{{issue}}", lead.issueDescription?.trim() || "your CONTRACTOR system")
+    .replaceAll("{{issue}}", lead.issueDescription?.trim() || DEFAULT_ISSUE_FALLBACK[vertical])
     .replaceAll("{{link}}", link);
 }
 
-async function hasRepliedSince(leadId: string, since: Date) {
-  const msg = await prisma.contractorChatMessage.findFirst({
-    where: { leadId, role: "USER", timestamp: { gte: since } },
-  });
-  return !!msg;
+async function hasRepliedSince(admin: AdminClient, leadId: string, since: Date) {
+  const { data } = await admin
+    .from("messages")
+    .select("id")
+    .eq("lead_id", leadId)
+    .eq("role", "USER")
+    .gte("occurred_at", since.toISOString())
+    .limit(1);
+  return Boolean(data?.length);
 }
 
 function urgencyAllows(step: CampaignStep, lead: ContractorLead) {
@@ -171,12 +182,27 @@ export type ProcessResult = {
   reason?: string;
 };
 
-type Assignment = ContractorCampaignLead & {
+type Assignment = {
+  id: string;
+  leadId: string;
+  organizationId: string;
+  assignedAt: Date;
+  lastStepIndexSent: number;
+  stepOverrides: unknown;
   lead: ContractorLead;
-  campaign: ContractorCampaign & { organization: { inboundPhone: string | null } };
+  campaign: {
+    id: string;
+    name: string;
+    steps: unknown;
+    timezone: string;
+    organizationInboundPhone: string | null;
+    organizationVertical: Vertical;
+    organizationBookingUrl: string | null;
+  };
 };
 
 export async function processCampaignAssignment(
+  admin: AdminClient,
   assignment: Assignment,
   opts: { dryRun?: boolean } = {}
 ): Promise<ProcessResult[]> {
@@ -186,10 +212,7 @@ export async function processCampaignAssignment(
   if (STOP_STAGES.includes(lead.currentStage)) {
     const reason = `Lead reached stage ${lead.currentStage}`;
     if (!opts.dryRun) {
-      await prisma.contractorCampaignLead.update({
-        where: { id: assignment.id },
-        data: { status: "STOPPED", stoppedReason: reason },
-      });
+      await admin.from("campaign_leads").update({ status: "STOPPED", stopped_reason: reason }).eq("id", assignment.id);
     }
     results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "stopped", reason });
     return results;
@@ -211,15 +234,15 @@ export async function processCampaignAssignment(
     // can send this run either.
     if (!sendTimeReached(step.sendTime, now, campaign.timezone || DEFAULT_CAMPAIGN_TIMEZONE)) break;
 
-    if (step.skipIfReplied && (await hasRepliedSince(lead.id, assignment.assignedAt))) {
+    if (step.skipIfReplied && (await hasRepliedSince(admin, lead.id, assignment.assignedAt))) {
       results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "skipped", stepIndex: i, reason: "lead replied since assignment" });
-      if (!opts.dryRun) await prisma.contractorCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
+      if (!opts.dryRun) await admin.from("campaign_leads").update({ last_step_index_sent: i }).eq("id", assignment.id);
       continue;
     }
     if (!urgencyAllows(step, lead)) {
       const reason = `urgency ${lead.urgencyLevel ?? "unset"} not in [${step.onlyIfUrgency?.join(", ")}]`;
       results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "skipped", stepIndex: i, reason });
-      if (!opts.dryRun) await prisma.contractorCampaignLead.update({ where: { id: assignment.id }, data: { lastStepIndexSent: i } });
+      if (!opts.dryRun) await admin.from("campaign_leads").update({ last_step_index_sent: i }).eq("id", assignment.id);
       continue;
     }
 
@@ -227,11 +250,9 @@ export async function processCampaignAssignment(
 
     if (step.sendSms && step.smsBody) {
       if (!opts.dryRun) {
-        const body = resolveMergeTags(step.smsBody, lead);
-        await sendSMS(lead.phone, body, campaign.organization.inboundPhone ?? undefined);
-        await prisma.contractorActivityLog.create({
-          data: { leadId: lead.id, organizationId: lead.organizationId, type: "SMS", direction: "OUTBOUND", content: `[${campaign.name}] ${body}` },
-        });
+        const smsBody = resolveMergeTags(step.smsBody, lead, campaign.organizationVertical, campaign.organizationBookingUrl);
+        await sendSMS(lead.phone, smsBody, campaign.organizationInboundPhone ?? undefined);
+        await admin.from("activities").insert({ lead_id: lead.id, organization_id: lead.organizationId, type: "SMS", direction: "OUTBOUND", content: `[${campaign.name}] ${smsBody}` });
       }
       channels.push("SMS");
     }
@@ -239,18 +260,14 @@ export async function processCampaignAssignment(
     if (step.sendEmail && step.emailBody) {
       if (lead.email) {
         if (!opts.dryRun) {
-          const subject = resolveMergeTags(step.emailSubject ?? campaign.name, lead);
-          const body = resolveMergeTags(step.emailBody, lead);
-          await sendCampaignEmail(lead.email, subject, body);
-          await prisma.contractorActivityLog.create({
-            data: { leadId: lead.id, organizationId: lead.organizationId, type: "EMAIL", direction: "OUTBOUND", content: `[${campaign.name}] ${subject}` },
-          });
+          const subject = resolveMergeTags(step.emailSubject ?? campaign.name, lead, campaign.organizationVertical, campaign.organizationBookingUrl);
+          const emailBody = resolveMergeTags(step.emailBody, lead, campaign.organizationVertical, campaign.organizationBookingUrl);
+          await sendCampaignEmail(lead.email, subject, emailBody);
+          await admin.from("activities").insert({ lead_id: lead.id, organization_id: lead.organizationId, type: "EMAIL", direction: "OUTBOUND", content: `[${campaign.name}] ${subject}` });
         }
         channels.push("EMAIL");
       } else if (!opts.dryRun) {
-        await prisma.contractorActivityLog.create({
-          data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} email skipped — no email address on file` },
-        });
+        await admin.from("activities").insert({ lead_id: lead.id, organization_id: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} email skipped — no email address on file` });
       } else {
         channels.push("EMAIL_SKIPPED_NO_ADDRESS");
       }
@@ -258,9 +275,7 @@ export async function processCampaignAssignment(
 
     if (step.needsManualCallback) {
       if (!opts.dryRun) {
-        await prisma.contractorActivityLog.create({
-          data: { leadId: lead.id, organizationId: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} needs a human/voice callback — ${step.intent}` },
-        });
+        await admin.from("activities").insert({ lead_id: lead.id, organization_id: lead.organizationId, type: "NOTE", content: `[${campaign.name}] Step ${i} needs a human/voice callback — ${step.intent}` });
         if (process.env.TECH_EMAIL) {
           await sendCampaignEmail(
             process.env.TECH_EMAIL,
@@ -274,10 +289,7 @@ export async function processCampaignAssignment(
 
     if (!opts.dryRun) {
       const isLastStep = i === steps.length - 1;
-      await prisma.contractorCampaignLead.update({
-        where: { id: assignment.id },
-        data: { lastStepIndexSent: i, status: isLastStep ? "COMPLETED" : "ACTIVE" },
-      });
+      await admin.from("campaign_leads").update({ last_step_index_sent: i, status: isLastStep ? "COMPLETED" : "ACTIVE" }).eq("id", assignment.id);
     }
 
     results.push({ assignmentId: assignment.id, leadId: lead.id, campaignName: campaign.name, action: "sent", stepIndex: i, channels });
@@ -296,20 +308,22 @@ export async function processCampaignAssignment(
 // Skipped entirely if the lead is already booked, or already active in some
 // other campaign (a repeat missed call shouldn't reset progress on Path B).
 export async function autoAssignPathAOnMissedCall(leadId: string, organizationId: string) {
-  const lead = await prisma.contractorLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
-  if (!lead || STOP_STAGES.includes(lead.currentStage)) return;
+  const admin = createAdminSupabaseClient();
+  const { data: lead } = await admin.from("leads").select("current_stage").eq("id", leadId).eq("organization_id", organizationId).maybeSingle();
+  if (!lead || STOP_STAGES.includes(lead.current_stage)) return;
 
-  const alreadyActive = await prisma.contractorCampaignLead.findFirst({ where: { leadId, organizationId, status: "ACTIVE" } });
+  const { data: alreadyActive } = await admin.from("campaign_leads").select("id").eq("lead_id", leadId).eq("organization_id", organizationId).eq("status", "ACTIVE").maybeSingle();
   if (alreadyActive) return;
 
-  const campaign = await prisma.contractorCampaign.findFirst({ where: { path: "A", organizationId } });
+  const { data: campaign } = await admin.from("campaigns").select("id").eq("path", "A").eq("organization_id", organizationId).maybeSingle();
   if (!campaign) return;
 
-  await prisma.contractorCampaignLead.upsert({
-    where: { campaignId_leadId: { campaignId: campaign.id, leadId } },
-    update: {},
-    create: { campaignId: campaign.id, leadId, organizationId, lastStepIndexSent: 0 },
-  });
+  await admin
+    .from("campaign_leads")
+    .upsert(
+      { campaign_id: campaign.id, lead_id: leadId, organization_id: organizationId, last_step_index_sent: 0 },
+      { onConflict: "campaign_id,lead_id", ignoreDuplicates: true }
+    );
 }
 
 // Called from the SMS-inbound webhook on every inbound message. A lead that
@@ -318,39 +332,88 @@ export async function autoAssignPathAOnMissedCall(leadId: string, organizationId
 // book") instead. Idempotent — upsert leaves an existing Path B assignment
 // untouched rather than resetting its progress on a second reply.
 export async function autoAssignPathBOnInboundReply(leadId: string, organizationId: string) {
-  const lead = await prisma.contractorLead.findFirst({ where: { id: leadId, organizationId }, select: { currentStage: true } });
-  if (!lead || STOP_STAGES.includes(lead.currentStage)) return;
+  const admin = createAdminSupabaseClient();
+  const { data: lead } = await admin.from("leads").select("current_stage").eq("id", leadId).eq("organization_id", organizationId).maybeSingle();
+  if (!lead || STOP_STAGES.includes(lead.current_stage)) return;
 
-  const [pathA, pathB] = await Promise.all([
-    prisma.contractorCampaign.findFirst({ where: { path: "A", organizationId } }),
-    prisma.contractorCampaign.findFirst({ where: { path: "B", organizationId } }),
+  const [{ data: pathA }, { data: pathB }] = await Promise.all([
+    admin.from("campaigns").select("id").eq("path", "A").eq("organization_id", organizationId).maybeSingle(),
+    admin.from("campaigns").select("id").eq("path", "B").eq("organization_id", organizationId).maybeSingle(),
   ]);
   if (!pathB) return;
 
   if (pathA) {
-    await prisma.contractorCampaignLead.updateMany({
-      where: { leadId, organizationId, campaignId: pathA.id, status: "ACTIVE" },
-      data: { status: "STOPPED", stoppedReason: "Lead replied, moved to Path B" },
-    });
+    await admin
+      .from("campaign_leads")
+      .update({ status: "STOPPED", stopped_reason: "Lead replied, moved to Path B" })
+      .eq("lead_id", leadId)
+      .eq("organization_id", organizationId)
+      .eq("campaign_id", pathA.id)
+      .eq("status", "ACTIVE");
   }
 
-  await prisma.contractorCampaignLead.upsert({
-    where: { campaignId_leadId: { campaignId: pathB.id, leadId } },
-    update: {},
-    create: { campaignId: pathB.id, leadId, organizationId },
-  });
+  await admin
+    .from("campaign_leads")
+    .upsert(
+      { campaign_id: pathB.id, lead_id: leadId, organization_id: organizationId },
+      { onConflict: "campaign_id,lead_id", ignoreDuplicates: true }
+    );
 }
 
 export async function processAllActiveCampaignAssignments(opts: { dryRun?: boolean } = {}) {
-  const assignments = await prisma.contractorCampaignLead.findMany({
-    where: { status: "ACTIVE" },
-    include: { lead: true, campaign: { include: { organization: { select: { inboundPhone: true } } } } },
-  });
+  const admin = createAdminSupabaseClient();
+  const { data: rows, error } = await admin
+    .from("campaign_leads")
+    .select("*, leads(*), campaigns(id, name, steps, timezone, organizations(inbound_phone, vertical, booking_url))")
+    .eq("status", "ACTIVE");
+  if (error) throw error;
 
   const results: ProcessResult[] = [];
-  for (const assignment of assignments) {
+  for (const row of rows ?? []) {
+    const leadRow = row.leads as Record<string, unknown>;
+    const campaignRow = row.campaigns as Record<string, unknown>;
+    type OrgFields = { inbound_phone: string | null; vertical: Vertical; booking_url: string | null };
+    const org = campaignRow.organizations as OrgFields | OrgFields[] | null;
+    const orgFields = Array.isArray(org) ? org[0] : org;
+    const inboundPhone = orgFields?.inbound_phone ?? null;
+
+    const assignment: Assignment = {
+      id: row.id as string,
+      leadId: row.lead_id as string,
+      organizationId: row.organization_id as string,
+      assignedAt: new Date(row.assigned_at as string),
+      lastStepIndexSent: row.last_step_index_sent as number,
+      stepOverrides: row.step_overrides,
+      lead: {
+        id: leadRow.id as string,
+        organizationId: leadRow.organization_id as string,
+        name: leadRow.name as string | null,
+        phone: leadRow.phone as string,
+        email: leadRow.email as string | null,
+        address: leadRow.address as string | null,
+        issueDescription: leadRow.issue_description as string | null,
+        serviceType: leadRow.service_type as ContractorLead["serviceType"],
+        urgencyLevel: leadRow.urgency_level as ContractorLead["urgencyLevel"],
+        leadSource: leadRow.lead_source as string,
+        notes: leadRow.notes as string | null,
+        currentStage: leadRow.current_stage as ContractorLead["currentStage"],
+        dateEnteredStage: new Date(leadRow.date_entered_stage as string),
+        createdAt: new Date(leadRow.created_at as string),
+        updatedAt: new Date(leadRow.updated_at as string),
+      },
+      campaign: {
+        id: campaignRow.id as string,
+        name: campaignRow.name as string,
+        steps: campaignRow.steps,
+        timezone: campaignRow.timezone as string,
+        organizationInboundPhone: inboundPhone,
+        organizationVertical: orgFields?.vertical ?? "hvac",
+        organizationBookingUrl: orgFields?.booking_url ?? null,
+      },
+    };
+
     try {
-      results.push(...(await processCampaignAssignment(assignment, opts)));
+      results.push(...(await processCampaignAssignment(admin, assignment, opts)));
     } catch (err) {
       console.error(`campaign processing failed for assignment ${assignment.id}:`, err);
       results.push({

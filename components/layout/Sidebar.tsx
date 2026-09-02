@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { createBrowserSupabaseClient, isSupabaseConfigured } from "@/lib/supabase/browser";
+import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: "⬛" },
@@ -17,12 +16,8 @@ export function Sidebar({ organizationName, internal }: { organizationName: stri
   const path = usePathname();
 
   async function handleSignOut() {
-    if (isSupabaseConfigured()) {
-      await createBrowserSupabaseClient().auth.signOut();
-      window.location.assign("/login");
-      return;
-    }
-    await signOut({ callbackUrl: "/login" });
+    await createBrowserSupabaseClient().auth.signOut();
+    window.location.assign("/login");
   }
 
   return (

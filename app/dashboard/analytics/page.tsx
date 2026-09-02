@@ -1,51 +1,14 @@
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { AnalyticsCards } from "@/components/dashboard/AnalyticsCards";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { ContractorPipelineStage } from "@prisma/client";
-import { getDashboardAccess, organizationScope } from "@/lib/dashboard-auth";
-import { getSupabaseAnalytics, supabaseEnabled } from "@/lib/dashboard-data";
-
-async function getAnalytics(scope: { organizationId?: string }) {
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-  const [stageCounts, newThisMonth, paidThisMonth, leadSources, serviceTypes, urgencyCounts, totalLeads, totalActive, emergencyCount, campaignCount] =
-    await Promise.all([
-      prisma.contractorLead.groupBy({ by: ["currentStage"], where: scope, _count: { id: true } }),
-      prisma.contractorLead.count({ where: { ...scope, createdAt: { gte: startOfMonth } } }),
-      prisma.contractorLead.count({ where: { ...scope, currentStage: "PAID", dateEnteredStage: { gte: startOfMonth } } }),
-      prisma.contractorLead.groupBy({ by: ["leadSource"], where: scope, _count: { id: true }, orderBy: { _count: { id: "desc" } }, take: 5 }),
-      prisma.contractorLead.groupBy({ by: ["serviceType"], where: scope, _count: { id: true } }),
-      prisma.contractorLead.groupBy({ by: ["urgencyLevel"], where: scope, _count: { id: true } }),
-      prisma.contractorLead.count({ where: scope }),
-      prisma.contractorLead.count({ where: { ...scope, currentStage: { not: "PAID" } } }),
-      prisma.contractorLead.count({ where: { ...scope, urgencyLevel: "EMERGENCY", currentStage: { notIn: ["PAID"] as ContractorPipelineStage[] } } }),
-      prisma.contractorCampaign.count({ where: { ...scope, status: "ACTIVE" } }),
-    ]);
-
-  const stageMap: Record<string, number> = {};
-  for (const s of stageCounts) stageMap[s.currentStage] = s._count.id;
-
-  return {
-    totalLeads,
-    totalActive,
-    newThisMonth,
-    paidThisMonth,
-    emergencyCount,
-    campaignCount,
-    stageCounts: stageMap,
-    leadSources: leadSources.map((l) => ({ source: l.leadSource, count: l._count.id })),
-    serviceTypes: serviceTypes.map((s) => ({ type: s.serviceType, count: s._count.id })),
-    urgencyCounts: urgencyCounts.map((u) => ({ level: u.urgencyLevel, count: u._count.id })),
-  };
-}
+import { getDashboardAccess } from "@/lib/dashboard-auth";
+import { getSupabaseAnalytics } from "@/lib/dashboard-data";
 
 export default async function AnalyticsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const analytics = supabaseEnabled() ? await getSupabaseAnalytics() : await getAnalytics(organizationScope(access));
+  const analytics = await getSupabaseAnalytics();
 
   return (
     <div className="flex flex-col h-full">

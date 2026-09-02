@@ -8,7 +8,7 @@ export default async function LeadsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
 
-  const leads = await getDashboardLeads(access);
+  const leads = await getDashboardLeads();
 
   return (
     <div className="flex flex-col h-full">

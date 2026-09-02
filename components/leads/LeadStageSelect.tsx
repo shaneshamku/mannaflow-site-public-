@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ContractorPipelineStage } from "@prisma/client";
+import { ContractorPipelineStage } from "@/lib/types";
 
 type Stage = { key: ContractorPipelineStage; label: string; color: string; bg: string };
 

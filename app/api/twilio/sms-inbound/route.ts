@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSMS } from "@/lib/twilio";
-import { prisma } from "@/lib/prisma";
-import { anthropic, SYSTEM_PROMPT, INFO_EXTRACT_PROMPT, shouldEscalate } from "@/lib/claude";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { anthropic, buildSystemPrompt, buildInfoExtractPrompt } from "@/lib/claude";
+import { guardChiropracticReply } from "@/lib/guards";
 import { sendEscalationAlert } from "@/lib/resend";
 import { autoAssignPathBOnInboundReply } from "@/lib/campaigns";
-import { ContractorServiceType, ContractorUrgencyLevel } from "@prisma/client";
+import type { ContractorServiceType, ContractorUrgencyLevel, Vertical } from "@/lib/types";
+
+type AdminClient = ReturnType<typeof createAdminSupabaseClient>;
 
 export async function POST(req: NextRequest) {
   const body = await req.formData();
@@ -16,49 +19,49 @@ export async function POST(req: NextRequest) {
   const messageBody = params["Body"]?.trim();
   if (!from || !messageBody) return new NextResponse("", { status: 200 });
 
-  const organization = to ? await prisma.contractorOrganization.findUnique({ where: { inboundPhone: to } }) : null;
-  if (!organization?.inboundPhone) {
+  const admin = createAdminSupabaseClient();
+
+  const organization = to
+    ? (await admin.from("organizations").select("id, name, inbound_phone, vertical, booking_url").eq("inbound_phone", to).maybeSingle()).data
+    : null;
+  if (!organization?.inbound_phone) {
     console.error("twilio/sms-inbound rejected: inbound number is not assigned to an organization");
     return new NextResponse("", { status: 200 });
   }
 
   // Upsert lead
-  let lead = await prisma.contractorLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
+  let { data: lead } = await admin.from("leads").select("*").eq("organization_id", organization.id).eq("phone", from).maybeSingle();
   if (!lead) {
-    lead = await prisma.contractorLead.create({
-      data: { organizationId: organization.id, phone: from, leadSource: "Inbound SMS", currentStage: "NEW_LEAD", dateEnteredStage: new Date() },
-    });
+    const { data: created, error } = await admin
+      .from("leads")
+      .insert({ organization_id: organization.id, phone: from, lead_source: "Inbound SMS", current_stage: "NEW_LEAD" })
+      .select()
+      .single();
+    if (error || !created) {
+      console.error("twilio/sms-inbound: failed to create lead", error);
+      return new NextResponse("", { status: 200 });
+    }
+    lead = created;
   }
 
   // Persist inbound message
-  await prisma.contractorChatMessage.create({
-    data: { leadId: lead.id, organizationId: organization.id, role: "USER", content: messageBody },
-  });
-  await prisma.contractorActivityLog.create({
-    data: { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "INBOUND", content: messageBody },
-  });
+  await admin.from("messages").insert({ lead_id: lead.id, organization_id: organization.id, role: "USER", content: messageBody });
+  await admin.from("activities").insert({ lead_id: lead.id, organization_id: organization.id, type: "SMS", direction: "INBOUND", content: messageBody });
 
   await autoAssignPathBOnInboundReply(lead.id, organization.id);
 
-  // Hard trigger check
-  if (shouldEscalate(messageBody)) {
-    const escalationMsg =
-      "I've flagged this as urgent. A technician will reach out to you very shortly, please call 911 if this is a safety emergency.";
-    await sendSMS(from, escalationMsg, organization.inboundPhone);
-    await persistAndEscalate(lead.id, organization.id, from, lead.name, escalationMsg);
-    return new NextResponse("", { status: 200 });
-  }
-
   // Build conversation history (last 20 messages)
-  const history = await prisma.contractorChatMessage.findMany({
-    where: { leadId: lead.id },
-    orderBy: { timestamp: "asc" },
-    take: 20,
-  });
+  const { data: historyRows } = await admin
+    .from("messages")
+    .select("*")
+    .eq("lead_id", lead.id)
+    .order("occurred_at", { ascending: true })
+    .limit(20);
+  const history = historyRows ?? [];
 
   const messages = history.map((m) => ({
     role: m.role === "USER" ? ("user" as const) : ("assistant" as const),
-    content: m.content,
+    content: m.content as string,
   }));
 
   // Generate AI reply + extract lead info in parallel
@@ -67,43 +70,49 @@ export async function POST(req: NextRequest) {
     anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 300,
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(organization.vertical, organization.name, organization.booking_url),
       messages,
     }),
-    extractLeadInfo(conversationText),
+    extractLeadInfo(organization.vertical, conversationText),
   ]);
 
   const rawReply = aiResponse.content[0].type === "text" ? aiResponse.content[0].text : "";
   const isEscalation = rawReply.startsWith("[ESCALATE]");
-  const replyText = isEscalation ? rawReply.slice("[ESCALATE]".length).trim() : rawReply;
+  let replyText = isEscalation ? rawReply.slice("[ESCALATE]".length).trim() : rawReply;
 
-  await sendSMS(from, replyText, organization.inboundPhone);
+  if (organization.vertical === "chiropractic") {
+    replyText = guardChiropracticReply(
+      replyText,
+      "That's best discussed with the doctor directly. What's your name so we can get you booked in?"
+    );
+  }
 
-  await prisma.contractorChatMessage.create({
-    data: { leadId: lead.id, organizationId: organization.id, role: "ASSISTANT", content: replyText, escalated: isEscalation },
-  });
-  await prisma.contractorActivityLog.create({
-    data: { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "OUTBOUND", content: replyText },
-  });
+  await sendSMS(from, replyText, organization.inbound_phone);
+
+  await admin.from("messages").insert({ lead_id: lead.id, organization_id: organization.id, role: "ASSISTANT", content: replyText, escalated: isEscalation });
+  await admin.from("activities").insert({ lead_id: lead.id, organization_id: organization.id, type: "SMS", direction: "OUTBOUND", content: replyText });
 
   // Auto-update lead record with any info Claude extracted
   if (extractedInfo) {
-    await updateLeadFromExtraction(lead.id, extractedInfo);
+    await updateLeadFromExtraction(admin, lead.id, extractedInfo);
   }
 
-  if (isEscalation) {
-    await alertTech(lead.id, organization.id, from, lead.name);
+  // Notify a technician once per lead — not on every escalated turn, so an
+  // ongoing emergency conversation doesn't spam repeat alerts while the AI
+  // keeps [ESCALATE]-tagging follow-up replies.
+  if (isEscalation && !(await alreadyAlerted(admin, lead.id))) {
+    await alertTech(admin, lead.id, organization.id, from, lead.name);
   }
 
   return new NextResponse("", { status: 200 });
 }
 
-async function extractLeadInfo(conversationText: string) {
+async function extractLeadInfo(vertical: Vertical, conversationText: string) {
   try {
     const result = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 200,
-      messages: [{ role: "user", content: INFO_EXTRACT_PROMPT + conversationText }],
+      messages: [{ role: "user", content: buildInfoExtractPrompt(vertical, conversationText) }],
     });
     const text = result.content[0].type === "text" ? result.content[0].text.trim() : "";
     return JSON.parse(text) as {
@@ -120,6 +129,7 @@ async function extractLeadInfo(conversationText: string) {
 }
 
 async function updateLeadFromExtraction(
+  admin: AdminClient,
   leadId: string,
   info: {
     name: string | null;
@@ -130,52 +140,33 @@ async function updateLeadFromExtraction(
     urgencyLevel: ContractorUrgencyLevel | null;
   }
 ) {
-  const current = await prisma.contractorLead.findUnique({ where: { id: leadId } });
+  const { data: current } = await admin.from("leads").select("*").eq("id", leadId).maybeSingle();
   if (!current) return;
 
   const updates: Record<string, string | null> = {};
   if (!current.name && info.name) updates.name = info.name;
   if (!current.email && info.email) updates.email = info.email;
   if (!current.address && info.address) updates.address = info.address;
-  if (!current.issueDescription && info.issueDescription) updates.issueDescription = info.issueDescription;
-  if (!current.serviceType && info.serviceType) updates.serviceType = info.serviceType;
-  if (!current.urgencyLevel && info.urgencyLevel) updates.urgencyLevel = info.urgencyLevel;
+  if (!current.issue_description && info.issueDescription) updates.issue_description = info.issueDescription;
+  if (!current.service_type && info.serviceType) updates.service_type = info.serviceType;
+  if (!current.urgency_level && info.urgencyLevel) updates.urgency_level = info.urgencyLevel;
 
   if (Object.keys(updates).length > 0) {
-    await prisma.contractorLead.update({ where: { id: leadId }, data: updates });
+    await admin.from("leads").update(updates).eq("id", leadId);
   }
 }
 
-async function persistAndEscalate(
-  leadId: string,
-  organizationId: string,
-  phone: string,
-  name: string | null,
-  sentMsg: string
-) {
-  await prisma.contractorChatMessage.create({
-    data: { leadId, organizationId, role: "ASSISTANT", content: sentMsg, escalated: true },
-  });
-  await prisma.contractorActivityLog.create({
-    data: { leadId, organizationId, type: "SMS", direction: "OUTBOUND", content: sentMsg },
-  });
-  await alertTech(leadId, organizationId, phone, name);
+async function alreadyAlerted(admin: AdminClient, leadId: string): Promise<boolean> {
+  const { data } = await admin.from("messages").select("id").eq("lead_id", leadId).eq("escalated", true).limit(1);
+  return Boolean(data?.length);
 }
 
-async function alertTech(leadId: string, organizationId: string, phone: string, name: string | null) {
-  const transcript = await prisma.contractorChatMessage.findMany({
-    where: { leadId },
-    orderBy: { timestamp: "asc" },
-  });
+async function alertTech(admin: AdminClient, leadId: string, organizationId: string, phone: string, name: string | null) {
+  const { data: transcript } = await admin.from("messages").select("role, content").eq("lead_id", leadId).order("occurred_at", { ascending: true });
 
-  await prisma.contractorChatMessage.updateMany({
-    where: { leadId, escalated: false },
-    data: { escalated: true },
-  });
+  await admin.from("messages").update({ escalated: true }).eq("lead_id", leadId).eq("escalated", false);
 
-  await sendEscalationAlert(phone, name, transcript);
+  await sendEscalationAlert(phone, name, transcript ?? []);
 
-  await prisma.contractorActivityLog.create({
-    data: { leadId, organizationId, type: "NOTE", content: "Conversation escalated — tech alert sent" },
-  });
+  await admin.from("activities").insert({ lead_id: leadId, organization_id: organizationId, type: "NOTE", content: "Conversation escalated — tech alert sent" });
 }

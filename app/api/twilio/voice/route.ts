@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendSMS } from "@/lib/twilio";
-import { prisma } from "@/lib/prisma";
+import { createAdminSupabaseClient } from "@/lib/supabase/admin";
+import { getMissedCallSms } from "@/lib/claude";
 import { autoAssignPathAOnMissedCall } from "@/lib/campaigns";
-
-const INITIAL_SMS =
-  "Hi, thanks for calling MannaFlow CONTRACTOR! We missed your call — let us know what's going on with your CONTRACTOR system and we'll get back to you fast.";
 
 const TWIML = `<?xml version="1.0" encoding="UTF-8"?><Response><Hangup/></Response>`;
 
@@ -14,29 +12,33 @@ export async function POST(req: NextRequest) {
     const from = body.get("From") as string;
     const to = body.get("To") as string;
 
-    const organization = to ? await prisma.contractorOrganization.findUnique({ where: { inboundPhone: to } }) : null;
+    const admin = createAdminSupabaseClient();
+    const organization = to
+      ? (await admin.from("organizations").select("id, name, inbound_phone, vertical").eq("inbound_phone", to).maybeSingle()).data
+      : null;
+
     if (from && organization) {
-      let lead = await prisma.contractorLead.findUnique({ where: { organizationId_phone: { organizationId: organization.id, phone: from } } });
+      const initialSms = getMissedCallSms(organization.vertical, organization.name);
+      let { data: lead } = await admin.from("leads").select("id").eq("organization_id", organization.id).eq("phone", from).maybeSingle();
       if (!lead) {
-        lead = await prisma.contractorLead.create({
-          data: {
-            organizationId: organization.id,
-            phone: from,
-            leadSource: "Missed Call",
-            currentStage: "NEW_LEAD",
-            dateEnteredStage: new Date(),
-          },
-        });
+        const { data: created, error } = await admin
+          .from("leads")
+          .insert({ organization_id: organization.id, phone: from, lead_source: "Missed Call", current_stage: "NEW_LEAD" })
+          .select("id")
+          .single();
+        if (error || !created) {
+          console.error("twilio/voice: failed to create lead", error);
+          return new NextResponse(TWIML, { headers: { "Content-Type": "text/xml" } });
+        }
+        lead = created;
       }
 
-      await sendSMS(from, INITIAL_SMS, organization.inboundPhone!);
+      await sendSMS(from, initialSms, organization.inbound_phone!);
 
-      await prisma.contractorActivityLog.createMany({
-        data: [
-          { leadId: lead.id, organizationId: organization.id, type: "CALL", direction: "INBOUND", content: "Missed call — auto-SMS sent" },
-          { leadId: lead.id, organizationId: organization.id, type: "SMS", direction: "OUTBOUND", content: INITIAL_SMS },
-        ],
-      });
+      await admin.from("activities").insert([
+        { lead_id: lead.id, organization_id: organization.id, type: "CALL", direction: "INBOUND", content: "Missed call — auto-SMS sent" },
+        { lead_id: lead.id, organization_id: organization.id, type: "SMS", direction: "OUTBOUND", content: initialSms },
+      ]);
 
       await autoAssignPathAOnMissedCall(lead.id, organization.id);
     } else if (from) {

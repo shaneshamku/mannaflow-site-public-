@@ -82,9 +82,8 @@ without checking in again:
      if lead volume grows a lot.
 4. **Booking link**: no Cal.com integration exists yet. Every `{{link}}`
    token in campaign copy resolves to the `BOOKING_LINK` env var, which is
-   currently set to `https://mannaflow-site.vercel.app/book-demo` (the
-   site's existing "Book a Call" page) as a working placeholder. **When
-   Cal.com is set up, just update `BOOKING_LINK` in Vercel — no code
+   currently set to `https://mannaflow.io/` as a working placeholder.
+   **When Cal.com is set up, just update `BOOKING_LINK` in Vercel — no code
    changes needed**, every campaign email/SMS picks up the new link
    automatically on the next send.
 
