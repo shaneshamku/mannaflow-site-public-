@@ -44,7 +44,7 @@ function StatCard({
   );
 }
 
-export function AnalyticsCards({ data }: { data: Analytics }) {
+export function AnalyticsCards({ data, unionTheme = false }: { data: Analytics; unionTheme?: boolean }) {
   const maxSource = Math.max(...data.leadSources.map((s) => s.count), 1);
   const maxService = Math.max(...data.serviceTypes.map((s) => s.count), 1);
 
@@ -76,7 +76,7 @@ export function AnalyticsCards({ data }: { data: Analytics }) {
                     <span className="font-medium">{s.count}</span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-orange-500 rounded-full" style={{ width: `${(s.count / maxSource) * 100}%` }} />
+                    <div className={`h-full rounded-full ${unionTheme ? "bg-[#1B2A5B]" : "bg-orange-500"}`} style={{ width: `${(s.count / maxSource) * 100}%` }} />
                   </div>
                 </div>
               ))}

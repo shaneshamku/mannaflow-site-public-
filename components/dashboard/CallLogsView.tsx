@@ -34,7 +34,15 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
 
 // List view of Retell call logs (view "A"). `showOrg` renders an organization
 // column for MannaFlow admins viewing calls across every org.
-export function CallLogsView({ calls, showOrg }: { calls: DashboardCallLog[]; showOrg: boolean }) {
+export function CallLogsView({
+  calls,
+  showOrg,
+  unionTheme = false,
+}: {
+  calls: DashboardCallLog[];
+  showOrg: boolean;
+  unionTheme?: boolean;
+}) {
   const total = calls.length;
   const booked = calls.filter((c) => c.bookingStatus === "booked").length;
   const durations = calls.map((c) => c.durationSeconds ?? 0).filter((d) => d > 0);
@@ -95,7 +103,12 @@ export function CallLogsView({ calls, showOrg }: { calls: DashboardCallLog[]; sh
                   <td className="px-4 py-3 max-w-md text-gray-600">{c.summary ?? "—"}</td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     {c.recordingUrl ? (
-                      <a href={c.recordingUrl} target="_blank" rel="noopener noreferrer" className="text-forest underline">
+                      <a
+                        href={c.recordingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`underline ${unionTheme ? "text-[#1B2A5B]" : "text-forest"}`}
+                      >
                         Listen
                       </a>
                     ) : (

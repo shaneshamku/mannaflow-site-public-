@@ -125,6 +125,195 @@ export async function getDashboardCallLogs(): Promise<DashboardCallLog[]> {
   return (data ?? []).map((row) => callLogFromRow(row as Record<string, unknown>));
 }
 
+// A lead counts as "booked" once it reaches JOB_BOOKED or any later stage —
+// i.e. it's no longer just a quote/inquiry.
+const BOOKED_STAGES = new Set<ContractorPipelineStage>([
+  "JOB_BOOKED",
+  "JOB_COMPLETE",
+  "INVOICE_SENT",
+  "PAID",
+]);
+
+export type OverviewStats = {
+  totalCallsThisMonth: number;
+  totalBookedCustomersThisMonth: number;
+  bookedGrowthRatePercent: number;
+  mostBookedService: string | null;
+  mostBookedServiceCount: number;
+  topServices: { type: string; count: number }[];
+  bookedByMonth: { month: string; count: number }[];
+};
+
+// Overview-page KPI scorecards + charts.
+// "Booked customer" = a call whose Retell custom_analysis_data.booking_status
+// came back "booked" (see lib/retell.ts callLogRowFromRetell) — i.e. the voice
+// agent actually secured the appointment on that call, not just a lead that
+// progressed in the pipeline.
+// "Top service booked" still comes from leads.service_type on booked-stage
+// leads, since call_logs metadata doesn't carry a service type.
+export async function getDashboardOverviewStats(): Promise<OverviewStats> {
+  const supabase = await createServerSupabaseClient();
+
+  const [{ data: leadRows, error: leadError }, { data: callRows, error: callError }] = await Promise.all([
+    supabase.from("leads").select("current_stage, date_entered_stage, service_type"),
+    supabase.from("call_logs").select("direction, started_at, metadata"),
+  ]);
+  if (leadError) throw leadError;
+  if (callError) throw callError;
+  const leads = leadRows ?? [];
+  const calls = callRows ?? [];
+
+  const now = new Date();
+  const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
+  const isBookedCall = (c: { metadata: unknown }) =>
+    ((c.metadata as Record<string, unknown> | null)?.booking_status ?? null) === "booked";
+
+  const totalCallsThisMonth = calls.filter(
+    (c) => c.direction === "inbound" && c.started_at && new Date(c.started_at) >= startOfThisMonth
+  ).length;
+
+  const bookedThisMonth = calls.filter(
+    (c) => isBookedCall(c) && c.started_at && new Date(c.started_at) >= startOfThisMonth
+  ).length;
+  const bookedLastMonth = calls.filter((c) => {
+    if (!isBookedCall(c) || !c.started_at) return false;
+    const started = new Date(c.started_at);
+    return started >= startOfLastMonth && started < startOfThisMonth;
+  }).length;
+  const bookedGrowthRatePercent =
+    bookedLastMonth === 0
+      ? bookedThisMonth > 0
+        ? 100
+        : 0
+      : Math.round(((bookedThisMonth - bookedLastMonth) / bookedLastMonth) * 100);
+
+  const bookedLeads = leads.filter((r) => BOOKED_STAGES.has(r.current_stage as ContractorPipelineStage));
+  const serviceCounts = bookedLeads.reduce<Record<string, number>>((all, r) => {
+    const key = (r.service_type as string | null) ?? "Unknown";
+    all[key] = (all[key] ?? 0) + 1;
+    return all;
+  }, {});
+  const topServices = Object.entries(serviceCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => ({ type, count }));
+
+  const bookedByMonth = [...Array(6)].map((_, i) => {
+    const monthDate = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+    const count = bookedLeads.filter((r) => {
+      const entered = new Date(r.date_entered_stage as string);
+      return entered.getFullYear() === monthDate.getFullYear() && entered.getMonth() === monthDate.getMonth();
+    }).length;
+    return { month: monthDate.toLocaleString("en-US", { month: "short" }), count };
+  });
+
+  return {
+    totalCallsThisMonth,
+    totalBookedCustomersThisMonth: bookedThisMonth,
+    bookedGrowthRatePercent,
+    mostBookedService: topServices[0]?.type ?? null,
+    mostBookedServiceCount: topServices[0]?.count ?? 0,
+    topServices: topServices.slice(0, 5),
+    bookedByMonth,
+  };
+}
+
+const OUTCOME_LABELS: Record<string, string> = {
+  user_hangup: "Caller ended call",
+  agent_hangup: "Agent ended call",
+  call_transfer: "Transferred",
+  voicemail_reached: "Reached voicemail",
+  dial_busy: "Line busy",
+  max_duration_reached: "Max duration reached",
+  error: "Call error",
+};
+
+export type CallLogAnalytics = {
+  totalCalls: number;
+  avgDurationSeconds: number;
+  successRatePercent: number;
+  positiveSentimentPercent: number;
+  sentimentCounts: { label: string; count: number }[];
+  outcomeCounts: { label: string; count: number }[];
+  callVolumeByDay: { day: string; count: number }[];
+  recentCalls: { id: string; startedAt: string | null; sentiment: string | null; summary: string | null }[];
+};
+
+// Call-log-only analytics for orgs (currently Union Health Network) that
+// aren't using the lead pipeline / campaigns yet — everything here is
+// derived from `call_logs`, sourced from the Retell webhook/backfill
+// (lib/retell.ts), not from `leads`.
+export async function getCallLogAnalytics(): Promise<CallLogAnalytics> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("call_logs")
+    .select("id, started_at, duration_seconds, metadata")
+    .order("started_at", { ascending: false, nullsFirst: false });
+  if (error) throw error;
+  const rows = data ?? [];
+  const meta = (row: (typeof rows)[number]) => (row.metadata as Record<string, unknown> | null) ?? {};
+
+  const totalCalls = rows.length;
+  const durations = rows.map((r) => r.duration_seconds ?? 0).filter((d) => d > 0);
+  const avgDurationSeconds = durations.length
+    ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+    : 0;
+
+  const successCount = rows.filter((r) => meta(r).successful === true).length;
+  const successRatePercent = totalCalls ? Math.round((successCount / totalCalls) * 100) : 0;
+
+  const sentimentTally: Record<string, number> = {};
+  const outcomeTally: Record<string, number> = {};
+  for (const r of rows) {
+    const m = meta(r);
+    const sentiment = (m.sentiment as string | null) ?? "Unknown";
+    sentimentTally[sentiment] = (sentimentTally[sentiment] ?? 0) + 1;
+    const reason = (m.disconnection_reason as string | null) ?? "Unknown";
+    outcomeTally[reason] = (outcomeTally[reason] ?? 0) + 1;
+  }
+  const positiveSentimentPercent = totalCalls
+    ? Math.round(((sentimentTally["Positive"] ?? 0) / totalCalls) * 100)
+    : 0;
+
+  const now = new Date();
+  const callVolumeByDay = [...Array(14)].map((_, i) => {
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (13 - i));
+    const nextDay = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+    const count = rows.filter((r) => {
+      if (!r.started_at) return false;
+      const started = new Date(r.started_at);
+      return started >= day && started < nextDay;
+    }).length;
+    return { day: day.toLocaleString("en-US", { day: "numeric", month: "short" }), count };
+  });
+
+  const recentCalls = rows.slice(0, 6).map((r) => {
+    const m = meta(r);
+    return {
+      id: r.id as string,
+      startedAt: (r.started_at as string | null) ?? null,
+      sentiment: (m.sentiment as string | null) ?? null,
+      summary: (m.summary as string | null) ?? null,
+    };
+  });
+
+  return {
+    totalCalls,
+    avgDurationSeconds,
+    successRatePercent,
+    positiveSentimentPercent,
+    sentimentCounts: Object.entries(sentimentTally)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, count]) => ({ label, count })),
+    outcomeCounts: Object.entries(outcomeTally)
+      .sort((a, b) => b[1] - a[1])
+      .map(([key, count]) => ({ label: OUTCOME_LABELS[key] ?? key, count })),
+    callVolumeByDay,
+    recentCalls,
+  };
+}
+
 export async function getSupabaseAnalytics() {
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.from("leads").select("current_stage, created_at, date_entered_stage, lead_source, service_type, urgency_level");

@@ -20,9 +20,10 @@ type Props = {
   color: string;
   bg: string;
   leads: Lead[];
+  unionTheme?: boolean;
 };
 
-export function PipelineColumn({ stageKey, label, color, bg, leads }: Props) {
+export function PipelineColumn({ stageKey, label, color, bg, leads, unionTheme = false }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id: stageKey });
 
   return (
@@ -37,7 +38,13 @@ export function PipelineColumn({ stageKey, label, color, bg, leads }: Props) {
       <div
         ref={setNodeRef}
         className={`flex-1 min-h-32 rounded-xl p-2 space-y-2.5 transition-colors ${
-          isOver ? "bg-orange-50 ring-2 ring-orange-300" : "bg-gray-100/60"
+          isOver
+            ? unionTheme
+              ? "bg-[#E7EAF5] ring-2 ring-[#33478A]"
+              : "bg-orange-50 ring-2 ring-orange-300"
+            : unionTheme
+              ? "bg-[#EFEBE2]"
+              : "bg-gray-100/60"
         }`}
       >
         {leads.map((l) => (
