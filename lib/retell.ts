@@ -176,13 +176,31 @@ export async function fetchRetellCallsPage(opts: {
   return { items: data.items ?? [], paginationKey: data.pagination_key, hasMore: Boolean(data.has_more) };
 }
 
-// Verifies the X-Retell-Signature header: HMAC-SHA256 of the raw request body
-// keyed by the Retell API key, hex-encoded. Constant-time compared.
+const SIGNATURE_TIMEOUT_MS = 5 * 60 * 1000;
+
+// Verifies the X-Retell-Signature header against Retell's actual format:
+// "v=<unix_ms_timestamp>,d=<hex hmac-sha256 of (rawBody + timestamp)>",
+// keyed by the Retell API key (matches the retell-sdk `webhook_auth.verify`
+// implementation — confirmed by inspecting its published source, since the
+// public docs don't spell out the exact scheme). The prior implementation
+// hashed only the raw body with no timestamp and compared against the raw
+// header string, which never matches Retell's real signatures — every
+// genuine webhook was silently rejected with 401, and only ever "verified"
+// against payloads this app signed itself the same (wrong) way.
 export function verifyRetellSignature(rawBody: string, signature: string | null): boolean {
   const apiKey = process.env.RETELL_API_KEY;
   if (!apiKey || !signature) return false;
-  const expected = crypto.createHmac("sha256", apiKey).update(rawBody, "utf8").digest("hex");
-  const a = Buffer.from(expected);
-  const b = Buffer.from(signature);
+
+  const match = /^v=(\d+),d=([0-9a-f]{64})$/i.exec(signature);
+  if (!match) return false;
+  const [, timestampStr, digestHex] = match;
+  const timestamp = Number(timestampStr);
+  if (!Number.isSafeInteger(timestamp) || Math.abs(Date.now() - timestamp) > SIGNATURE_TIMEOUT_MS) {
+    return false;
+  }
+
+  const expected = crypto.createHmac("sha256", apiKey).update(rawBody + timestampStr, "utf8").digest("hex");
+  const a = Buffer.from(expected, "hex");
+  const b = Buffer.from(digestHex, "hex");
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
