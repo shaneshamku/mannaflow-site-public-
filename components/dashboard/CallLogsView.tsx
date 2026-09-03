@@ -1,4 +1,4 @@
-import { type DashboardCallLog } from "@/lib/dashboard-data";
+import { isBookedOutcome, type DashboardCallLog } from "@/lib/dashboard-data";
 
 function formatDuration(seconds: number | null): string {
   if (!seconds || seconds <= 0) return "—";
@@ -44,7 +44,7 @@ export function CallLogsView({
   unionTheme?: boolean;
 }) {
   const total = calls.length;
-  const booked = calls.filter((c) => c.bookingStatus === "booked").length;
+  const booked = calls.filter((c) => isBookedOutcome(c.outcome)).length;
   const durations = calls.map((c) => c.durationSeconds ?? 0).filter((d) => d > 0);
   const avg = durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
   const positive = calls.filter((c) => c.sentiment === "Positive").length;

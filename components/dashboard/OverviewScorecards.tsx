@@ -1,6 +1,6 @@
 import { SERVICE_TYPE_LABELS } from "@/lib/pipeline";
 import type { OverviewStats } from "@/lib/dashboard-data";
-import { ScorecardShell, TrendPill } from "./ScorecardShell";
+import { ScorecardShell } from "./ScorecardShell";
 
 export function OverviewScorecards({ stats }: { stats: OverviewStats }) {
   const serviceLabel = stats.mostBookedService
@@ -10,15 +10,10 @@ export function OverviewScorecards({ stats }: { stats: OverviewStats }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <ScorecardShell label="Total Calls" value={String(stats.totalCallsThisMonth)} />
-      <ScorecardShell
-        label="Total Booked Customers"
-        value={String(stats.totalBookedCustomersThisMonth)}
-        pill={<TrendPill percent={stats.bookedGrowthRatePercent} />}
-      />
+      <ScorecardShell label="Total Booked Customers" value={String(stats.totalBookedCustomersThisMonth)} />
       <ScorecardShell
         label="Growth Rate"
         value={`${stats.bookedGrowthRatePercent > 0 ? "+" : ""}${stats.bookedGrowthRatePercent}%`}
-        pill={<TrendPill percent={stats.bookedGrowthRatePercent} />}
       />
       <ScorecardShell
         label="Top Service Booked"

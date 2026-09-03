@@ -103,6 +103,17 @@ function inferOutcomeFromSummary(summary: string | null): string | null {
   return null;
 }
 
+// Single source of truth for "was this call a booking" — the same signal the
+// Outcome column shows, so booked-customer KPIs never disagree with what the
+// Calls page displays.
+export function isBookedOutcome(outcome: string | null): boolean {
+  return (outcome ?? "").toLowerCase() === "booked";
+}
+
+function outcomeFromMetadata(meta: Record<string, unknown>): string | null {
+  return (meta.outcome as string | null) ?? inferOutcomeFromSummary((meta.summary as string | null) ?? null);
+}
+
 export function callLogFromRow(row: Record<string, unknown>): DashboardCallLog {
   const meta = (row.metadata as Record<string, unknown> | null) ?? {};
   const org = row.organizations as { name?: string } | { name?: string }[] | null;
@@ -120,7 +131,7 @@ export function callLogFromRow(row: Record<string, unknown>): DashboardCallLog {
     startedAt: (row.started_at as string | null) ?? null,
     summary: (meta.summary as string | null) ?? null,
     sentiment: (meta.sentiment as string | null) ?? null,
-    outcome: (meta.outcome as string | null) ?? inferOutcomeFromSummary((meta.summary as string | null) ?? null),
+    outcome: outcomeFromMetadata(meta),
     bookingStatus: (meta.booking_status as string | null) ?? null,
     callerName: (meta.caller_name as string | null) ?? null,
   };
@@ -159,8 +170,10 @@ export type OverviewStats = {
 };
 
 // Overview-page KPI scorecards + charts.
-// "Booked customer" = a call whose Retell custom_analysis_data.booking_status
-// came back "booked" (see lib/retell.ts callLogRowFromRetell) — i.e. the voice
+// "Booked customer" = a call whose Outcome (same value shown in the Calls
+// page's Outcome column — Retell's custom_analysis_data.call_outcome, falling
+// back to the summary-text heuristic when that's empty, see
+// outcomeFromMetadata/isBookedOutcome above) is "Booked" — i.e. the voice
 // agent actually secured the appointment on that call, not just a lead that
 // progressed in the pipeline.
 // "Top service booked" still comes from leads.service_type on booked-stage
@@ -182,7 +195,7 @@ export async function getDashboardOverviewStats(): Promise<OverviewStats> {
   const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
   const isBookedCall = (c: { metadata: unknown }) =>
-    ((c.metadata as Record<string, unknown> | null)?.booking_status ?? null) === "booked";
+    isBookedOutcome(outcomeFromMetadata((c.metadata as Record<string, unknown> | null) ?? {}));
 
   const totalCallsThisMonth = calls.filter(
     (c) => c.direction === "inbound" && c.started_at && new Date(c.started_at) >= startOfThisMonth

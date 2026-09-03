@@ -20,19 +20,3 @@ export function ScorecardShell({
     </div>
   );
 }
-
-export function TrendPill({ percent }: { percent: number }) {
-  const up = percent > 0;
-  const flat = percent === 0;
-  const style = flat
-    ? "bg-gray-100 text-gray-600"
-    : up
-      ? "bg-green-50 text-green-700"
-      : "bg-red-50 text-red-700";
-  const arrow = flat ? "→" : up ? "↑" : "↓";
-  return (
-    <span className={`shrink-0 inline-flex items-center gap-0.5 text-xs font-medium px-2 py-0.5 rounded-full ${style}`}>
-      {arrow} {Math.abs(percent)}%
-    </span>
-  );
-}
