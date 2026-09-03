@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
-import { ingestRetellCall, verifyRetellSignature, type RetellCall } from "@/lib/retell";
+import { ingestRetellCall, notifyOwnerOfCall, verifyRetellSignature, type RetellCall } from "@/lib/retell";
 import { supabaseEnabled } from "@/lib/dashboard-data";
 
 // Real-time Retell call ingestion. Configure this URL as the agent/account
@@ -34,9 +34,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing call" }, { status: 400 });
   }
 
-  const result = await ingestRetellCall(createAdminSupabaseClient(), payload.call);
+  const admin = createAdminSupabaseClient();
+  const result = await ingestRetellCall(admin, payload.call);
   if (result.status === "error") {
     return NextResponse.json({ error: result.error }, { status: 500 });
+  }
+  // Owner SMS only fires on the analyzed leg (has a summary + final booking
+  // status) and never from the backfill path, so historical calls don't
+  // trigger a flood of texts. A notify failure never fails the webhook.
+  if (result.status === "ingested" && payload.event === "call_analyzed") {
+    notifyOwnerOfCall(admin, result.organizationId, payload.call).catch((err) =>
+      console.error("notifyOwnerOfCall failed", err),
+    );
   }
   return NextResponse.json({ ok: true, status: result.status });
 }

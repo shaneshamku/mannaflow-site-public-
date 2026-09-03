@@ -1,6 +1,20 @@
 import crypto from "crypto";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 
+// Reuses the same public Twilio Function relay Luna's notify_owner tool
+// already sends through (its own Twilio account, from +16473720370) — no
+// TWILIO_* env vars needed. See voice-agent/luna/README.md "SMS relay".
+const SMS_RELAY_URL = "https://mannaflow-sms-6105.twil.io/notify-owner";
+
+async function sendSMS(to: string, body: string): Promise<void> {
+  const res = await fetch(SMS_RELAY_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ to, message: body }),
+  });
+  if (!res.ok) throw new Error(`SMS relay failed: ${res.status} ${await res.text()}`);
+}
+
 // Shared Retell -> Supabase call_logs ingestion. Used by both the real-time
 // webhook (app/api/retell/webhook) and the admin backfill route
 // (app/api/admin/retell/backfill). Both run without a signed-in user, so both
@@ -98,6 +112,45 @@ export async function ingestRetellCall(admin: AdminClient, call: RetellCall): Pr
   const { error } = await admin.from("call_logs").upsert(row, { onConflict: "provider_call_id" });
   if (error) return { callId: call.call_id, status: "error", error: error.message };
   return { callId: call.call_id, status: "ingested", organizationId };
+}
+
+const BOOKING_LINES: Record<string, string> = {
+  confirmed: "✅ Appointment booked.",
+  requested: "📋 Booking requested — needs follow-up.",
+  failed: "⚠️ Booking attempt failed — follow up.",
+};
+
+// Texts an org's owner_notify_phone (if set) after a call_analyzed webhook,
+// simulating the "new call" alert a real client would receive. Never called
+// from the backfill path — only the real-time call_analyzed leg, so historical
+// calls don't trigger a flood of texts.
+export async function notifyOwnerOfCall(
+  admin: AdminClient,
+  organizationId: string,
+  call: RetellCall,
+): Promise<void> {
+  const { data: org } = await admin
+    .from("organizations")
+    .select("name, owner_notify_phone")
+    .eq("id", organizationId)
+    .maybeSingle();
+  if (!org?.owner_notify_phone) return;
+
+  const analysis = call.call_analysis ?? {};
+  const custom = analysis.custom_analysis_data ?? {};
+  const callerName = (custom.caller_full_name as string | undefined) || "Unknown caller";
+  const callerPhone = call.from_number || "no number";
+  const summary = analysis.call_summary?.trim() || "No summary available.";
+  const bookingStatus = (custom.booking_status as string | undefined) ?? "none";
+  const urgency = (custom.urgency_level as string | undefined) ?? "";
+
+  const bookingLine = BOOKING_LINES[bookingStatus] ?? "No booking made.";
+  const urgencyLine = /high|urgent|emergency/i.test(urgency)
+    ? "\n⚠️ Flagged urgent — call back today."
+    : "";
+
+  const body = `New call — ${org.name}\n${callerName} · ${callerPhone}\n${summary}\n${bookingLine}${urgencyLine}`;
+  await sendSMS(org.owner_notify_phone, body);
 }
 
 export async function fetchRetellCallsPage(opts: {
