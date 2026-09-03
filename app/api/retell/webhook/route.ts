@@ -41,11 +41,18 @@ export async function POST(req: NextRequest) {
   }
   // Owner SMS only fires on the analyzed leg (has a summary + final booking
   // status) and never from the backfill path, so historical calls don't
-  // trigger a flood of texts. A notify failure never fails the webhook.
+  // trigger a flood of texts. A notify failure never fails the webhook, but
+  // is reported back in the response for diagnosability (this endpoint only
+  // ever responds to a request bearing a valid HMAC signature).
+  let notify: string | undefined;
   if (result.status === "ingested" && payload.event === "call_analyzed") {
-    notifyOwnerOfCall(admin, result.organizationId, payload.call).catch((err) =>
-      console.error("notifyOwnerOfCall failed", err),
-    );
+    try {
+      await notifyOwnerOfCall(admin, result.organizationId, payload.call);
+      notify = "sent_or_skipped_no_phone";
+    } catch (err) {
+      console.error("notifyOwnerOfCall failed", err);
+      notify = `error: ${err instanceof Error ? err.message : String(err)}`;
+    }
   }
-  return NextResponse.json({ ok: true, status: result.status });
+  return NextResponse.json({ ok: true, status: result.status, notify });
 }
