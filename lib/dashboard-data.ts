@@ -89,6 +89,20 @@ export type DashboardCallLog = {
   callerName: string | null;
 };
 
+// Retell's structured custom_analysis_data.call_outcome field is empty for
+// some agents (e.g. Union Health Network) — this text heuristic reads the
+// free-text call_summary instead so the Outcome column isn't blank. It's an
+// approximation, not authoritative: unusual phrasing can misclassify.
+const NOT_BOOKED_RE = /\b(not|n't|no|unable to|couldn't|did not|declined to|chose not to)\b[^.?!]{0,30}\b(book(?:ed|ing)?|schedul(?:e|ed|ing)|appointment)\b/i;
+const BOOKED_RE = /\b(booked|scheduled|confirmed)\b[^.?!]{0,30}\b(appointment|visit|service|call|consultation)\b|\bappointment\b[^.?!]{0,30}\b(booked|scheduled|confirmed|set up|set)\b/i;
+
+function inferOutcomeFromSummary(summary: string | null): string | null {
+  if (!summary) return null;
+  if (NOT_BOOKED_RE.test(summary)) return "Not booked";
+  if (BOOKED_RE.test(summary)) return "Booked";
+  return null;
+}
+
 export function callLogFromRow(row: Record<string, unknown>): DashboardCallLog {
   const meta = (row.metadata as Record<string, unknown> | null) ?? {};
   const org = row.organizations as { name?: string } | { name?: string }[] | null;
@@ -106,7 +120,7 @@ export function callLogFromRow(row: Record<string, unknown>): DashboardCallLog {
     startedAt: (row.started_at as string | null) ?? null,
     summary: (meta.summary as string | null) ?? null,
     sentiment: (meta.sentiment as string | null) ?? null,
-    outcome: (meta.outcome as string | null) ?? null,
+    outcome: (meta.outcome as string | null) ?? inferOutcomeFromSummary((meta.summary as string | null) ?? null),
     bookingStatus: (meta.booking_status as string | null) ?? null,
     callerName: (meta.caller_name as string | null) ?? null,
   };
