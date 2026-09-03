@@ -6,13 +6,15 @@ import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 // TWILIO_* env vars needed. See voice-agent/luna/README.md "SMS relay".
 const SMS_RELAY_URL = "https://mannaflow-sms-6105.twil.io/notify-owner";
 
-async function sendSMS(to: string, body: string): Promise<void> {
+async function sendSMS(to: string, body: string): Promise<string> {
   const res = await fetch(SMS_RELAY_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ to, message: body }),
   });
-  if (!res.ok) throw new Error(`SMS relay failed: ${res.status} ${await res.text()}`);
+  const text = await res.text();
+  if (!res.ok) throw new Error(`SMS relay failed: ${res.status} ${text}`);
+  return `relay ${res.status}: ${text}`;
 }
 
 // Shared Retell -> Supabase call_logs ingestion. Used by both the real-time
@@ -128,13 +130,14 @@ export async function notifyOwnerOfCall(
   admin: AdminClient,
   organizationId: string,
   call: RetellCall,
-): Promise<void> {
-  const { data: org } = await admin
+): Promise<string> {
+  const { data: org, error } = await admin
     .from("organizations")
     .select("name, owner_notify_phone")
     .eq("id", organizationId)
     .maybeSingle();
-  if (!org?.owner_notify_phone) return;
+  if (error) return `org_lookup_error: ${error.message}`;
+  if (!org?.owner_notify_phone) return `skipped: no owner_notify_phone on org ${organizationId}`;
 
   const analysis = call.call_analysis ?? {};
   const custom = analysis.custom_analysis_data ?? {};
@@ -150,7 +153,7 @@ export async function notifyOwnerOfCall(
     : "";
 
   const body = `New call — ${org.name}\n${callerName} · ${callerPhone}\n${summary}\n${bookingLine}${urgencyLine}`;
-  await sendSMS(org.owner_notify_phone, body);
+  return sendSMS(org.owner_notify_phone, body);
 }
 
 export async function fetchRetellCallsPage(opts: {

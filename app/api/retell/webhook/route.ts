@@ -47,8 +47,7 @@ export async function POST(req: NextRequest) {
   let notify: string | undefined;
   if (result.status === "ingested" && payload.event === "call_analyzed") {
     try {
-      await notifyOwnerOfCall(admin, result.organizationId, payload.call);
-      notify = "sent_or_skipped_no_phone";
+      notify = await notifyOwnerOfCall(admin, result.organizationId, payload.call);
     } catch (err) {
       console.error("notifyOwnerOfCall failed", err);
       notify = `error: ${err instanceof Error ? err.message : String(err)}`;
