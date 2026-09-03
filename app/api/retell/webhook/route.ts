@@ -39,13 +39,18 @@ export async function POST(req: NextRequest) {
   if (result.status === "error") {
     return NextResponse.json({ error: result.error }, { status: 500 });
   }
-  // Owner SMS only fires on the analyzed leg (has a summary + final booking
-  // status) and never from the backfill path, so historical calls don't
-  // trigger a flood of texts. A notify failure never fails the webhook, but
-  // is reported back in the response for diagnosability (this endpoint only
-  // ever responds to a request bearing a valid HMAC signature).
+  // Owner SMS fires once analysis data is actually present on the payload,
+  // rather than trusting the event name literally being "call_analyzed" —
+  // in production, Retell was observed delivering the analysis-enriched
+  // payload under "call_ended" for this agent, so the earlier name-based
+  // gate never opened. An event without analysis (a plain call_ended) still
+  // won't match, so this can't double-fire off both legs. Never runs from
+  // the backfill path, so historical calls don't trigger a flood of texts.
+  // A notify failure never fails the webhook, but is reported back in the
+  // response for diagnosability (this endpoint only ever responds to a
+  // request bearing a valid HMAC signature).
   let notify: string | undefined;
-  if (result.status === "ingested" && payload.event === "call_analyzed") {
+  if (result.status === "ingested" && payload.call.call_analysis?.call_summary) {
     try {
       notify = await notifyOwnerOfCall(admin, result.organizationId, payload.call);
     } catch (err) {
