@@ -122,6 +122,12 @@ const BOOKING_LINES: Record<string, string> = {
   failed: "⚠️ Booking attempt failed — follow up.",
 };
 
+const LANGUAGE_LABELS: Record<string, string> = {
+  english: "English",
+  farsi: "Farsi",
+  mixed: "Mixed (English/Farsi)",
+};
+
 // Texts an org's owner_notify_phone (if set) after a call_analyzed webhook,
 // simulating the "new call" alert a real client would receive. Never called
 // from the backfill path — only the real-time call_analyzed leg, so historical
@@ -146,13 +152,15 @@ export async function notifyOwnerOfCall(
   const summary = analysis.call_summary?.trim() || "No summary available.";
   const bookingStatus = (custom.booking_status as string | undefined) ?? "none";
   const urgency = (custom.urgency_level as string | undefined) ?? "";
+  const language = (custom.language_spoken as string | undefined) ?? "";
 
   const bookingLine = BOOKING_LINES[bookingStatus] ?? "No booking made.";
   const urgencyLine = /high|urgent|emergency/i.test(urgency)
     ? "\n⚠️ Flagged urgent — call back today."
     : "";
+  const languageLine = LANGUAGE_LABELS[language] ? `\nLanguage: ${LANGUAGE_LABELS[language]}` : "";
 
-  const body = `New call — ${org.name}\n${callerName} · ${callerPhone}\n${summary}\n${bookingLine}${urgencyLine}`;
+  const body = `New call — ${org.name}\n${callerName} · ${callerPhone}\n${summary}\n${bookingLine}${languageLine}${urgencyLine}`;
   return sendSMS(org.owner_notify_phone, body);
 }
 
