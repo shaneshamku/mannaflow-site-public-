@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import type { CallLogAnalytics } from "@/lib/dashboard-data";
 
 export function CallVolumeChart({ data }: { data: CallLogAnalytics["callVolumeByDay"] }) {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const max = Math.max(...data.map((d) => d.count), 1);
   const gridLines = [max, Math.round(max / 2), 0];
 
@@ -25,12 +29,23 @@ export function CallVolumeChart({ data }: { data: CallLogAnalytics["callVolumeBy
                 style={{ bottom: `${(n / max) * 100}%` }}
               />
             ))}
-            {data.map((d) => (
-              <div key={d.day} className="relative flex-1 h-full flex items-end justify-center">
+            {data.map((d, i) => (
+              <div
+                key={d.day}
+                className="relative flex-1 h-full flex items-end justify-center"
+                onMouseEnter={() => setHoverIndex(i)}
+                onMouseLeave={() => setHoverIndex((cur) => (cur === i ? null : cur))}
+              >
+                {hoverIndex === i && (
+                  <div className="absolute bottom-full mb-2 z-10 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5 text-xs text-white shadow-lg">
+                    <div className="font-semibold">{d.count} {d.count === 1 ? "call" : "calls"}</div>
+                    <div className="text-gray-300">{d.day}</div>
+                    <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+                  </div>
+                )}
                 <div
-                  className="w-full max-w-6 rounded-t-md bg-[#1B2A5B]"
+                  className={`w-full max-w-6 rounded-t-md transition-colors ${hoverIndex === i ? "bg-[#33478A]" : "bg-[#1B2A5B]"}`}
                   style={{ height: `${Math.max((d.count / max) * 100, d.count > 0 ? 4 : 0)}%` }}
-                  title={`${d.count} calls on ${d.day}`}
                 />
               </div>
             ))}
@@ -39,7 +54,7 @@ export function CallVolumeChart({ data }: { data: CallLogAnalytics["callVolumeBy
             {data.map((d, i) => (
               <span
                 key={d.day}
-                className={`flex-1 text-center text-[10px] text-gray-500 ${i % 2 === 1 ? "" : "invisible"}`}
+                className={`flex-1 text-center text-[10px] ${hoverIndex === i ? "text-gray-900 font-medium" : "text-gray-500"} ${i % 2 === 1 || hoverIndex === i ? "" : "invisible"}`}
               >
                 {d.day}
               </span>

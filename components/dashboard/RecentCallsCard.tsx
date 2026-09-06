@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { CallLogAnalytics } from "@/lib/dashboard-data";
 
 const SENTIMENT_STYLES: Record<string, string> = {
@@ -23,12 +24,17 @@ export function RecentCallsCard({ calls }: { calls: CallLogAnalytics["recentCall
       {calls.length === 0 ? (
         <p className="text-sm text-gray-400">No calls yet.</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-1">
           {calls.map((c) => (
-            <div key={c.id} className="flex items-start gap-3">
+            <Link
+              key={c.id}
+              href={`/dashboard/calls/${c.id}`}
+              className="group flex items-start gap-3 -mx-2 px-2 py-2 rounded-lg transition-colors hover:bg-gray-50"
+            >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-400">{formatWhen(c.startedAt)}</span>
+                  {c.callerName && <span className="text-xs font-medium text-gray-700">{c.callerName}</span>}
                   {c.sentiment && (
                     <span
                       className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${SENTIMENT_STYLES[c.sentiment] ?? "bg-gray-100 text-gray-600"}`}
@@ -39,7 +45,8 @@ export function RecentCallsCard({ calls }: { calls: CallLogAnalytics["recentCall
                 </div>
                 <p className="text-sm text-gray-700 mt-1 line-clamp-2">{c.summary ?? "No summary available."}</p>
               </div>
-            </div>
+              <span className="text-gray-300 group-hover:text-gray-400 shrink-0 mt-1">›</span>
+            </Link>
           ))}
         </div>
       )}

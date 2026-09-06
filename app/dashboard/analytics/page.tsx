@@ -40,9 +40,10 @@ async function CallOnlyAnalytics() {
         </div>
         <RecentCallsCard calls={stats.recentCalls} />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <BreakdownCard title="Sentiment" items={stats.sentimentCounts} />
         <BreakdownCard title="Call Outcome" items={stats.outcomeCounts} barColorClass="bg-[#33478A]" />
+        <BreakdownCard title="Language Spoken" items={stats.languageCounts} barColorClass="bg-[#5B8DEF]" />
       </div>
     </div>
   );

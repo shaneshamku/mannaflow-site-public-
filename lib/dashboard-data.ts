@@ -263,8 +263,22 @@ export type CallLogAnalytics = {
   positiveSentimentPercent: number;
   sentimentCounts: { label: string; count: number }[];
   outcomeCounts: { label: string; count: number }[];
+  languageCounts: { label: string; count: number }[];
   callVolumeByDay: { day: string; count: number }[];
-  recentCalls: { id: string; startedAt: string | null; sentiment: string | null; summary: string | null }[];
+  recentCalls: {
+    id: string;
+    startedAt: string | null;
+    sentiment: string | null;
+    summary: string | null;
+    callerName: string | null;
+    outcome: string | null;
+  }[];
+};
+
+const LANGUAGE_LABELS: Record<string, string> = {
+  english: "English",
+  farsi: "Farsi",
+  mixed: "Mixed (English/Farsi)",
 };
 
 // Call-log-only analytics for orgs (currently Union Health Network) that
@@ -292,12 +306,17 @@ export async function getCallLogAnalytics(): Promise<CallLogAnalytics> {
 
   const sentimentTally: Record<string, number> = {};
   const outcomeTally: Record<string, number> = {};
+  const languageTally: Record<string, number> = {};
   for (const r of rows) {
     const m = meta(r);
     const sentiment = (m.sentiment as string | null) ?? "Unknown";
     sentimentTally[sentiment] = (sentimentTally[sentiment] ?? 0) + 1;
     const reason = (m.disconnection_reason as string | null) ?? "Unknown";
     outcomeTally[reason] = (outcomeTally[reason] ?? 0) + 1;
+    const custom = (m.custom as Record<string, unknown> | null) ?? {};
+    const rawLanguage = custom.language_spoken as string | undefined;
+    const language = (rawLanguage && LANGUAGE_LABELS[rawLanguage]) || "Unknown";
+    languageTally[language] = (languageTally[language] ?? 0) + 1;
   }
   const positiveSentimentPercent = totalCalls
     ? Math.round(((sentimentTally["Positive"] ?? 0) / totalCalls) * 100)
@@ -317,11 +336,14 @@ export async function getCallLogAnalytics(): Promise<CallLogAnalytics> {
 
   const recentCalls = rows.slice(0, 6).map((r) => {
     const m = meta(r);
+    const custom = (m.custom as Record<string, unknown> | null) ?? {};
     return {
       id: r.id as string,
       startedAt: (r.started_at as string | null) ?? null,
       sentiment: (m.sentiment as string | null) ?? null,
       summary: (m.summary as string | null) ?? null,
+      callerName: (m.caller_name as string | null) ?? null,
+      outcome: (custom.call_outcome as string | null) ?? (m.outcome as string | null) ?? null,
     };
   });
 
@@ -336,8 +358,45 @@ export async function getCallLogAnalytics(): Promise<CallLogAnalytics> {
     outcomeCounts: Object.entries(outcomeTally)
       .sort((a, b) => b[1] - a[1])
       .map(([key, count]) => ({ label: OUTCOME_LABELS[key] ?? key, count })),
+    languageCounts: Object.entries(languageTally)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, count]) => ({ label, count })),
     callVolumeByDay,
     recentCalls,
+  };
+}
+
+export type CallLogDetail = DashboardCallLog & {
+  transcript: string | null;
+  issueCategory: string | null;
+  urgencyLevel: string | null;
+  languageSpoken: string | null;
+  callerPhoneGiven: string | null;
+};
+
+// Full detail for a single call — used by the /dashboard/calls/[id] drill-down
+// linked from Recent Call Highlights. RLS scopes this the same as
+// getDashboardCallLogs: a client admin can only fetch their own org's rows.
+export async function getCallLogDetail(id: string): Promise<CallLogDetail | null> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("call_logs")
+    .select("*, organizations(name)")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const row = data as Record<string, unknown>;
+  const meta = (row.metadata as Record<string, unknown> | null) ?? {};
+  const custom = (meta.custom as Record<string, unknown> | null) ?? {};
+  const rawLanguage = custom.language_spoken as string | undefined;
+  return {
+    ...callLogFromRow(row),
+    transcript: (row.transcript as string | null) ?? null,
+    issueCategory: (meta.issue_category as string | null) ?? null,
+    urgencyLevel: (meta.urgency_level as string | null) ?? null,
+    languageSpoken: (rawLanguage && LANGUAGE_LABELS[rawLanguage]) || null,
+    callerPhoneGiven: (custom.caller_phone as string | null) ?? null,
   };
 }
 
