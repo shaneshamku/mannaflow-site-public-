@@ -48,7 +48,13 @@ function formatDate(d: Date | string) {
   });
 }
 
-export function LeadsExplorer({ initialLeads }: { initialLeads: Lead[] }) {
+export function LeadsExplorer({
+  initialLeads,
+  unionTheme = false,
+}: {
+  initialLeads: Lead[];
+  unionTheme?: boolean;
+}) {
   const [leads] = useState<Lead[]>(initialLeads);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(initialLeads[0]?.id ?? null);
@@ -109,7 +115,11 @@ export function LeadsExplorer({ initialLeads }: { initialLeads: Lead[] }) {
                   key={lead.id}
                   onClick={() => setSelectedId(lead.id)}
                   className={`w-full text-left px-4 py-3 border-b border-gray-100 transition-colors ${
-                    active ? "bg-orange-50" : "hover:bg-gray-50"
+                    active
+                      ? unionTheme
+                        ? "bg-[#E7EAF5]"
+                        : "bg-orange-50"
+                      : "hover:bg-gray-50"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -151,7 +161,9 @@ export function LeadsExplorer({ initialLeads }: { initialLeads: Lead[] }) {
                       ? "bg-gray-100 text-gray-900"
                       : m.escalated
                         ? "bg-red-500 text-white"
-                        : "bg-orange-500 text-white"
+                        : unionTheme
+                          ? "bg-[#1B2A5B] text-white"
+                          : "bg-orange-500 text-white"
                   }`}
                 >
                   <p>{m.content}</p>

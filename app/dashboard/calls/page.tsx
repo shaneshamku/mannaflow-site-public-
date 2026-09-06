@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getDashboardAccess } from "@/lib/dashboard-auth";
+import { isUnionHealthTheme } from "@/lib/theme";
 import { getDashboardCallLogs } from "@/lib/dashboard-data";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { CallLogsView } from "@/components/dashboard/CallLogsView";
@@ -13,6 +14,7 @@ export default async function CallsPage() {
 
   const isAdmin = access.role === "MANNAFLOW_ADMIN";
   const calls = await getDashboardCallLogs();
+  const unionTheme = isUnionHealthTheme(access.organizationName);
 
   return (
     <div className="flex flex-col h-full">
@@ -23,7 +25,7 @@ export default async function CallsPage() {
             <RetellBackfillButton />
           </div>
         )}
-        <CallLogsView calls={calls} showOrg={isAdmin} />
+        <CallLogsView calls={calls} showOrg={isAdmin} unionTheme={unionTheme} />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getDashboardAccess } from "@/lib/dashboard-auth";
+import { isUnionHealthTheme } from "@/lib/theme";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { CampaignsExplorer } from "@/components/campaigns/CampaignsExplorer";
 import { getDashboardCampaigns, getDashboardLeads } from "@/lib/dashboard-data";
@@ -7,6 +8,9 @@ import { getDashboardCampaigns, getDashboardLeads } from "@/lib/dashboard-data";
 export default async function CampaignsPage() {
   const access = await getDashboardAccess();
   if (!access) redirect("/login");
+
+  const unionTheme = isUnionHealthTheme(access.organizationName);
+  if (unionTheme) redirect("/dashboard");
 
   const [campaigns, leads] = await Promise.all([getDashboardCampaigns(), getDashboardLeads()]);
 
@@ -17,6 +21,7 @@ export default async function CampaignsPage() {
         <CampaignsExplorer
           initialCampaigns={campaigns.map((c) => ({ ...c, steps: (c.steps as never[]) ?? [] }))}
           allLeads={leads}
+          unionTheme={unionTheme}
         />
       </div>
     </div>

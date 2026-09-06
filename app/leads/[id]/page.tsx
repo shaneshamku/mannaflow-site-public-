@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { getDashboardAccess } from "@/lib/dashboard-auth";
+import { isUnionHealthTheme } from "@/lib/theme";
 import { getStage, STAGES, SERVICE_TYPE_LABELS, URGENCY_LABELS, URGENCY_COLORS } from "@/lib/pipeline";
 import { LeadStageSelect } from "@/components/leads/LeadStageSelect";
 import Link from "next/link";
@@ -46,9 +47,10 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
 
   const stage = getStage(lead.currentStage);
   const urgencyStyle = lead.urgencyLevel ? URGENCY_COLORS[lead.urgencyLevel] : "bg-gray-100 text-gray-600";
+  const unionTheme = isUnionHealthTheme(access.organizationName);
 
   return (
-    <div className="contractor-app flex flex-col min-h-screen">
+    <div className={`contractor-app flex flex-col min-h-screen${unionTheme ? " theme-unionhealth" : ""}`}>
       <div className="flex items-center gap-4 px-6 py-4 border-b border-gray-200 bg-white">
         <Link href="/dashboard" className="text-gray-400 hover:text-gray-600 text-sm">
           ← Dashboard
@@ -145,6 +147,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                     <div className={`max-w-xs rounded-2xl px-3.5 py-2 text-sm ${
                       m.role === "USER" ? "bg-gray-100 text-gray-900"
                         : m.escalated ? "bg-red-500 text-white"
+                        : unionTheme ? "bg-[#1B2A5B] text-white"
                         : "bg-orange-500 text-white"
                     }`}>
                       {m.content}

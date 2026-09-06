@@ -18,7 +18,13 @@ type Lead = {
   createdAt: Date | string;
 };
 
-export function PipelineBoard({ initialLeads }: { initialLeads: Lead[] }) {
+export function PipelineBoard({
+  initialLeads,
+  unionTheme = false,
+}: {
+  initialLeads: Lead[];
+  unionTheme?: boolean;
+}) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
 
   const sensors = useSensors(
@@ -62,6 +68,7 @@ export function PipelineBoard({ initialLeads }: { initialLeads: Lead[] }) {
             color={stage.color}
             bg={stage.bg}
             leads={leads.filter((l) => l.currentStage === stage.key)}
+            unionTheme={unionTheme}
           />
         ))}
       </div>

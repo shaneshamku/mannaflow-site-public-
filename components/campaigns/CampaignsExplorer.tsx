@@ -90,9 +90,11 @@ const STATUS_STYLES: Record<string, string> = {
 export function CampaignsExplorer({
   initialCampaigns,
   allLeads,
+  unionTheme = false,
 }: {
   initialCampaigns: Campaign[];
   allLeads: LeadSummary[];
+  unionTheme?: boolean;
 }) {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [selectedId, setSelectedId] = useState<string | null>(initialCampaigns[0]?.id ?? null);
@@ -203,7 +205,10 @@ export function CampaignsExplorer({
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col min-h-0 min-w-0">
         <div className="p-3 border-b border-gray-200 flex items-center justify-between gap-2">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Campaigns</p>
-          <button onClick={() => setShowAdd(true)} className="text-orange-600 hover:text-orange-700 text-sm font-medium">
+          <button
+            onClick={() => setShowAdd(true)}
+            className={`text-sm font-medium ${unionTheme ? "text-[#1B2A5B] hover:text-[#142047]" : "text-orange-600 hover:text-orange-700"}`}
+          >
             + New
           </button>
         </div>
@@ -221,7 +226,11 @@ export function CampaignsExplorer({
                     setSelectedId(c.id);
                   }}
                   className={`w-full text-left px-4 py-3 border-b border-gray-100 transition-colors ${
-                    active ? "bg-orange-50" : "hover:bg-gray-50"
+                    active
+                      ? unionTheme
+                        ? "bg-[#E7EAF5]"
+                        : "bg-orange-50"
+                      : "hover:bg-gray-50"
                   }`}
                 >
                   <p className="font-medium text-sm text-gray-900">{c.name}</p>
@@ -258,7 +267,10 @@ export function CampaignsExplorer({
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Sequence</h3>
                 {!editingSteps && (
-                  <button onClick={startEditingSteps} className="text-orange-600 hover:text-orange-700 text-sm font-medium">
+                  <button
+                    onClick={startEditingSteps}
+                    className={`text-sm font-medium ${unionTheme ? "text-[#1B2A5B] hover:text-[#142047]" : "text-orange-600 hover:text-orange-700"}`}
+                  >
                     Edit sequence
                   </button>
                 )}
@@ -362,7 +374,9 @@ export function CampaignsExplorer({
                             <div className="flex items-center gap-1.5">
                               <p className="text-sm text-gray-900 truncate">{lead.name ?? "Unknown"}</p>
                               {assignment?.hasOverride && (
-                                <span className="shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-orange-50 text-orange-600">
+                                <span
+                                  className={`shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full ${unionTheme ? "bg-[#E7EAF5] text-[#1B2A5B]" : "bg-orange-50 text-orange-600"}`}
+                                >
                                   Customized
                                 </span>
                               )}
@@ -374,7 +388,7 @@ export function CampaignsExplorer({
                           <button
                             type="button"
                             onClick={() => setCustomizingLead({ leadId: lead.id, leadName: lead.name ?? lead.phone })}
-                            className="shrink-0 text-orange-600 hover:text-orange-700 text-xs font-medium"
+                            className={`shrink-0 text-xs font-medium ${unionTheme ? "text-[#1B2A5B] hover:text-[#142047]" : "text-orange-600 hover:text-orange-700"}`}
                           >
                             Customize
                           </button>
